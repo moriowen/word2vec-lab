@@ -1,0 +1,336 @@
+{
+  "model_id": "D",
+  "name": "GoogleNews-300 warm start, fine-tuned on SST",
+  "corpus": "sst2-phrases",
+  "machine": "m2-air",
+  "hyperparams": {
+    "vector_size": 300,
+    "window": 5,
+    "min_count": 2,
+    "sg": 1,
+    "hs": 0,
+    "negative": 10,
+    "alpha": 0.005,
+    "min_alpha": 0.0001,
+    "epochs": 8,
+    "sample": 0.001,
+    "seed": 42
+  },
+  "train": {
+    "wall_s": 13.8,
+    "words_per_sec": 367468,
+    "peak_rss_mb": 297.0,
+    "vocab_size": 14309,
+    "corpus_tokens": 633720
+  },
+  "finetune": {
+    "seeded_from_pretrained": 12032,
+    "randomly_initialised": 2277,
+    "mean_cosine_drift": 0.9609,
+    "median_cosine_drift": 0.9731,
+    "moved_most": [
+      [
+        "kidman",
+        0.553
+      ],
+      [
+        "philippe",
+        0.599
+      ],
+      [
+        "schwarzenegger",
+        0.608
+      ],
+      [
+        "holm",
+        0.647
+      ],
+      [
+        "griffiths",
+        0.663
+      ],
+      [
+        "sheridan",
+        0.669
+      ],
+      [
+        "evelyn",
+        0.677
+      ],
+      [
+        "clooney",
+        0.7
+      ],
+      [
+        "wilde",
+        0.705
+      ],
+      [
+        "simone",
+        0.707
+      ]
+    ],
+    "moved_least": [
+      [
+        "illiterate",
+        1.0
+      ],
+      [
+        "cornball",
+        1.0
+      ],
+      [
+        "oozes",
+        1.0
+      ],
+      [
+        "priggish",
+        1.0
+      ],
+      [
+        "plod",
+        1.0
+      ],
+      [
+        "worshipful",
+        1.0
+      ],
+      [
+        "drudgery",
+        1.0
+      ],
+      [
+        "abysmally",
+        1.0
+      ],
+      [
+        "poo",
+        1.0
+      ],
+      [
+        "execrable",
+        1.0
+      ]
+    ]
+  },
+  "extrinsic": {
+    "sst2_test_acc": 0.7919,
+    "sst2_test_f1": 0.8089,
+    "oov_rate_train": 0.0008,
+    "oov_rate_test": 0.0661
+  },
+  "intrinsic": {
+    "neighbours": {
+      "plot": [
+        [
+          "plots",
+          0.766
+        ],
+        [
+          "plotting",
+          0.677
+        ],
+        [
+          "plotted",
+          0.619
+        ],
+        [
+          "plotline",
+          0.559
+        ],
+        [
+          "storyline",
+          0.523
+        ],
+        [
+          "conspiracies",
+          0.514
+        ],
+        [
+          "conspiracy",
+          0.514
+        ],
+        [
+          "oh-so",
+          0.498
+        ],
+        [
+          "conspirators",
+          0.481
+        ],
+        [
+          "subplots",
+          0.475
+        ]
+      ],
+      "terrible": [
+        [
+          "horrible",
+          0.887
+        ],
+        [
+          "dreadful",
+          0.8
+        ],
+        [
+          "awful",
+          0.777
+        ],
+        [
+          "atrocious",
+          0.723
+        ],
+        [
+          "horrid",
+          0.714
+        ],
+        [
+          "appalling",
+          0.701
+        ],
+        [
+          "horrific",
+          0.678
+        ],
+        [
+          "lousy",
+          0.672
+        ],
+        [
+          "hideous",
+          0.667
+        ],
+        [
+          "clockstoppers",
+          0.665
+        ]
+      ],
+      "star": [
+        [
+          "superstar",
+          0.754
+        ],
+        [
+          "stars",
+          0.742
+        ],
+        [
+          "gyllenhaal",
+          0.604
+        ],
+        [
+          "top-billed",
+          0.598
+        ],
+        [
+          "pop-induced",
+          0.584
+        ],
+        [
+          "first-rate",
+          0.584
+        ],
+        [
+          "standout",
+          0.582
+        ],
+        [
+          "starring",
+          0.562
+        ],
+        [
+          "huston",
+          0.558
+        ],
+        [
+          "legend",
+          0.55
+        ]
+      ],
+      "cinematography": [
+        [
+          "camerawork",
+          0.764
+        ],
+        [
+          "cinematographer",
+          0.748
+        ],
+        [
+          "visuals",
+          0.615
+        ],
+        [
+          "screenplay",
+          0.591
+        ],
+        [
+          "photography",
+          0.589
+        ],
+        [
+          "choreography",
+          0.579
+        ],
+        [
+          "filmmaking",
+          0.562
+        ],
+        [
+          "helmer",
+          0.549
+        ],
+        [
+          "lensing",
+          0.541
+        ],
+        [
+          "narration",
+          0.54
+        ]
+      ],
+      "the": [
+        [
+          "of",
+          0.629
+        ],
+        [
+          ".",
+          0.587
+        ],
+        [
+          "2002",
+          0.584
+        ],
+        [
+          "spielberg",
+          0.543
+        ],
+        [
+          "entire",
+          0.542
+        ],
+        [
+          "salton",
+          0.53
+        ],
+        [
+          "self-conscious",
+          0.525
+        ],
+        [
+          "pacino",
+          0.525
+        ],
+        [
+          "revenge-of-the-nerds",
+          0.519
+        ],
+        [
+          "auteuil",
+          0.516
+        ]
+      ]
+    }
+  }
+}

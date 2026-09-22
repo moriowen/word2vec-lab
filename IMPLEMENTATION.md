@@ -506,3 +506,53 @@ own right and belongs in the deliverable 5 discussion rather than being smoothed
 Next: phase 5, Model D, the fine-tune. C's `plot` neighbourhood is currently morphological
 rather than conspiratorial, which is a weaker starting contrast than the plan assumed, so
 the drift measurement matters more than the single-word anecdote.
+
+### Sep 22, phase 5, Model D
+
+| | A, sg+NS | B, CBOW+HS | C, GoogleNews | D, fine-tuned |
+|---|---|---|---|---|
+| Vocabulary | 14,309 | 14,309 | 500,000 | 14,309 |
+| Wall clock | 11.78 s | 3.58 s | 2.84 s load | 13.80 s |
+| SST-2 test accuracy | 0.761 | 0.729 | **0.798** | 0.792 |
+| SST-2 test F1 | 0.776 | 0.750 | 0.811 | 0.809 |
+| Test OOV | 0.066 | 0.066 | 0.271 | 0.066 |
+
+Of the 14,309 vocabulary entries, 12,032 were seeded from GoogleNews and 2,277 kept their
+random initialisation because Google's published vocabulary does not contain them.
+
+**The warm start is worth 3.1 points over training from scratch on the same corpus**, 0.761
+for A against 0.792 for D, with identical architecture, identical loss and an identical
+classifier. That is the cleanest single comparison in the assignment so far, because the only
+difference between A and D is where W_in started.
+
+**D lands 0.6 points below C and this is not a failure.** C has 35 times the vocabulary and
+100,000 times the training text. D matches it to within noise while carrying a vocabulary
+small enough to hold in memory without limiting, and it does so at a quarter of C's OOV rate.
+The interesting comparison is not which number is larger but that they are the same number.
+
+**Drift came out healthy.** Mean cosine between each word's warm-start vector and its
+post-training vector is 0.9609, median 0.9731. The plan's failure threshold was a mean
+cosine below about 0.6, which would have meant the low alpha was not low enough and the
+randomly initialised W_out was scrambling the imported vectors. It did not happen, so no
+rerun was needed.
+
+**The words that moved are exactly the ones domain shift predicts.** Ranked by drift, the
+top of the list is actor surnames: `kidman` 0.553, `philippe` 0.599, `schwarzenegger` 0.608,
+`holm` 0.647, `griffiths` 0.663. These are frequent in movie reviews and rare in news, so
+they get heavily retrained. At the other end, cosine 1.000 with no measurable movement at
+all: `execrable`, `abysmally`, `drudgery`, `worshipful`, `plod`. Rare sentiment adjectives
+that appear once or twice in SST and never accumulate enough gradient to move. The drift
+distribution is therefore a direct readout of corpus frequency, and it is a better answer to
+"what did fine-tuning do" than any single-word anecdote would have been.
+
+**Neighbour quality is where D separates from C.** For `cinematography`, C returns only
+morphological variants (`camerawork, cinematographer, Cinematography, Cinematographer`) while
+D returns `camerawork, cinematographer, visuals, screenplay, photography`. `visuals` and
+`screenplay` are film-domain associations that were not there before training. `plot` shows
+the same effect more weakly, with `storyline` entering the top five. The contrast predicted
+in `PLAN.md` section 1.4, that `plot` would start conspiratorial and become narrative, did
+not occur: C's `plot` neighbourhood was morphological to begin with. The drift measurement
+carries this section instead, which is why it was worth building.
+
+Next: phase 6, intrinsic evaluation. Neighbour tables for all four models are already being
+written to `results/`, so what remains is WordSim-353.

@@ -1,0 +1,79 @@
+"""Model D. GoogleNews-300 warm-started, then trained on SST.
+
+This is what the handout calls fine-tuning a pretrained Word2Vec model. Initialise W_in from
+the published vectors, then keep running the ordinary word2vec loop on the movie-review
+corpus at a low learning rate.
+
+Two properties of the recipe are worth stating because they shape the result:
+
+  1. `intersect_word2vec_format` only overwrites rows for words already in the vocabulary
+     built from our corpus. It does not import Google's 3 million word vocabulary.
+  2. It loads W_in only. Google never published their output matrix, so W_out stays randomly
+     initialised and the first updates are partly spent re-learning a decoder. That pushes
+     the imported vectors around more than a true fine-tune would, which is why alpha is low
+     and the epoch count small, and why drift is measured rather than assumed.
+"""
+import numpy as np
+from gensim.models import Word2Vec
+
+from . import schema
+from .pretrained import GZ
+from .train_gensim import MODELS
+
+CFG = dict(vector_size=300, window=5, min_count=2, sg=1, hs=0, negative=10,
+           alpha=0.005, min_alpha=0.0001, epochs=8, sample=1e-3, seed=42, workers=4)
+
+
+def _cos(a, b):
+    na, nb = np.linalg.norm(a, axis=1), np.linalg.norm(b, axis=1)
+    ok = (na > 0) & (nb > 0)
+    out = np.zeros(len(a))
+    out[ok] = np.einsum("ij,ij->i", a[ok], b[ok]) / (na[ok] * nb[ok])
+    return out
+
+
+def finetune(corpus_sents, corpus_name="sst2-phrases"):
+    model = Word2Vec(**CFG)
+    model.build_vocab(corpus_sents)
+    # gensim 4.x does not create vectors_lockf by default; without it the intersect either
+    # fails or silently freezes every row. 1.0 means trainable.
+    model.wv.vectors_lockf = np.ones(len(model.wv), dtype=np.float32)
+
+    before_all = model.wv.vectors.copy()
+    model.wv.intersect_word2vec_format(str(GZ), binary=True, lockf=1.0)
+    warm = model.wv.vectors.copy()
+    # A row the intersect touched is one that changed from its random init.
+    seeded = ~np.all(np.isclose(warm, before_all), axis=1)
+
+    tokens = sum(len(s) for s in corpus_sents)
+    with schema.timed() as t:
+        model.train(corpus_sents, total_examples=model.corpus_count, epochs=CFG["epochs"])
+
+    drift = _cos(warm[seeded], model.wv.vectors[seeded])
+    words = [model.wv.index_to_key[i] for i in np.where(seeded)[0]]
+    order = np.argsort(drift)
+
+    MODELS.mkdir(exist_ok=True)
+    model.save(str(MODELS / f"D_{corpus_name}.model"))
+
+    rec = {
+        "model_id": "D",
+        "name": "GoogleNews-300 warm start, fine-tuned on SST",
+        "corpus": corpus_name,
+        "machine": schema.machine(),
+        "hyperparams": {k: v for k, v in CFG.items() if k != "workers"},
+        "train": {"wall_s": round(t.wall_s, 2),
+                  "words_per_sec": round(tokens * CFG["epochs"] / t.wall_s),
+                  "peak_rss_mb": round(schema.peak_rss_mb(), 1),
+                  "vocab_size": len(model.wv),
+                  "corpus_tokens": tokens},
+        "finetune": {
+            "seeded_from_pretrained": int(seeded.sum()),
+            "randomly_initialised": int((~seeded).sum()),
+            "mean_cosine_drift": round(float(drift.mean()), 4),
+            "median_cosine_drift": round(float(np.median(drift)), 4),
+            "moved_most": [[words[i], round(float(drift[i]), 3)] for i in order[:10]],
+            "moved_least": [[words[i], round(float(drift[i]), 3)] for i in order[-10:]],
+        },
+    }
+    return model, rec

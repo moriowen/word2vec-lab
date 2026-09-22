@@ -464,3 +464,45 @@ than a failure. It does mean the phrase-level SST rows should be tried before th
 written.
 
 Next: phase 4, Model C.
+
+### Sep 22, phrase-level corpus and Model C
+
+Two changes. Embedding and classifier training moved from the 6,920 sentence-level rows to
+the 67,348 phrase-level rows, 4.7 times more text. Model C added.
+
+| | A, skip-gram + NS | B, CBOW + HS | C, GoogleNews-300 |
+|---|---|---|---|
+| Training corpus | SST phrases, 634k tok | SST phrases, 634k tok | news, ~100B tok |
+| Vocabulary | 14,309 | 14,309 | 500,000 (limited) |
+| Wall clock | 11.78 s | 3.58 s | 2.84 s to load |
+| Peak RSS | 297.8 MB | 297.8 MB | 432.8 MB |
+| SST-2 test accuracy | 0.761 | 0.729 | **0.798** |
+| SST-2 test F1 | 0.776 | 0.750 | 0.811 |
+| Test OOV | 0.066 | 0.066 | 0.271 |
+
+**The corpus change was worth 8 points to A and 10 to B** (0.679 to 0.761, 0.628 to 0.729),
+and doubled vocabulary from 7,140 to 14,309. This confirms the diagnosis in the previous
+entry: the earlier numbers were limited by corpus size, not by a broken pipeline.
+
+**Skip-gram still beats CBOW, and CBOW still trains 3.3 times faster.** Both halves of the
+handout's page-1 claim hold at 634k tokens as they did at 134k. The accuracy gap narrowed
+slightly, from 5.1 points to 3.2, which is the direction the claim predicts as data grows.
+text8 in phase 11 is what tests whether it crosses over.
+
+**Model C wins by 3.7 points despite a 27% OOV rate.** The composition of that rate is
+measured in `data/README.md`: 40% punctuation, most of the rest very frequent function words
+that Google dropped when publishing. None of it carries sentiment. A capitalisation fallback
+would recover half the misses and was rejected, because it maps `a` to the letter `A` and
+`and` to the acronym `AND`.
+
+**Neighbour quality separates the models more sharply than accuracy does.** C returns
+inflectional variants (`plot` gives `plots, Plot, plotting, plotline`) and clean synonyms
+(`terrible` gives `horrible, horrendous, dreadful, awful`). A and B return near-noise for
+the same queries. Two things follow for the report: 634k tokens is still far too little for
+good neighbours even though it is enough for competitive classification accuracy, and the
+two evaluation modes are measuring genuinely different things. That gap is a result in its
+own right and belongs in the deliverable 5 discussion rather than being smoothed over.
+
+Next: phase 5, Model D, the fine-tune. C's `plot` neighbourhood is currently morphological
+rather than conspiratorial, which is a weaker starting contrast than the plan assumed, so
+the drift measurement matters more than the single-word anecdote.

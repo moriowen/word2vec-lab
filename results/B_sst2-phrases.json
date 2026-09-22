@@ -1,0 +1,244 @@
+{
+  "model_id": "B",
+  "name": "gensim CBOW + hierarchical softmax",
+  "corpus": "sst2-phrases",
+  "machine": "m2-air",
+  "hyperparams": {
+    "sg": 0,
+    "hs": 1,
+    "negative": 0,
+    "vector_size": 300,
+    "window": 5,
+    "min_count": 2,
+    "epochs": 10,
+    "alpha": 0.025,
+    "sample": 0.001
+  },
+  "train": {
+    "wall_s": 3.58,
+    "words_per_sec": 1771638,
+    "peak_rss_mb": 297.8,
+    "vocab_size": 14309,
+    "corpus_tokens": 633720
+  },
+  "extrinsic": {
+    "sst2_test_acc": 0.7293,
+    "sst2_test_f1": 0.7501,
+    "oov_rate_train": 0.0008,
+    "oov_rate_test": 0.0661
+  },
+  "intrinsic": {
+    "neighbours": {
+      "plot": [
+        [
+          "ending",
+          0.32
+        ],
+        [
+          "accomplishment",
+          0.278
+        ],
+        [
+          "sweetness",
+          0.264
+        ],
+        [
+          "flourish",
+          0.25
+        ],
+        [
+          "despair",
+          0.249
+        ],
+        [
+          "flashy",
+          0.248
+        ],
+        [
+          "mastering",
+          0.248
+        ],
+        [
+          "clancy",
+          0.248
+        ],
+        [
+          "compressed",
+          0.244
+        ],
+        [
+          "sure-fire",
+          0.243
+        ]
+      ],
+      "terrible": [
+        [
+          "thrilling",
+          0.397
+        ],
+        [
+          "chump",
+          0.364
+        ],
+        [
+          "ballistic",
+          0.343
+        ],
+        [
+          "motion",
+          0.338
+        ],
+        [
+          "paint-by-numbers",
+          0.334
+        ],
+        [
+          "view",
+          0.331
+        ],
+        [
+          "derrida",
+          0.329
+        ],
+        [
+          "ecks",
+          0.328
+        ],
+        [
+          "cinderella",
+          0.327
+        ],
+        [
+          "raises",
+          0.325
+        ]
+      ],
+      "star": [
+        [
+          "winners",
+          0.329
+        ],
+        [
+          "kevin",
+          0.309
+        ],
+        [
+          "splendid",
+          0.303
+        ],
+        [
+          "has",
+          0.302
+        ],
+        [
+          "acting",
+          0.299
+        ],
+        [
+          "pulls",
+          0.296
+        ],
+        [
+          "watstein",
+          0.292
+        ],
+        [
+          "contributes",
+          0.287
+        ],
+        [
+          "dustin",
+          0.283
+        ],
+        [
+          "teaming",
+          0.283
+        ]
+      ],
+      "cinematography": [
+        [
+          "color",
+          0.384
+        ],
+        [
+          "gantz",
+          0.379
+        ],
+        [
+          "beaches",
+          0.374
+        ],
+        [
+          "mattei",
+          0.367
+        ],
+        [
+          "hotels",
+          0.356
+        ],
+        [
+          "improbability",
+          0.356
+        ],
+        [
+          "acting",
+          0.353
+        ],
+        [
+          "lumpen",
+          0.35
+        ],
+        [
+          "procedural",
+          0.347
+        ],
+        [
+          "reggio",
+          0.342
+        ]
+      ],
+      "the": [
+        [
+          "our",
+          0.22
+        ],
+        [
+          "his",
+          0.209
+        ],
+        [
+          "current",
+          0.191
+        ],
+        [
+          "dong",
+          0.16
+        ],
+        [
+          "whose",
+          0.155
+        ],
+        [
+          "german",
+          0.15
+        ],
+        [
+          "of",
+          0.148
+        ],
+        [
+          "my",
+          0.148
+        ],
+        [
+          "in",
+          0.144
+        ],
+        [
+          "art",
+          0.144
+        ]
+      ]
+    }
+  }
+}

@@ -1,11 +1,21 @@
-"""SST-2 loading. SetFit/sst2 rather than the GLUE copy, whose test labels are all -1."""
+"""SST-2 loading. SetFit/sst2 rather than the GLUE copy, whose test labels are all -1.
+
+Two training corpora are available and they differ by an order of magnitude:
+
+  sentences  6,920 rows / 134k tokens, the sentence-level release (SetFit train.jsonl)
+  phrases   67,349 rows / 634k tokens, the phrase-level release (GLUE train split)
+
+The phrase rows are labelled subtrees of the same treebank, so they are train-split only and
+carry real labels. They serve both as embedding training text and as classifier training
+data. `sentences` is kept because the first run used it and the comparison is reported.
+"""
 import json
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parent.parent / "data" / "sst2"
 
 
-def _read(split: str) -> list[tuple[list[str], int]]:
+def _read_jsonl(split: str) -> list[tuple[list[str], int]]:
     rows = []
     for line in (DATA / f"{split}.jsonl").read_text().splitlines():
         if not line.strip():
@@ -15,13 +25,33 @@ def _read(split: str) -> list[tuple[list[str], int]]:
     return rows
 
 
-def load_sst2() -> dict[str, list]:
-    """SST is already tokenised, so lowercase plus whitespace split is the honest choice."""
-    d = {s: _read(s) for s in ("train", "dev", "test")}
+def _read_phrases(exclude: set[str]) -> list[tuple[list[str], int]]:
+    import pandas as pd
+    df = pd.read_parquet(DATA / "train_phrases.parquet")
+    rows = []
+    for text, lab in zip(df.sentence, df.label):
+        t = text.strip().lower()
+        if t in exclude:   # one incidental collision with the test split; see data/README.md
+            continue
+        rows.append((t.split(), int(lab)))
+    return rows
+
+
+def load_sst2(train_on: str = "phrases") -> dict[str, list]:
+    """SST ships pre-tokenised, so lowercase plus whitespace split is the honest choice."""
+    d = {"dev": _read_jsonl("dev"), "test": _read_jsonl("test")}
     labels = {lab for _, lab in d["test"]}
     # Guard against the GLUE split, where every test label is -1.
     if labels != {0, 1}:
         raise ValueError(f"test labels are {labels}, expected both 0 and 1 -- wrong SST variant?")
+
+    if train_on == "phrases":
+        held = {" ".join(t) for t, _ in d["test"]} | {" ".join(t) for t, _ in d["dev"]}
+        d["train"] = _read_phrases(held)
+    elif train_on == "sentences":
+        d["train"] = _read_jsonl("train")
+    else:
+        raise ValueError(train_on)
     return d
 
 
@@ -40,7 +70,6 @@ def stats(d: dict) -> dict:
 
 
 if __name__ == "__main__":
-    d = load_sst2()
-    print(json.dumps(stats(d), indent=2))
-    vocab = {w for toks, _ in d["train"] for w in toks}
-    print("train vocab types:", len(vocab))
+    for mode in ("sentences", "phrases"):
+        d = load_sst2(mode)
+        print(mode, json.dumps(stats(d)["train"]))

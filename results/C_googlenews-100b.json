@@ -1,0 +1,247 @@
+{
+  "model_id": "C",
+  "name": "GoogleNews-300 (pretrained, frozen)",
+  "corpus": "googlenews-100b",
+  "machine": "m2-air",
+  "hyperparams": {
+    "sg": 1,
+    "hs": 0,
+    "negative": 5,
+    "vector_size": 300,
+    "window": 5,
+    "min_count": 5,
+    "epochs": null,
+    "alpha": 0.025,
+    "sample": 1e-05,
+    "note": "as published by Mikolov et al.; not retrained here"
+  },
+  "train": {
+    "wall_s": null,
+    "words_per_sec": null,
+    "load_wall_s": 2.84,
+    "peak_rss_mb": 432.8,
+    "vocab_size": 500000,
+    "vocab_limit": 500000,
+    "corpus_tokens": 100000000000
+  },
+  "extrinsic": {
+    "sst2_test_acc": 0.7979,
+    "sst2_test_f1": 0.8107,
+    "oov_rate_train": 0.2409,
+    "oov_rate_test": 0.2709
+  },
+  "intrinsic": {
+    "neighbours": {
+      "plot": [
+        [
+          "plots",
+          0.762
+        ],
+        [
+          "Plot",
+          0.652
+        ],
+        [
+          "plotting",
+          0.633
+        ],
+        [
+          "plotted",
+          0.596
+        ],
+        [
+          "plotline",
+          0.593
+        ],
+        [
+          "plotters",
+          0.542
+        ],
+        [
+          "storyline",
+          0.527
+        ],
+        [
+          "conspiracies",
+          0.516
+        ],
+        [
+          "conspiracy",
+          0.512
+        ],
+        [
+          "foiled_plot",
+          0.502
+        ]
+      ],
+      "terrible": [
+        [
+          "horrible",
+          0.924
+        ],
+        [
+          "horrendous",
+          0.847
+        ],
+        [
+          "dreadful",
+          0.802
+        ],
+        [
+          "awful",
+          0.748
+        ],
+        [
+          "horrid",
+          0.718
+        ],
+        [
+          "atrocious",
+          0.689
+        ],
+        [
+          "horrific",
+          0.683
+        ],
+        [
+          "bad",
+          0.683
+        ],
+        [
+          "appalling",
+          0.675
+        ],
+        [
+          "horrible_horrible",
+          0.667
+        ]
+      ],
+      "star": [
+        [
+          "stars",
+          0.776
+        ],
+        [
+          "superstar",
+          0.734
+        ],
+        [
+          "starlet",
+          0.638
+        ],
+        [
+          "megastar",
+          0.617
+        ],
+        [
+          "heart_throb",
+          0.573
+        ],
+        [
+          "heartthrob",
+          0.544
+        ],
+        [
+          "superstars",
+          0.533
+        ],
+        [
+          "standout",
+          0.521
+        ],
+        [
+          "stardom",
+          0.515
+        ],
+        [
+          "hunk",
+          0.505
+        ]
+      ],
+      "cinematography": [
+        [
+          "camerawork",
+          0.771
+        ],
+        [
+          "cinematographer",
+          0.748
+        ],
+        [
+          "Cinematography",
+          0.698
+        ],
+        [
+          "Cinematographer",
+          0.673
+        ],
+        [
+          "cinematography_editing",
+          0.631
+        ],
+        [
+          "cinematographers",
+          0.631
+        ],
+        [
+          "Best_Cinematography",
+          0.617
+        ],
+        [
+          "visual_effects",
+          0.603
+        ],
+        [
+          "filmmaking",
+          0.598
+        ],
+        [
+          "visuals",
+          0.591
+        ]
+      ],
+      "the": [
+        [
+          "this",
+          0.594
+        ],
+        [
+          "in",
+          0.543
+        ],
+        [
+          "that",
+          0.526
+        ],
+        [
+          "ofthe",
+          0.515
+        ],
+        [
+          "another",
+          0.475
+        ],
+        [
+          "however",
+          0.475
+        ],
+        [
+          "one",
+          0.467
+        ],
+        [
+          "entire",
+          0.462
+        ],
+        [
+          "its",
+          0.461
+        ],
+        [
+          "which",
+          0.46
+        ]
+      ]
+    }
+  }
+}

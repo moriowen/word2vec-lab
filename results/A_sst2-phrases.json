@@ -1,0 +1,244 @@
+{
+  "model_id": "A",
+  "name": "gensim skip-gram + negative sampling",
+  "corpus": "sst2-phrases",
+  "machine": "m2-air",
+  "hyperparams": {
+    "sg": 1,
+    "hs": 0,
+    "negative": 10,
+    "vector_size": 300,
+    "window": 5,
+    "min_count": 2,
+    "epochs": 10,
+    "alpha": 0.025,
+    "sample": 0.001
+  },
+  "train": {
+    "wall_s": 11.78,
+    "words_per_sec": 537887,
+    "peak_rss_mb": 297.8,
+    "vocab_size": 14309,
+    "corpus_tokens": 633720
+  },
+  "extrinsic": {
+    "sst2_test_acc": 0.7611,
+    "sst2_test_f1": 0.7757,
+    "oov_rate_train": 0.0008,
+    "oov_rate_test": 0.0661
+  },
+  "intrinsic": {
+    "neighbours": {
+      "plot": [
+        [
+          "twists",
+          0.485
+        ],
+        [
+          "pawn",
+          0.463
+        ],
+        [
+          "device",
+          0.46
+        ],
+        [
+          "court",
+          0.457
+        ],
+        [
+          "oh-so",
+          0.452
+        ],
+        [
+          "nifty",
+          0.45
+        ],
+        [
+          "clich\u00e9-riddled",
+          0.443
+        ],
+        [
+          "stop-and-start",
+          0.443
+        ],
+        [
+          "triteness",
+          0.441
+        ],
+        [
+          "convenient",
+          0.44
+        ]
+      ],
+      "terrible": [
+        [
+          "fitting",
+          0.703
+        ],
+        [
+          "synergistic",
+          0.669
+        ],
+        [
+          "stultifyingly",
+          0.669
+        ],
+        [
+          "reconstruction",
+          0.658
+        ],
+        [
+          "bloodwork",
+          0.657
+        ],
+        [
+          "besotted",
+          0.595
+        ],
+        [
+          "impulse",
+          0.589
+        ],
+        [
+          "propelled",
+          0.579
+        ],
+        [
+          "freaky",
+          0.576
+        ],
+        [
+          "regard",
+          0.575
+        ]
+      ],
+      "star": [
+        [
+          "raving",
+          0.594
+        ],
+        [
+          "trek",
+          0.59
+        ],
+        [
+          "high-powered",
+          0.585
+        ],
+        [
+          "pop-induced",
+          0.573
+        ],
+        [
+          "jake",
+          0.567
+        ],
+        [
+          "bestowed",
+          0.567
+        ],
+        [
+          "anteing",
+          0.56
+        ],
+        [
+          "wattage",
+          0.56
+        ],
+        [
+          "lone",
+          0.555
+        ],
+        [
+          "indomitability",
+          0.55
+        ]
+      ],
+      "cinematography": [
+        [
+          "rinzler",
+          0.715
+        ],
+        [
+          "water-born",
+          0.705
+        ],
+        [
+          "shimmering",
+          0.701
+        ],
+        [
+          "hennings",
+          0.694
+        ],
+        [
+          "lisa",
+          0.693
+        ],
+        [
+          "l.",
+          0.692
+        ],
+        [
+          "conrad",
+          0.682
+        ],
+        [
+          "italicized",
+          0.68
+        ],
+        [
+          "robotically",
+          0.68
+        ],
+        [
+          "pitted",
+          0.671
+        ]
+      ],
+      "the": [
+        [
+          "of",
+          0.404
+        ],
+        [
+          "deleting",
+          0.36
+        ],
+        [
+          "outward",
+          0.355
+        ],
+        [
+          "tully",
+          0.354
+        ],
+        [
+          "1987",
+          0.352
+        ],
+        [
+          "unambitious",
+          0.351
+        ],
+        [
+          "screenplays",
+          0.35
+        ],
+        [
+          "hubristic",
+          0.35
+        ],
+        [
+          "homeric",
+          0.348
+        ],
+        [
+          "indulges",
+          0.348
+        ]
+      ]
+    }
+  }
+}

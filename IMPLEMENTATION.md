@@ -626,3 +626,113 @@ fraction of it. That is the measurement phase 11 exists to take, and it is a bet
 motivation for text8 than corpus size alone.
 
 Next: phase 6, WordSim-353, which also completes E's correctness gate.
+
+### Sep 22, phases 6 to 8
+
+`src/evaluate.py` and `src/run_eval.py` augment the existing records rather than rewriting
+them, so training numbers captured at training time are never recomputed from a later run.
+`src/measure_mem.py` runs one model per subprocess.
+
+#### Phase 6, lexical similarity
+
+Spearman between human ratings and cosine. Coverage is the fraction of pairs where both
+words were in vocabulary, and it is part of the result rather than a footnote.
+
+| | WordSim-353 | SimLex-999 | MEN-3k | Coverage |
+|---|---|---|---|---|
+| A, gensim sg+NS | 0.029 | 0.045 | 0.118 | 50.1% |
+| B, gensim CBOW+HS | -0.036 | 0.069 | -0.010 | 50.1% |
+| E, from scratch | 0.005 | 0.033 | 0.096 | 50.1% |
+| D, fine-tuned | 0.585 | 0.405 | 0.702 | 50.1% |
+| C, GoogleNews | **0.700** | **0.442** | **0.771** | 100% |
+
+**This is the strongest result in the assignment so far, and it is a negative one.** A, B
+and E have no measurable lexical similarity structure at all. B is slightly negative on two
+of the three benchmarks, which is a correlation indistinguishable from none. Yet those same
+three models score 0.729 to 0.761 on sentiment classification, within 5 points of
+GoogleNews.
+
+The two evaluations are measuring different things and it is now quantified rather than
+asserted. Mean-pooled logistic regression on SST needs only that sentiment-bearing words
+occupy consistent directions; it does not need `tiger` to be near `cat`. 634k tokens is
+enough to supply the first and nowhere near enough for the second. Any report that
+evaluated only downstream accuracy would conclude these embeddings are nearly as good as
+GoogleNews, and it would be wrong.
+
+**The fine-tune is what carries the semantic structure**, at 0.585 against 0.029 for A
+trained from scratch on the identical corpus. The pretrained initialisation is not a 3-point
+accuracy trick; it is the entire source of lexical similarity in Model D.
+
+Coverage is 50.1% for every SST-trained model, because the benchmarks contain general
+vocabulary that 634k tokens of film review never mentions. Their scores are computed over
+half the pairs and must be read that way.
+
+#### Phase 7, systems measurement
+
+| | Vocab | p50 ms | p95 ms | Matrices kept | Predicted MB | Measured delta MB | Ratio |
+|---|---|---|---|---|---|---|---|
+| A | 14,309 | 0.41 | 2.41 | 2 | 34.3 | 35.0 | 1.02 |
+| B | 14,309 | 0.36 | 1.40 | 2 | 34.3 | 48.0 | 1.40 |
+| D | 14,309 | 0.41 | 3.07 | 2 | 34.3 | 34.8 | 1.01 |
+| E | 14,309 | 0.37 | 1.51 | 1 | 17.2 | 17.8 | 1.03 |
+| C | 500,000 | 15.08 | 26.94 | 1 | 600.0 | 195.6 | 0.33 |
+
+**Query latency is linear in vocabulary, as brute-force `most_similar` should be.** C has 35
+times the vocabulary of the SST models and is 37 times slower at p50. That is the crossover
+argument for an approximate index stated as a measurement rather than as received wisdom: at
+14k words nobody needs one, at 500k it is 15 ms per query, and at Google's full 3M vocabulary
+it would be roughly 90 ms.
+
+**The memory prediction holds for four of five models within 3%.** B is the exception at
+1.40, which is hierarchical softmax: it keeps a `syn1` matrix plus the Huffman tree's code
+and point arrays, so `2 * V * d * 4` understates it.
+
+**C does not fit the prediction and the reason is not yet established.** 500,000 by 300
+float32 is 600 MB and the measured delta is 195.6 MB, a third of it. The likely explanation
+is macOS memory compression, which compresses inactive anonymous pages so `ru_maxrss` reports
+a footprint below the allocation. This is testable: the same measurement on an ICE Linux node
+should come out near 600 MB. Until that is run, the number is reported as an unexplained
+discrepancy rather than as a finding.
+
+The first pass at this table compared a whole-process peak RSS against the matrix prediction
+and produced 297.8 MB for a model whose matrices are 34.3 MB. Process peak RSS includes the
+interpreter, gensim, numpy, torch and the resident corpus, so it measures the script and not
+the model. `src/measure_mem.py` replaced it with a per-subprocess RSS delta.
+
+#### Phase 8, error mining, deliverable 2c
+
+| | Errors / 1,821 | negation | contrast | other |
+|---|---|---|---|---|
+| C, GoogleNews | 368 | 102 | 64 | 202 |
+| D, fine-tuned | 379 | 96 | 64 | 219 |
+| A, gensim sg+NS | 435 | 101 | 72 | 262 |
+| E, from scratch | 466 | 114 | 79 | 273 |
+| B, gensim CBOW+HS | 493 | 120 | 62 | 311 |
+
+Negation and contrast together account for 38 to 45% of every model's errors, against roughly
+20% of the test set overall, so both categories are over-represented among failures for every
+model including GoogleNews. That is the pooling step, not the embeddings: averaging discards
+word order, so no amount of embedding quality recovers a scope-of-negation judgement.
+
+Confident mistakes, which are what deliverable 2c asks for:
+
+| Model | Sentence | Gold | Pred | Conf |
+|---|---|---|---|---|
+| A | `not a bad journey at all .` | pos | neg | 0.958 |
+| A | `a well acted and well intentioned snoozer .` | neg | pos | 0.898 |
+| A | `first good , then bothersome .` | neg | pos | 0.896 |
+| D | `never -lrb- sinks -rrb- into exploitation .` | pos | neg | 0.990 |
+| D | `there is n't a weak or careless performance amongst them .` | pos | neg | 0.973 |
+| D | `it 's a great deal of sizzle and very little steak .` | neg | pos | 0.952 |
+
+Every one has a mechanical explanation. `not a bad journey` averages `not` and `bad` into
+negative territory. `there is n't a weak or careless performance` pools two strongly negative
+adjectives that the negation was supposed to invert. `a great deal of sizzle and very little
+steak` is an idiom whose negative reading lives entirely in the contrast between clauses.
+`a well acted and well intentioned snoozer` carries three positive words and one negative one,
+and the average follows the majority.
+
+The handout warns that a test set producing no failures must be made harder. That did not
+arise: SST supplies these unaided.
+
+Next: phase 9, the report.

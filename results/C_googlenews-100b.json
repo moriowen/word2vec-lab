@@ -28,7 +28,23 @@
     "sst2_test_acc": 0.7979,
     "sst2_test_f1": 0.8107,
     "oov_rate_train": 0.2409,
-    "oov_rate_test": 0.2709
+    "oov_rate_test": 0.2709,
+    "query_latency": {
+      "p50_ms": 15.083,
+      "p95_ms": 26.936,
+      "repeats": 200,
+      "vocab_size": 500000
+    },
+    "memory": {
+      "model_id": "C",
+      "vocab": 500000,
+      "dim": 300,
+      "matrices_retained": 1,
+      "predicted_mb": 600.0,
+      "baseline_rss_mb": 97.9,
+      "loaded_rss_mb": 293.6,
+      "delta_mb": 195.6
+    }
   },
   "intrinsic": {
     "neighbours": {
@@ -242,6 +258,120 @@
           0.46
         ]
       ]
+    },
+    "wordsim353": {
+      "spearman": 0.7,
+      "pairs_scored": 353,
+      "pairs_skipped": 0,
+      "coverage": 1.0
+    },
+    "simlex999": {
+      "spearman": 0.4421,
+      "pairs_scored": 998,
+      "pairs_skipped": 1,
+      "coverage": 0.999
+    },
+    "men3k": {
+      "spearman": 0.7708,
+      "pairs_scored": 2945,
+      "pairs_skipped": 55,
+      "coverage": 0.982
     }
+  },
+  "errors": {
+    "n_errors": 368,
+    "error_categories": {
+      "negation": 102,
+      "other": 202,
+      "contrast": 64
+    },
+    "confident_errors": [
+      {
+        "sentence": "never -lrb- sinks -rrb- into exploitation .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.981,
+        "category": "negation"
+      },
+      {
+        "sentence": "it 's a great deal of sizzle and very little steak .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.967,
+        "category": "other"
+      },
+      {
+        "sentence": "there is n't a weak or careless performance amongst them .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.959,
+        "category": "negation"
+      },
+      {
+        "sentence": "no. .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.933,
+        "category": "other"
+      },
+      {
+        "sentence": "works because , for the most part , it avoids the stupid cliches and formulaic potholes that befall its brethren .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.916,
+        "category": "other"
+      },
+      {
+        "sentence": "a film made with as little wit , interest , and professionalism as artistically possible for a slummy hollywood caper flick .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.907,
+        "category": "other"
+      }
+    ],
+    "confident_correct": [
+      {
+        "sentence": "thoughtful , provocative and entertaining .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 1.0,
+        "category": "other"
+      },
+      {
+        "sentence": "brilliant ! '",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 1.0,
+        "category": "other"
+      },
+      {
+        "sentence": "a wonderful character-based comedy .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 1.0,
+        "category": "other"
+      },
+      {
+        "sentence": "sensitive , insightful and beautifully rendered film .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 1.0,
+        "category": "other"
+      },
+      {
+        "sentence": "a soggy , shapeless mess ... just a dumb excuse for a waterlogged equivalent of a haunted-house movie .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 1.0,
+        "category": "other"
+      },
+      {
+        "sentence": "a smart , sweet and playful romantic comedy .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 1.0,
+        "category": "other"
+      }
+    ]
   }
 }

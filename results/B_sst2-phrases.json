@@ -25,7 +25,23 @@
     "sst2_test_acc": 0.7293,
     "sst2_test_f1": 0.7501,
     "oov_rate_train": 0.0008,
-    "oov_rate_test": 0.0661
+    "oov_rate_test": 0.0661,
+    "query_latency": {
+      "p50_ms": 0.363,
+      "p95_ms": 1.402,
+      "repeats": 200,
+      "vocab_size": 14309
+    },
+    "memory": {
+      "model_id": "B",
+      "vocab": 14309,
+      "dim": 300,
+      "matrices_retained": 2,
+      "predicted_mb": 34.3,
+      "baseline_rss_mb": 98.0,
+      "loaded_rss_mb": 146.0,
+      "delta_mb": 48.0
+    }
   },
   "intrinsic": {
     "neighbours": {
@@ -239,6 +255,120 @@
           0.144
         ]
       ]
+    },
+    "wordsim353": {
+      "spearman": -0.0357,
+      "pairs_scored": 177,
+      "pairs_skipped": 176,
+      "coverage": 0.501
+    },
+    "simlex999": {
+      "spearman": 0.0693,
+      "pairs_scored": 587,
+      "pairs_skipped": 412,
+      "coverage": 0.588
+    },
+    "men3k": {
+      "spearman": -0.0099,
+      "pairs_scored": 1256,
+      "pairs_skipped": 1744,
+      "coverage": 0.419
     }
+  },
+  "errors": {
+    "n_errors": 493,
+    "error_categories": {
+      "other": 311,
+      "contrast": 62,
+      "negation": 120
+    },
+    "confident_errors": [
+      {
+        "sentence": "not a bad journey at all .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.935,
+        "category": "negation"
+      },
+      {
+        "sentence": "if no one singles out any of these performances as award-worthy , it 's only because we would expect nothing less from this bunch .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.929,
+        "category": "negation"
+      },
+      {
+        "sentence": "a waste of good performances .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.91,
+        "category": "other"
+      },
+      {
+        "sentence": "first good , then bothersome .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.903,
+        "category": "other"
+      },
+      {
+        "sentence": "a well acted and well intentioned snoozer .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.89,
+        "category": "other"
+      },
+      {
+        "sentence": "neither funny nor suspenseful nor particularly well-drawn .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.886,
+        "category": "negation"
+      }
+    ],
+    "confident_correct": [
+      {
+        "sentence": "boring we did n't .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.997,
+        "category": "negation"
+      },
+      {
+        "sentence": "no more .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.979,
+        "category": "negation"
+      },
+      {
+        "sentence": "bears is bad .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.972,
+        "category": "other"
+      },
+      {
+        "sentence": "very solid , very watchable first feature for director peter sheridan",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.97,
+        "category": "other"
+      },
+      {
+        "sentence": "good actress .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.963,
+        "category": "other"
+      },
+      {
+        "sentence": "too bad the former murphy brown does n't pop reese back .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.961,
+        "category": "negation"
+      }
+    ]
   }
 }

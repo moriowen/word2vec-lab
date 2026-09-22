@@ -117,7 +117,23 @@
     "sst2_test_acc": 0.7919,
     "sst2_test_f1": 0.8089,
     "oov_rate_train": 0.0008,
-    "oov_rate_test": 0.0661
+    "oov_rate_test": 0.0661,
+    "query_latency": {
+      "p50_ms": 0.406,
+      "p95_ms": 3.068,
+      "repeats": 200,
+      "vocab_size": 14309
+    },
+    "memory": {
+      "model_id": "D",
+      "vocab": 14309,
+      "dim": 300,
+      "matrices_retained": 2,
+      "predicted_mb": 34.3,
+      "baseline_rss_mb": 97.7,
+      "loaded_rss_mb": 132.4,
+      "delta_mb": 34.8
+    }
   },
   "intrinsic": {
     "neighbours": {
@@ -331,6 +347,120 @@
           0.516
         ]
       ]
+    },
+    "wordsim353": {
+      "spearman": 0.5851,
+      "pairs_scored": 177,
+      "pairs_skipped": 176,
+      "coverage": 0.501
+    },
+    "simlex999": {
+      "spearman": 0.4051,
+      "pairs_scored": 587,
+      "pairs_skipped": 412,
+      "coverage": 0.588
+    },
+    "men3k": {
+      "spearman": 0.7022,
+      "pairs_scored": 1256,
+      "pairs_skipped": 1744,
+      "coverage": 0.419
     }
+  },
+  "errors": {
+    "n_errors": 379,
+    "error_categories": {
+      "negation": 96,
+      "other": 219,
+      "contrast": 64
+    },
+    "confident_errors": [
+      {
+        "sentence": "never -lrb- sinks -rrb- into exploitation .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.99,
+        "category": "negation"
+      },
+      {
+        "sentence": "there is n't a weak or careless performance amongst them .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.973,
+        "category": "negation"
+      },
+      {
+        "sentence": "despite the long running time , the pace never feels slack -- there 's no scene that screams `` bathroom break ! ''",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.955,
+        "category": "negation"
+      },
+      {
+        "sentence": "it 's a great deal of sizzle and very little steak .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.952,
+        "category": "other"
+      },
+      {
+        "sentence": "a well acted and well intentioned snoozer .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.938,
+        "category": "other"
+      },
+      {
+        "sentence": "no. .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.923,
+        "category": "other"
+      }
+    ],
+    "confident_correct": [
+      {
+        "sentence": "an intelligent , moving and invigorating film .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.999,
+        "category": "other"
+      },
+      {
+        "sentence": "boring we did n't .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.999,
+        "category": "negation"
+      },
+      {
+        "sentence": "it 's not horrible , just horribly mediocre .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.999,
+        "category": "negation"
+      },
+      {
+        "sentence": "-lrb- u -rrb- nrelentingly stupid .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.998,
+        "category": "other"
+      },
+      {
+        "sentence": "a smart , sweet and playful romantic comedy .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.998,
+        "category": "other"
+      },
+      {
+        "sentence": "... too slow , too boring , and occasionally annoying .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.998,
+        "category": "other"
+      }
+    ]
   }
 }

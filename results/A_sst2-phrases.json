@@ -25,7 +25,23 @@
     "sst2_test_acc": 0.7611,
     "sst2_test_f1": 0.7757,
     "oov_rate_train": 0.0008,
-    "oov_rate_test": 0.0661
+    "oov_rate_test": 0.0661,
+    "query_latency": {
+      "p50_ms": 0.406,
+      "p95_ms": 2.413,
+      "repeats": 200,
+      "vocab_size": 14309
+    },
+    "memory": {
+      "model_id": "A",
+      "vocab": 14309,
+      "dim": 300,
+      "matrices_retained": 2,
+      "predicted_mb": 34.3,
+      "baseline_rss_mb": 93.9,
+      "loaded_rss_mb": 128.9,
+      "delta_mb": 35.0
+    }
   },
   "intrinsic": {
     "neighbours": {
@@ -239,6 +255,120 @@
           0.348
         ]
       ]
+    },
+    "wordsim353": {
+      "spearman": 0.0285,
+      "pairs_scored": 177,
+      "pairs_skipped": 176,
+      "coverage": 0.501
+    },
+    "simlex999": {
+      "spearman": 0.0455,
+      "pairs_scored": 587,
+      "pairs_skipped": 412,
+      "coverage": 0.588
+    },
+    "men3k": {
+      "spearman": 0.1179,
+      "pairs_scored": 1256,
+      "pairs_skipped": 1744,
+      "coverage": 0.419
     }
+  },
+  "errors": {
+    "n_errors": 435,
+    "error_categories": {
+      "other": 262,
+      "negation": 101,
+      "contrast": 72
+    },
+    "confident_errors": [
+      {
+        "sentence": "not a bad journey at all .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.958,
+        "category": "negation"
+      },
+      {
+        "sentence": "an ultra-low-budget indie debut that smacks more of good intentions than talent .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.917,
+        "category": "other"
+      },
+      {
+        "sentence": "a well acted and well intentioned snoozer .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.898,
+        "category": "other"
+      },
+      {
+        "sentence": "first good , then bothersome .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.896,
+        "category": "other"
+      },
+      {
+        "sentence": "never -lrb- sinks -rrb- into exploitation .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.883,
+        "category": "negation"
+      },
+      {
+        "sentence": "the central story lacks punch .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.864,
+        "category": "other"
+      }
+    ],
+    "confident_correct": [
+      {
+        "sentence": "a vivid cinematic portrait .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.987,
+        "category": "other"
+      },
+      {
+        "sentence": "-lrb- u -rrb- nrelentingly stupid .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.986,
+        "category": "other"
+      },
+      {
+        "sentence": "no more .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.985,
+        "category": "negation"
+      },
+      {
+        "sentence": "bears is bad .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.983,
+        "category": "other"
+      },
+      {
+        "sentence": "a potent allegorical love story .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.974,
+        "category": "other"
+      },
+      {
+        "sentence": "... too slow , too boring , and occasionally annoying .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.973,
+        "category": "other"
+      }
+    ]
   }
 }

@@ -38,7 +38,23 @@
     "sst2_test_acc": 0.7441,
     "sst2_test_f1": 0.761,
     "oov_rate_train": 0.0008,
-    "oov_rate_test": 0.0661
+    "oov_rate_test": 0.0661,
+    "query_latency": {
+      "p50_ms": 0.368,
+      "p95_ms": 1.512,
+      "repeats": 200,
+      "vocab_size": 14309
+    },
+    "memory": {
+      "model_id": "E",
+      "vocab": 14309,
+      "dim": 300,
+      "matrices_retained": 1,
+      "predicted_mb": 17.2,
+      "baseline_rss_mb": 97.5,
+      "loaded_rss_mb": 115.3,
+      "delta_mb": 17.8
+    }
   },
   "intrinsic": {
     "neighbours": {
@@ -252,6 +268,120 @@
           0.923
         ]
       ]
+    },
+    "wordsim353": {
+      "spearman": 0.0047,
+      "pairs_scored": 177,
+      "pairs_skipped": 176,
+      "coverage": 0.501
+    },
+    "simlex999": {
+      "spearman": 0.0325,
+      "pairs_scored": 587,
+      "pairs_skipped": 412,
+      "coverage": 0.588
+    },
+    "men3k": {
+      "spearman": 0.0956,
+      "pairs_scored": 1256,
+      "pairs_skipped": 1744,
+      "coverage": 0.419
     }
+  },
+  "errors": {
+    "n_errors": 466,
+    "error_categories": {
+      "other": 273,
+      "negation": 114,
+      "contrast": 79
+    },
+    "confident_errors": [
+      {
+        "sentence": "a waste of good performances .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.902,
+        "category": "other"
+      },
+      {
+        "sentence": "a well acted and well intentioned snoozer .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.883,
+        "category": "other"
+      },
+      {
+        "sentence": "an ultra-low-budget indie debut that smacks more of good intentions than talent .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.879,
+        "category": "other"
+      },
+      {
+        "sentence": "gloriously goofy -lrb- and gory -rrb- midnight movie stuff .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.874,
+        "category": "other"
+      },
+      {
+        "sentence": "neither funny nor suspenseful nor particularly well-drawn .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.869,
+        "category": "negation"
+      },
+      {
+        "sentence": "the issue of faith is not explored very deeply",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.861,
+        "category": "negation"
+      }
+    ],
+    "confident_correct": [
+      {
+        "sentence": "hugh grant and sandra bullock are two such likeable actors .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.974,
+        "category": "other"
+      },
+      {
+        "sentence": "a vivid cinematic portrait .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.971,
+        "category": "other"
+      },
+      {
+        "sentence": "a refreshingly authentic coming-of-age tale .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.965,
+        "category": "other"
+      },
+      {
+        "sentence": "remarkably accessible and affecting .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.96,
+        "category": "other"
+      },
+      {
+        "sentence": "the cast is uniformly excellent and relaxed .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.957,
+        "category": "other"
+      },
+      {
+        "sentence": "an intelligent , moving and invigorating film .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.951,
+        "category": "other"
+      }
+    ]
   }
 }

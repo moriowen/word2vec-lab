@@ -1,0 +1,257 @@
+{
+  "model_id": "E",
+  "name": "skip-gram + negative sampling, from scratch (PyTorch)",
+  "corpus": "sst2-phrases",
+  "machine": "m2-air/cpu",
+  "hyperparams": {
+    "sg": 1,
+    "hs": 0,
+    "negative": 10,
+    "vector_size": 300,
+    "window": 5,
+    "min_count": 2,
+    "epochs": 10,
+    "alpha": 0.001,
+    "sample": 0.001,
+    "batch_size": 8192
+  },
+  "train": {
+    "wall_s": 160.15,
+    "words_per_sec": 39571,
+    "peak_rss_mb": 728.2,
+    "vocab_size": 14309,
+    "corpus_tokens": 633720,
+    "loss_curve": [
+      4.2288,
+      3.2618,
+      3.2525,
+      3.237,
+      3.1949,
+      3.1306,
+      3.048,
+      2.9659,
+      2.9022,
+      2.8681
+    ]
+  },
+  "extrinsic": {
+    "sst2_test_acc": 0.7441,
+    "sst2_test_f1": 0.761,
+    "oov_rate_train": 0.0008,
+    "oov_rate_test": 0.0661
+  },
+  "intrinsic": {
+    "neighbours": {
+      "plot": [
+        [
+          "twists",
+          0.862
+        ],
+        [
+          "device",
+          0.845
+        ],
+        [
+          "oh-so",
+          0.844
+        ],
+        [
+          "halfwit",
+          0.835
+        ],
+        [
+          "court",
+          0.834
+        ],
+        [
+          "stop-and-start",
+          0.815
+        ],
+        [
+          "maneuvers",
+          0.806
+        ],
+        [
+          "sillified",
+          0.805
+        ],
+        [
+          "holes",
+          0.801
+        ],
+        [
+          "nurses",
+          0.795
+        ]
+      ],
+      "terrible": [
+        [
+          "+",
+          0.849
+        ],
+        [
+          "besotted",
+          0.842
+        ],
+        [
+          "allegedly",
+          0.835
+        ],
+        [
+          "unfulfilling",
+          0.833
+        ],
+        [
+          "dungeons",
+          0.828
+        ],
+        [
+          "phenomenal",
+          0.823
+        ],
+        [
+          "lanes",
+          0.82
+        ],
+        [
+          "retread",
+          0.817
+        ],
+        [
+          "inspired",
+          0.815
+        ],
+        [
+          "snl",
+          0.814
+        ]
+      ],
+      "star": [
+        [
+          "jake",
+          0.878
+        ],
+        [
+          "rising",
+          0.873
+        ],
+        [
+          "gyllenhaal",
+          0.851
+        ],
+        [
+          "charismatic",
+          0.846
+        ],
+        [
+          "top-billed",
+          0.816
+        ],
+        [
+          "pop-induced",
+          0.766
+        ],
+        [
+          "willis",
+          0.739
+        ],
+        [
+          "bestowed",
+          0.734
+        ],
+        [
+          "high-powered",
+          0.733
+        ],
+        [
+          "kevin",
+          0.732
+        ]
+      ],
+      "cinematography": [
+        [
+          "hennings",
+          0.901
+        ],
+        [
+          "water-born",
+          0.883
+        ],
+        [
+          "dubbed",
+          0.881
+        ],
+        [
+          "naturalistic",
+          0.872
+        ],
+        [
+          "murky",
+          0.872
+        ],
+        [
+          "shimmering",
+          0.86
+        ],
+        [
+          "phenomenal",
+          0.856
+        ],
+        [
+          "robotically",
+          0.856
+        ],
+        [
+          "atrocious",
+          0.843
+        ],
+        [
+          "acute",
+          0.842
+        ]
+      ],
+      "the": [
+        [
+          "inside-show-biz",
+          0.935
+        ],
+        [
+          "producing",
+          0.932
+        ],
+        [
+          "pierce",
+          0.932
+        ],
+        [
+          "silent",
+          0.929
+        ],
+        [
+          "1790",
+          0.927
+        ],
+        [
+          "savaged",
+          0.926
+        ],
+        [
+          "democratic",
+          0.925
+        ],
+        [
+          "shoulder",
+          0.924
+        ],
+        [
+          "worlds",
+          0.923
+        ],
+        [
+          "indulges",
+          0.923
+        ]
+      ]
+    }
+  }
+}

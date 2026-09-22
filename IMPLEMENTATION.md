@@ -556,3 +556,73 @@ carries this section instead, which is why it was worth building.
 
 Next: phase 6, intrinsic evaluation. Neighbour tables for all four models are already being
 written to `results/`, so what remains is WordSim-353.
+
+### Sep 22, phase 10, Model E from scratch
+
+Taken out of order, ahead of phases 6 to 9, on request.
+
+`src/sgns.py` implements skip-gram with negative sampling directly: vocabulary and counts,
+subsampling, the unigram^0.75 noise table, a dynamic window, two embedding matrices, and
+linear learning rate decay. `to_keyedvectors` wraps W_in in a gensim `KeyedVectors` so E
+runs through the existing pooling, classifier and neighbour code with no changes.
+
+| | A, gensim sg+NS | E, from scratch |
+|---|---|---|
+| Vocabulary | 14,309 | 14,309 |
+| Wall clock | 11.78 s | 160.15 s |
+| Peak RSS | 297.8 MB | 728.2 MB |
+| SST-2 test accuracy | 0.761 | 0.744 |
+| SST-2 test F1 | 0.776 | 0.761 |
+
+E lands 1.7 points below gensim on identical hyperparameters and an identical corpus, which
+is inside the correctness gate the plan set. It is 13.6 times slower, which is the expected
+cost of Python and batched dense updates against hand-tuned Cython doing per-pair updates.
+
+**Component checks, run before training anything.** Subsampling keeps 17.6% of occurrences
+of `the`. The noise table maps `the` from a raw frequency of 4.30% down to a sampled 1.31%
+while lifting `execrable` from effectively zero up to 2e-5. Both are the 0.75 exponent doing
+what it is supposed to do, and checking them first is what made the later failure easy to
+localise.
+
+**The first run did not learn at all, and the failure was worth keeping.** Loss sat at
+exactly 1.3863 for all ten epochs and test accuracy came out 0.4992, which is chance on a
+balanced split. 1.3863 is 2*ln(2), the loss of a model whose every logit is zero.
+
+The cause was the loss reduction, not the sampling. Using `BCEWithLogitsLoss` twice, once on
+the positives and once on the negatives, averages over every element: the positive term over
+B entries and the negative term over B*k. Measured gradient norm on W_in was exactly 0.0 and
+on W_out 2.4e-4. At a batch size of 8192 that leaves an effective per-pair learning rate of
+about 3e-6, so across 2,480 steps nothing moved.
+
+The fix is to write Mikolov's equation 4 directly, summing over the k negatives and averaging
+only over the batch, and to use Adam rather than plain SGD. The original C implementation
+updates once per training pair, so its 0.025 is a per-pair step; the batched equivalent for
+SGD would be roughly `alpha * batch_size`, which is not stable. Adam at 1e-3 with the
+original's linear decay kept on top is what the PyTorch reference the handout links
+(`Andras7/word2vec-pytorch`) does. Loss then runs 4.2288 down to 2.8681.
+
+Worth noting against the plan's own prediction: the risk register named the wrong-noise-table
+bug, where loss falls smoothly and vectors are garbage. The bug that actually happened was
+the opposite and much easier to catch, a loss that did not move at all. Both are caught by
+the same discipline of gating on neighbour quality and downstream accuracy rather than on the
+loss curve, but the plan guessed the wrong failure.
+
+**MPS is slower than CPU here, measured rather than assumed**, so E trains on CPU:
+
+| Device | Sparse gradients | ms/batch | 10 epochs |
+|---|---|---|---|
+| CPU | no | 44.6 | 1.8 min |
+| CPU | yes | 52.6 | 2.2 min |
+| MPS | no | 64.3 | 2.7 min |
+| MPS | yes | 169.9 | 7.0 min |
+
+Two results in that table. The GPU loses because the model is tiny: 14,309 by 300 is 4.3M
+parameters per matrix, so kernel launch and transfer overhead dominate the arithmetic.
+Sparse gradients also lose, and the reason is specific: a batch of 8,192 pairs with 10
+negatives touches roughly 90,000 index slots over a 14,309-row vocabulary, so nearly every
+row is touched on every step and there is no sparsity left to exploit. Both results should
+reverse on text8, where the vocabulary is around 253,000 and a batch touches a small
+fraction of it. That is the measurement phase 11 exists to take, and it is a better
+motivation for text8 than corpus size alone.
+
+Next: phase 6, WordSim-353, which also completes E's correctness gate.

@@ -1,0 +1,244 @@
+{
+  "model_id": "A",
+  "name": "gensim skip-gram + negative sampling",
+  "corpus": "sst2",
+  "machine": "m2-air",
+  "hyperparams": {
+    "sg": 1,
+    "hs": 0,
+    "negative": 10,
+    "vector_size": 300,
+    "window": 5,
+    "min_count": 2,
+    "epochs": 10,
+    "alpha": 0.025,
+    "sample": 0.001
+  },
+  "train": {
+    "wall_s": 2.49,
+    "words_per_sec": 536143,
+    "peak_rss_mb": 137.0,
+    "vocab_size": 7140,
+    "corpus_tokens": 133555
+  },
+  "extrinsic": {
+    "sst2_test_acc": 0.6793,
+    "sst2_test_f1": 0.6961,
+    "oov_rate_train": 0.0576,
+    "oov_rate_test": 0.0952
+  },
+  "intrinsic": {
+    "neighbours": {
+      "plot": [
+        [
+          "stars",
+          0.889
+        ],
+        [
+          "ludicrous",
+          0.869
+        ],
+        [
+          "convenient",
+          0.868
+        ],
+        [
+          "twists",
+          0.867
+        ],
+        [
+          "subjects",
+          0.862
+        ],
+        [
+          "empathy",
+          0.861
+        ],
+        [
+          "central",
+          0.861
+        ],
+        [
+          "contrived",
+          0.858
+        ],
+        [
+          "situations",
+          0.857
+        ],
+        [
+          "paper-thin",
+          0.856
+        ]
+      ],
+      "terrible": [
+        [
+          "saves",
+          0.954
+        ],
+        [
+          "glorified",
+          0.952
+        ],
+        [
+          "exploiting",
+          0.951
+        ],
+        [
+          "good-natured",
+          0.948
+        ],
+        [
+          "simone",
+          0.948
+        ],
+        [
+          "freaky",
+          0.944
+        ],
+        [
+          "pianist",
+          0.944
+        ],
+        [
+          "holds",
+          0.944
+        ],
+        [
+          "loaded",
+          0.944
+        ],
+        [
+          "dish",
+          0.943
+        ]
+      ],
+      "star": [
+        [
+          "wars",
+          0.91
+        ],
+        [
+          "escaped",
+          0.903
+        ],
+        [
+          "memories",
+          0.901
+        ],
+        [
+          "biggest",
+          0.893
+        ],
+        [
+          "kidman",
+          0.892
+        ],
+        [
+          "space",
+          0.886
+        ],
+        [
+          "poor",
+          0.885
+        ],
+        [
+          "travel",
+          0.885
+        ],
+        [
+          "spirited",
+          0.882
+        ],
+        [
+          "represents",
+          0.881
+        ]
+      ],
+      "cinematography": [
+        [
+          "scope",
+          0.97
+        ],
+        [
+          "handful",
+          0.969
+        ],
+        [
+          "psychologically",
+          0.968
+        ],
+        [
+          "murky",
+          0.968
+        ],
+        [
+          "uniformly",
+          0.968
+        ],
+        [
+          "leaden",
+          0.967
+        ],
+        [
+          "insistent",
+          0.967
+        ],
+        [
+          "undone",
+          0.967
+        ],
+        [
+          "lane",
+          0.966
+        ],
+        [
+          "phenomenal",
+          0.966
+        ]
+      ],
+      "the": [
+        [
+          "wondrous",
+          0.76
+        ],
+        [
+          "surf",
+          0.759
+        ],
+        [
+          "radar",
+          0.758
+        ],
+        [
+          "loss",
+          0.758
+        ],
+        [
+          "frightening",
+          0.757
+        ],
+        [
+          "experiences",
+          0.754
+        ],
+        [
+          "thornberrys",
+          0.754
+        ],
+        [
+          "pacino",
+          0.753
+        ],
+        [
+          "annals",
+          0.753
+        ],
+        [
+          "parts",
+          0.753
+        ]
+      ]
+    }
+  }
+}

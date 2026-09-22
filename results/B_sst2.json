@@ -1,0 +1,244 @@
+{
+  "model_id": "B",
+  "name": "gensim CBOW + hierarchical softmax",
+  "corpus": "sst2",
+  "machine": "m2-air",
+  "hyperparams": {
+    "sg": 0,
+    "hs": 1,
+    "negative": 0,
+    "vector_size": 300,
+    "window": 5,
+    "min_count": 2,
+    "epochs": 10,
+    "alpha": 0.025,
+    "sample": 0.001
+  },
+  "train": {
+    "wall_s": 0.93,
+    "words_per_sec": 1441179,
+    "peak_rss_mb": 214.4,
+    "vocab_size": 7140,
+    "corpus_tokens": 133555
+  },
+  "extrinsic": {
+    "sst2_test_acc": 0.6282,
+    "sst2_test_f1": 0.6523,
+    "oov_rate_train": 0.0576,
+    "oov_rate_test": 0.0952
+  },
+  "intrinsic": {
+    "neighbours": {
+      "plot": [
+        [
+          "process",
+          0.7
+        ],
+        [
+          "rhythms",
+          0.655
+        ],
+        [
+          "screenplay",
+          0.628
+        ],
+        [
+          "narrow",
+          0.62
+        ],
+        [
+          "presentation",
+          0.606
+        ],
+        [
+          "subtext",
+          0.598
+        ],
+        [
+          "sprinkled",
+          0.589
+        ],
+        [
+          "despair",
+          0.587
+        ],
+        [
+          "aimless",
+          0.576
+        ],
+        [
+          "brian",
+          0.576
+        ]
+      ],
+      "terrible": [
+        [
+          "ticking",
+          0.733
+        ],
+        [
+          "field",
+          0.716
+        ],
+        [
+          "hickenlooper",
+          0.674
+        ],
+        [
+          "gas",
+          0.667
+        ],
+        [
+          "downtown",
+          0.64
+        ],
+        [
+          "unfocused",
+          0.64
+        ],
+        [
+          "jordan",
+          0.635
+        ],
+        [
+          "maker",
+          0.627
+        ],
+        [
+          "maryam",
+          0.624
+        ],
+        [
+          "pursuing",
+          0.621
+        ]
+      ],
+      "star": [
+        [
+          "gong",
+          0.835
+        ],
+        [
+          "capability",
+          0.826
+        ],
+        [
+          "williams",
+          0.824
+        ],
+        [
+          "features",
+          0.822
+        ],
+        [
+          "rut",
+          0.817
+        ],
+        [
+          "highlighted",
+          0.817
+        ],
+        [
+          "dual",
+          0.813
+        ],
+        [
+          "chou",
+          0.806
+        ],
+        [
+          "chief",
+          0.803
+        ],
+        [
+          "shadowy",
+          0.801
+        ]
+      ],
+      "cinematography": [
+        [
+          "vh1",
+          0.772
+        ],
+        [
+          "natured",
+          0.708
+        ],
+        [
+          "tolkien",
+          0.7
+        ],
+        [
+          "self",
+          0.66
+        ],
+        [
+          "effort",
+          0.648
+        ],
+        [
+          "balm",
+          0.637
+        ],
+        [
+          "nonexistent",
+          0.634
+        ],
+        [
+          "unsentimental",
+          0.633
+        ],
+        [
+          "carries",
+          0.631
+        ],
+        [
+          "delightfully",
+          0.615
+        ]
+      ],
+      "the": [
+        [
+          "some",
+          0.701
+        ],
+        [
+          "this",
+          0.643
+        ],
+        [
+          "young",
+          0.62
+        ],
+        [
+          "quieter",
+          0.619
+        ],
+        [
+          "primal",
+          0.611
+        ],
+        [
+          "three",
+          0.59
+        ],
+        [
+          "an",
+          0.569
+        ],
+        [
+          "french",
+          0.559
+        ],
+        [
+          "grief",
+          0.556
+        ],
+        [
+          "his",
+          0.555
+        ]
+      ]
+    }
+  }
+}

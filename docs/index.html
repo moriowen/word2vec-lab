@@ -147,6 +147,18 @@
   .lstate.todo{color:var(--faint)}
   footer{padding-top:64px;font-size:.82rem;color:var(--faint);
          border-top:1px solid var(--line);margin-top:64px}
+
+  .tcase{background:var(--surface);border:1px solid var(--line);border-radius:6px;
+         padding:18px;display:flex;flex-direction:column;gap:14px;margin-bottom:16px}
+  .tchead{display:flex;flex-direction:column;gap:7px}
+  .tcsent code{font-size:.92rem;background:transparent;border:0;padding:0;color:var(--ink)}
+  .tcgold{font-size:.78rem;color:var(--faint)}
+  .tcgold b{color:var(--muted)}
+  .tcase .tablewrap{border:0;background:transparent}
+  .tcase table{min-width:460px}
+  .tcnb{display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:baseline;
+        border-top:1px dashed var(--line);padding-top:12px}
+  .tcnb .chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style></head><body><div class="wrap"><header class="masthead">
       <div class="eyebrow">CS 6220 Big Data Systems &middot; Homework 2 &middot; programming option</div>
       <h1>Five Word2Vec Models, One Classifier</h1>
@@ -162,7 +174,7 @@
         <span><b>Machine</b> M2 Air</span>
       </div>
     </header><nav class="toc">
-      <a href="#results">Results</a><a href="#arch">Architectures</a><a href="#data">Data</a>
+      <a href="#results">Results</a><a href="#testcases">Test examples</a><a href="#arch">Architectures</a><a href="#data">Data</a>
       <a href="#hyper">Hyperparameters</a><a href="#neighbours">Nearest neighbours</a>
       <a href="#similarity">Lexical similarity</a><a href="#finetune">Fine-tuning</a>
       <a href="#scratch">From scratch</a><a href="#systems">Systems</a>
@@ -198,7 +210,59 @@
       Same architecture, same loss, same corpus, same classifier. The only difference is where
       the input matrix started: random for A, Google's published vectors for D. That is worth
       0.031 accuracy, 0.761 to 0.792. D then lands 0.006 below C
-      while carrying 35 times less vocabulary.</div><div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="">Architecture</th><th class="">Loss</th><th class="n">Trained on</th><th class="n">Accuracy</th><th class="n">F1</th><th class="n">OOV</th></tr></thead><tbody><tr><td class="mono">A</td><td class="">Skip-gram</td><td class="">Negative sampling, k=10</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7611</span></td><td class="n">0.7757</td><td class="n">0.066</td></tr><tr><td class="mono">B</td><td class="">CBOW</td><td class="">Hierarchical softmax</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7293</span></td><td class="n">0.7501</td><td class="n">0.066</td></tr><tr><td class="mono">C</td><td class="">Skip-gram</td><td class="">Negative sampling, k=5</td><td class="n">100,000,000,000 tok</td><td class="n"><span class="win">0.7979</span></td><td class="n">0.8107</td><td class="n">0.271</td></tr><tr><td class="mono">D</td><td class="">Skip-gram</td><td class="">Negative sampling, k=10</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7919</span></td><td class="n">0.8089</td><td class="n">0.066</td></tr><tr><td class="mono">E</td><td class="">Skip-gram</td><td class="">Negative sampling, k=10</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7441</span></td><td class="n">0.7610</td><td class="n">0.066</td></tr></tbody></table></div></section><section id="arch">
+      while carrying 35 times less vocabulary.</div><div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="">Architecture</th><th class="">Loss</th><th class="n">Trained on</th><th class="n">Accuracy</th><th class="n">F1</th><th class="n">OOV</th></tr></thead><tbody><tr><td class="mono">A</td><td class="">Skip-gram</td><td class="">Negative sampling, k=10</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7611</span></td><td class="n">0.7757</td><td class="n">0.066</td></tr><tr><td class="mono">B</td><td class="">CBOW</td><td class="">Hierarchical softmax</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7293</span></td><td class="n">0.7501</td><td class="n">0.066</td></tr><tr><td class="mono">C</td><td class="">Skip-gram</td><td class="">Negative sampling, k=5</td><td class="n">100,000,000,000 tok</td><td class="n"><span class="win">0.7979</span></td><td class="n">0.8107</td><td class="n">0.271</td></tr><tr><td class="mono">D</td><td class="">Skip-gram</td><td class="">Negative sampling, k=10</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7919</span></td><td class="n">0.8089</td><td class="n">0.066</td></tr><tr><td class="mono">E</td><td class="">Skip-gram</td><td class="">Negative sampling, k=10</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7441</span></td><td class="n">0.7610</td><td class="n">0.066</td></tr></tbody></table></div></section><section id="testcases">
+      <div class="sechead"><div class="eyebrow">Deliverable 3</div>
+      <h2>Five test examples, ranked by every model</h2></div>
+      <p class="prose">The sentiment task on held-out test data, which is what the SST corpus
+      is here for. Each example carries two ranked outputs per model: the classifier's ranked
+      labels with probabilities, and the top-5 nearest <i>training</i> sentences by cosine
+      in that model's embedding space. Neighbour agreement is the share of those retrieved
+      training sentences whose gold label matches the test sentence, so it says whether the
+      embedding placed the test sentence among the right evidence.</p>
+      <p class="prose">The five were chosen by rule rather than by eye, and the rule that
+      selected each is named above it. Scores across the five:
+      A 3/5, B 3/5, C 4/5, D 3/5, E 3/5.</p>
+      <div class="tcase">
+          <div class="tchead"><span class="eyebrow">Example 1 &middot; plain positive</span>
+            <p class="tcsent"><code>this is one of polanski &#x27;s best films .</code></p>
+            <span class="tcgold">gold label: <b>positive</b></span></div>
+          <div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="n">Rank 1</th><th class="n">Rank 2</th><th class="n">Result</th><th class="n">Neighbour agreement</th></tr></thead><tbody><tr><td class="mono">A</td><td class="n">positive 0.838</td><td class="n">negative 0.162</td><td class="n"><span class="win">correct</span></td><td class="n">1.0</td></tr><tr><td class="mono">B</td><td class="n">positive 0.694</td><td class="n">negative 0.306</td><td class="n"><span class="win">correct</span></td><td class="n">1.0</td></tr><tr><td class="mono">C</td><td class="n">positive 0.855</td><td class="n">negative 0.145</td><td class="n"><span class="win">correct</span></td><td class="n">1.0</td></tr><tr><td class="mono">D</td><td class="n">positive 0.808</td><td class="n">negative 0.192</td><td class="n"><span class="win">correct</span></td><td class="n">1.0</td></tr><tr><td class="mono">E</td><td class="n">positive 0.656</td><td class="n">negative 0.344</td><td class="n"><span class="win">correct</span></td><td class="n">1.0</td></tr></tbody></table></div>
+          <div class="tcnb"><span class="nlabel">D retrieves</span>
+            <span class="chips"><span class="chip new">this is one of the year &#x27;s best films . &middot; 0.99</span><span class="chip new">is one of the year &#x27;s best films . &middot; 0.98</span><span class="chip new">is one of the year &#x27;s best films &middot; 0.97</span></span></div></div><div class="tcase">
+          <div class="tchead"><span class="eyebrow">Example 2 &middot; plain negative</span>
+            <p class="tcsent"><code>arnold &#x27;s jump from little screen to big will leave frowns on more than a few faces .</code></p>
+            <span class="tcgold">gold label: <b>negative</b></span></div>
+          <div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="n">Rank 1</th><th class="n">Rank 2</th><th class="n">Result</th><th class="n">Neighbour agreement</th></tr></thead><tbody><tr><td class="mono">A</td><td class="n">positive 0.593</td><td class="n">negative 0.407</td><td class="n"><span class="lose">wrong</span></td><td class="n">1.0</td></tr><tr><td class="mono">B</td><td class="n">negative 0.534</td><td class="n">positive 0.466</td><td class="n"><span class="win">correct</span></td><td class="n">1.0</td></tr><tr><td class="mono">C</td><td class="n">negative 0.668</td><td class="n">positive 0.332</td><td class="n"><span class="win">correct</span></td><td class="n">0.0</td></tr><tr><td class="mono">D</td><td class="n">positive 0.512</td><td class="n">negative 0.488</td><td class="n"><span class="lose">wrong</span></td><td class="n">1.0</td></tr><tr><td class="mono">E</td><td class="n">negative 0.546</td><td class="n">positive 0.454</td><td class="n"><span class="win">correct</span></td><td class="n">0.8</td></tr></tbody></table></div>
+          <div class="tcnb"><span class="nlabel">D retrieves</span>
+            <span class="chips"><span class="chip new">big fat liar is little more than home alone raised to a new , self-deprecating l &middot; 0.93</span><span class="chip new">is little more than home alone raised to a new , self-deprecating level . &middot; 0.92</span><span class="chip new">the film runs on a little longer than it needs to &middot; 0.92</span></span></div></div><div class="tcase">
+          <div class="tchead"><span class="eyebrow">Example 3 &middot; positive despite negation</span>
+            <p class="tcsent"><code>finally , a genre movie that delivers -- in a couple of genres , no less .</code></p>
+            <span class="tcgold">gold label: <b>positive</b></span></div>
+          <div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="n">Rank 1</th><th class="n">Rank 2</th><th class="n">Result</th><th class="n">Neighbour agreement</th></tr></thead><tbody><tr><td class="mono">A</td><td class="n">negative 0.596</td><td class="n">positive 0.404</td><td class="n"><span class="lose">wrong</span></td><td class="n">0.4</td></tr><tr><td class="mono">B</td><td class="n">negative 0.643</td><td class="n">positive 0.357</td><td class="n"><span class="lose">wrong</span></td><td class="n">0.2</td></tr><tr><td class="mono">C</td><td class="n">positive 0.680</td><td class="n">negative 0.320</td><td class="n"><span class="win">correct</span></td><td class="n">0.4</td></tr><tr><td class="mono">D</td><td class="n">negative 0.508</td><td class="n">positive 0.492</td><td class="n"><span class="lose">wrong</span></td><td class="n">0.8</td></tr><tr><td class="mono">E</td><td class="n">negative 0.597</td><td class="n">positive 0.403</td><td class="n"><span class="lose">wrong</span></td><td class="n">0.4</td></tr></tbody></table></div>
+          <div class="tcnb"><span class="nlabel">D retrieves</span>
+            <span class="chips"><span class="chip new">neither quite a comedy nor a romance , more of an impish divertissement of theme &middot; 0.95</span><span class="chip new">singer/composer bryan adams contributes a slew of songs -- a few potential hits  &middot; 0.94</span><span class="chip new">singer/composer bryan adams contributes a slew of songs -- a few potential hits  &middot; 0.94</span></span></div></div><div class="tcase">
+          <div class="tchead"><span class="eyebrow">Example 4 &middot; contrastive clause</span>
+            <p class="tcsent"><code>but what saves lives on the freeway does not necessarily make for persuasive viewing .</code></p>
+            <span class="tcgold">gold label: <b>negative</b></span></div>
+          <div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="n">Rank 1</th><th class="n">Rank 2</th><th class="n">Result</th><th class="n">Neighbour agreement</th></tr></thead><tbody><tr><td class="mono">A</td><td class="n">negative 0.592</td><td class="n">positive 0.408</td><td class="n"><span class="win">correct</span></td><td class="n">1.0</td></tr><tr><td class="mono">B</td><td class="n">positive 0.574</td><td class="n">negative 0.426</td><td class="n"><span class="lose">wrong</span></td><td class="n">0.8</td></tr><tr><td class="mono">C</td><td class="n">positive 0.565</td><td class="n">negative 0.435</td><td class="n"><span class="lose">wrong</span></td><td class="n">0.8</td></tr><tr><td class="mono">D</td><td class="n">negative 0.502</td><td class="n">positive 0.498</td><td class="n"><span class="win">correct</span></td><td class="n">0.8</td></tr><tr><td class="mono">E</td><td class="n">positive 0.614</td><td class="n">negative 0.386</td><td class="n"><span class="lose">wrong</span></td><td class="n">0.6</td></tr></tbody></table></div>
+          <div class="tcnb"><span class="nlabel">D retrieves</span>
+            <span class="chips"><span class="chip new">does n&#x27;t show enough of the creative process or even of what was created for the &middot; 0.92</span><span class="chip new">if swimfan does catch on , it may be because teens are looking for something to  &middot; 0.92</span><span class="chip new">what might have been acceptable on the printed page of iles &#x27; book does not tran &middot; 0.92</span></span></div></div><div class="tcase">
+          <div class="tchead"><span class="eyebrow">Example 5 &middot; negative with stacked negation</span>
+            <p class="tcsent"><code>no movement , no yuks , not much of anything .</code></p>
+            <span class="tcgold">gold label: <b>negative</b></span></div>
+          <div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="n">Rank 1</th><th class="n">Rank 2</th><th class="n">Result</th><th class="n">Neighbour agreement</th></tr></thead><tbody><tr><td class="mono">A</td><td class="n">negative 0.972</td><td class="n">positive 0.028</td><td class="n"><span class="win">correct</span></td><td class="n">1.0</td></tr><tr><td class="mono">B</td><td class="n">negative 0.955</td><td class="n">positive 0.045</td><td class="n"><span class="win">correct</span></td><td class="n">1.0</td></tr><tr><td class="mono">C</td><td class="n">negative 0.964</td><td class="n">positive 0.036</td><td class="n"><span class="win">correct</span></td><td class="n">1.0</td></tr><tr><td class="mono">D</td><td class="n">negative 0.989</td><td class="n">positive 0.011</td><td class="n"><span class="win">correct</span></td><td class="n">1.0</td></tr><tr><td class="mono">E</td><td class="n">negative 0.860</td><td class="n">positive 0.140</td><td class="n"><span class="win">correct</span></td><td class="n">0.6</td></tr></tbody></table></div>
+          <div class="tcnb"><span class="nlabel">D retrieves</span>
+            <span class="chips"><span class="chip new">... no charm , no laughs , no fun , no reason to watch . &middot; 0.92</span><span class="chip new">no charm , no laughs , no fun , no reason to watch . &middot; 0.92</span><span class="chip new">no charm , no laughs , no fun , no reason to watch &middot; 0.91</span></span></div></div>
+      <div class="note"><b>Example 3 separates the pretrained model from everything trained
+      here.</b> <code>no less</code> is an intensifier, not a negation, and only GoogleNews
+      reads it that way. Every SST-trained model including the fine-tune takes it as negative.
+      </div>
+      <div class="note warm"><b>Example 5 is the one to be suspicious of.</b> Every model gets
+      it right with high confidence, and retrieval shows why: the nearest training sentence is
+      <code>no charm , no laughs , no fun</code>, a near-duplicate of the test sentence's
+      stacked-negation pattern. The models are right for lexical reasons, not because they
+      composed the negation. That is the same mechanism that makes Example 3 fail, and it
+      happens to point the right way here.</div></section><section id="arch">
       <div class="sechead"><div class="eyebrow">Deliverable 1</div>
       <h2>What the two architectures actually are</h2></div>
       <p class="prose">A word2vec model is two matrices and a dot product. There is no hidden
@@ -268,8 +332,11 @@
       A, B and E return something close to noise for every query. At 633,720 tokens there is
       not enough co-occurrence evidence to place a word, and the next section puts a number
       on exactly how little.</div></section><section id="similarity">
-      <div class="sechead"><div class="eyebrow">The result worth reporting</div>
+      <div class="sechead"><div class="eyebrow">Supporting analysis, beyond the requirement</div>
       <h2>Good at sentiment, useless at similarity</h2></div>
+      <p class="prose">The sections above are the required sentiment task. This one is extra,
+      and it exists because the sentiment numbers alone give a misleading picture of what these
+      embeddings know.</p>
       <p class="prose">Spearman correlation between human similarity ratings and cosine
       similarity, on three standard benchmarks. Coverage is the share of pairs where both words
       were in vocabulary, and it is part of the result rather than a footnote: the SST-trained
@@ -393,7 +460,7 @@
       set producing no failures must be made harder. That did not arise, since SST supplies
       these unaided.</p></section><section id="log">
       <div class="sechead"><div class="eyebrow">Provenance</div><h2>Build log</h2></div>
-      <div class="log"><div class="lrow"><span class="lhash">47fa014</span><span><b>HW2 phases 0-3</b><div class="lnote">env, SST-2 data, gensim models A and B, sentiment pipeline</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">5cb380c</span><span><b>Phase 4</b><div class="lnote">phrase-level SST corpus (4.7x text), Model C GoogleNews-300, OOV diagnostic</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">c86ba65</span><span><b>Phase 5</b><div class="lnote">Model D, GoogleNews warm start fine-tuned on SST, with cosine drift analysis</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">340fe91</span><span><b>Phase 10</b><div class="lnote">Model E, skip-gram with negative sampling from scratch in PyTorch</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">5551046</span><span><b>Phases 6-8</b><div class="lnote">similarity benchmarks, latency and memory measurement, error mining</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">&mdash;</span><span><b>text8</b><div class="lnote">Train A, B and E on 17M tokens; retest the MPS and sparse crossovers</div></span><span class="lstate todo">queued</span></div><div class="lrow"><span class="lhash">&mdash;</span><span><b>Hogwild scaling</b><div class="lnote">words/sec against worker count on a multi-core node</div></span><span class="lstate todo">queued</span></div><div class="lrow"><span class="lhash">&mdash;</span><span><b>Hyperparameter sweep</b><div class="lnote">training cost against accuracy for window, dimension and negatives</div></span><span class="lstate todo">queued</span></div></div>
+      <div class="log"><div class="lrow"><span class="lhash">47fa014</span><span><b>HW2 phases 0-3</b><div class="lnote">env, SST-2 data, gensim models A and B, sentiment pipeline</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">5cb380c</span><span><b>Phase 4</b><div class="lnote">phrase-level SST corpus (4.7x text), Model C GoogleNews-300, OOV diagnostic</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">c86ba65</span><span><b>Phase 5</b><div class="lnote">Model D, GoogleNews warm start fine-tuned on SST, with cosine drift analysis</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">340fe91</span><span><b>Phase 10</b><div class="lnote">Model E, skip-gram with negative sampling from scratch in PyTorch</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">5551046</span><span><b>Phases 6-8</b><div class="lnote">similarity benchmarks, latency and memory measurement, error mining</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">f8e08a2</span><span><b>Phase 9</b><div class="lnote">generated HTML report in docs/, architecture SVGs, GitHub Pages layout</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">&mdash;</span><span><b>text8</b><div class="lnote">Train A, B and E on 17M tokens; retest the MPS and sparse crossovers</div></span><span class="lstate todo">queued</span></div><div class="lrow"><span class="lhash">&mdash;</span><span><b>Hogwild scaling</b><div class="lnote">words/sec against worker count on a multi-core node</div></span><span class="lstate todo">queued</span></div><div class="lrow"><span class="lhash">&mdash;</span><span><b>Hyperparameter sweep</b><div class="lnote">training cost against accuracy for window, dimension and negatives</div></span><span class="lstate todo">queued</span></div></div>
       <p class="prose">Every figure on this page is read from <code>results/*.json</code> at
       build time by <code>src/build_report.py</code>. Nothing is typed into the prose, so
       re-running a model and rebuilding cannot leave a stale number behind.</p></section><footer>CS 6220 Big Data Systems, Fall 2026. Report generated from

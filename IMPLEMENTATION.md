@@ -736,3 +736,41 @@ The handout warns that a test set producing no failures must be made harder. Tha
 arise: SST supplies these unaided.
 
 Next: phase 9, the report.
+
+### Sep 23, deliverable 3 covered properly
+
+Prompted by a TA reply confirming that sentiment analysis is expected when the SST corpus is
+used. It does not change the approach, since sentiment was already the spine, but comparing
+the handout's wording side by side exposed a coverage gap:
+
+> **3.** top K ranked results for **5 test examples** ... for your chosen application
+> (e.g. sentiment analysis) **using your test data**
+> **5.** top-1, top-5 and top-10 ranked words for **five different word queries**
+
+Deliverable 5 says word queries and was already covered by the neighbour table. Deliverable 3
+says test examples and ties them to the sentiment task, which means five test *sentences*.
+Both had been collapsed into the one word-query table.
+
+`src/testcases.py` closes it. Five test sentences are chosen by rule rather than by eye, and
+the rule that selected each is recorded in the output so the mix is visible. Each carries two
+ranked outputs per model: the classifier's ranked labels with probabilities, and the top-5
+nearest training sentences by cosine, with the share of those whose gold label matches.
+
+Scores across the five: A 3/5, B 3/5, C 4/5, D 3/5, E 3/5.
+
+**Example 3 separates the pretrained model from everything trained here.**
+`finally , a genre movie that delivers -- in a couple of genres , no less .` is positive.
+`no less` is an intensifier rather than a negation, and only GoogleNews reads it that way.
+Every SST-trained model including the fine-tune calls it negative.
+
+**Example 5 is the one worth being suspicious of.** `no movement , no yuks , not much of
+anything .` is called negative by all five models at high confidence, and retrieval explains
+why: the nearest training sentence is `no charm , no laughs , no fun`, a near-duplicate of
+the same stacked-negation pattern. The models are right lexically, not because they composed
+the negation. It is the same mechanism that makes Example 3 fail, pointing the right way by
+luck. Retrieval is what makes that visible; the classifier's confidence alone would have read
+as competence.
+
+Also reframed the lexical similarity section, which had been titled as the headline result.
+It is analysis beyond the requirement and now says so, so the required sentiment work reads
+as primary. No measurement changed.

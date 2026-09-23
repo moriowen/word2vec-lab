@@ -9,10 +9,11 @@ import subprocess
 from pathlib import Path
 
 from . import arch_svg
-from .report_css import CSS
+from .report_css import CSS, EXTRA_CSS
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "docs" / "index.html"
+K_TC = 5
 QUERIES = ["plot", "terrible", "star", "cinematography", "the"]
 ORDER = ["A", "B", "C", "D", "E"]
 SHORT = {"A": "Skip-gram<br>+ negative sampling", "B": "CBOW<br>+ hierarchical softmax",
@@ -27,6 +28,8 @@ e = html.escape
 def load():
     recs = {}
     for p in (ROOT / "results").glob("*.json"):
+        if p.name == "testcases.json":      # not a model record
+            continue
         r = json.loads(p.read_text())
         if r["corpus"] == "sst2":      # superseded sentence-level run, kept on disk only
             continue
@@ -93,6 +96,33 @@ def neighbour_box(recs, ids):
     return f'<div class="nbox">{"".join(rows)}</div>'
 
 
+def testcase_section():
+    tc = json.loads((ROOT / "results" / "testcases.json").read_text())
+    blocks = []
+    for k, s in enumerate(tc["sentences"]):
+        gold = "positive" if s["gold"] else "negative"
+        rows = []
+        for mid in ORDER:
+            c = tc["models"][mid]["cases"][k]
+            lab, prob = c["ranked_labels"][0]
+            second = c["ranked_labels"][1]
+            mark = '<span class="win">correct</span>' if c["correct"] else '<span class="lose">wrong</span>'
+            rows.append([mid, f'{lab} {prob:.3f}', f'{second[0]} {second[1]:.3f}', mark,
+                         f'{c["neighbour_label_agreement"]:.1f}'])
+        nb = tc["models"]["D"]["cases"][k]["neighbours"][:3]
+        chips = "".join(f'<span class="chip{" new" if n["label"]==s["gold"] else ""}">'
+                        f'{e(n["text"])} &middot; {n["cos"]:.2f}</span>' for n in nb)
+        blocks.append(f'''<div class="tcase">
+          <div class="tchead"><span class="eyebrow">Example {k+1} &middot; {e(s["selected_for"])}</span>
+            <p class="tcsent"><code>{e(s["text"])}</code></p>
+            <span class="tcgold">gold label: <b>{gold}</b></span></div>
+          {table(["Model", "Rank 1", "Rank 2", "Result", "Neighbour agreement"], rows,
+                 ["m", "n", "n", "n", "n"])}
+          <div class="tcnb"><span class="nlabel">D retrieves</span>
+            <span class="chips">{chips}</span></div></div>''')
+    return "".join(blocks)
+
+
 def drift_col(pairs, klass, title, invert=False):
     rows = []
     for w, v in pairs:
@@ -145,7 +175,7 @@ def build():
     </header>''')
 
     add('''<nav class="toc">
-      <a href="#results">Results</a><a href="#arch">Architectures</a><a href="#data">Data</a>
+      <a href="#results">Results</a><a href="#testcases">Test examples</a><a href="#arch">Architectures</a><a href="#data">Data</a>
       <a href="#hyper">Hyperparameters</a><a href="#neighbours">Nearest neighbours</a>
       <a href="#similarity">Lexical similarity</a><a href="#finetune">Fine-tuning</a>
       <a href="#scratch">From scratch</a><a href="#systems">Systems</a>
@@ -177,6 +207,32 @@ def build():
          for mid in ORDER],
         ["m", "l", "l", "n", "n", "n", "n"]))
     add("</section>")
+
+    # ---- deliverable 3, test examples
+    tcm = json.loads((ROOT / "results" / "testcases.json").read_text())["models"]
+    add(f'''<section id="testcases">
+      <div class="sechead"><div class="eyebrow">Deliverable 3</div>
+      <h2>Five test examples, ranked by every model</h2></div>
+      <p class="prose">The sentiment task on held-out test data, which is what the SST corpus
+      is here for. Each example carries two ranked outputs per model: the classifier's ranked
+      labels with probabilities, and the top-{K_TC} nearest <i>training</i> sentences by cosine
+      in that model's embedding space. Neighbour agreement is the share of those retrieved
+      training sentences whose gold label matches the test sentence, so it says whether the
+      embedding placed the test sentence among the right evidence.</p>
+      <p class="prose">The five were chosen by rule rather than by eye, and the rule that
+      selected each is named above it. Scores across the five:
+      {", ".join(f"{m} {sum(c['correct'] for c in tcm[m]['cases'])}/5" for m in ORDER)}.</p>
+      {testcase_section()}
+      <div class="note"><b>Example 3 separates the pretrained model from everything trained
+      here.</b> <code>no less</code> is an intensifier, not a negation, and only GoogleNews
+      reads it that way. Every SST-trained model including the fine-tune takes it as negative.
+      </div>
+      <div class="note warm"><b>Example 5 is the one to be suspicious of.</b> Every model gets
+      it right with high confidence, and retrieval shows why: the nearest training sentence is
+      <code>no charm , no laughs , no fun</code>, a near-duplicate of the test sentence's
+      stacked-negation pattern. The models are right for lexical reasons, not because they
+      composed the negation. That is the same mechanism that makes Example 3 fail, and it
+      happens to point the right way here.</div></section>''')
 
     # ---- architectures
     add(f'''<section id="arch">
@@ -269,8 +325,11 @@ def build():
 
     # ---- similarity
     add(f'''<section id="similarity">
-      <div class="sechead"><div class="eyebrow">The result worth reporting</div>
+      <div class="sechead"><div class="eyebrow">Supporting analysis, beyond the requirement</div>
       <h2>Good at sentiment, useless at similarity</h2></div>
+      <p class="prose">The sections above are the required sentiment task. This one is extra,
+      and it exists because the sentiment numbers alone give a misleading picture of what these
+      embeddings know.</p>
       <p class="prose">Spearman correlation between human similarity ratings and cosine
       similarity, on three standard benchmarks. Coverage is the share of pairs where both words
       were in vocabulary, and it is part of the result rather than a footnote: the SST-trained
@@ -471,7 +530,7 @@ def build():
     page = (f'<!doctype html><html lang="en"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>Five Word2Vec Models, One Classifier</title>'
-            f'<style>{CSS}</style></head><body><div class="wrap">'
+            f'<style>{CSS}{EXTRA_CSS}</style></head><body><div class="wrap">'
             f'{"".join(S)}</div></body></html>')
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(page)

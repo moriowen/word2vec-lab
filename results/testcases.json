@@ -1,0 +1,1148 @@
+{
+  "indices": [
+    4,
+    8,
+    30,
+    21,
+    0
+  ],
+  "sentences": [
+    {
+      "text": "this is one of polanski 's best films .",
+      "gold": 1,
+      "category": "other",
+      "selected_for": "plain positive"
+    },
+    {
+      "text": "arnold 's jump from little screen to big will leave frowns on more than a few faces .",
+      "gold": 0,
+      "category": "other",
+      "selected_for": "plain negative"
+    },
+    {
+      "text": "finally , a genre movie that delivers -- in a couple of genres , no less .",
+      "gold": 1,
+      "category": "negation",
+      "selected_for": "positive despite negation"
+    },
+    {
+      "text": "but what saves lives on the freeway does not necessarily make for persuasive viewing .",
+      "gold": 0,
+      "category": "negation",
+      "selected_for": "contrastive clause"
+    },
+    {
+      "text": "no movement , no yuks , not much of anything .",
+      "gold": 0,
+      "category": "negation",
+      "selected_for": "negative with stacked negation"
+    }
+  ],
+  "models": {
+    "A": {
+      "name": "gensim skip-gram + NS",
+      "cases": [
+        {
+          "gold": 1,
+          "pred": 1,
+          "ranked_labels": [
+            [
+              "positive",
+              0.8382
+            ],
+            [
+              "negative",
+              0.1618
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "this is one of the year 's best films .",
+              "label": 1,
+              "cos": 0.963
+            },
+            {
+              "text": "is one of the year 's best films .",
+              "label": 1,
+              "cos": 0.933
+            },
+            {
+              "text": "insomnia is one of the year 's best films",
+              "label": 1,
+              "cos": 0.924
+            },
+            {
+              "text": "is one of the year 's best films",
+              "label": 1,
+              "cos": 0.921
+            },
+            {
+              "text": "insomnia is one of the year 's best films and",
+              "label": 1,
+              "cos": 0.921
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        },
+        {
+          "gold": 0,
+          "pred": 1,
+          "ranked_labels": [
+            [
+              "positive",
+              0.5934
+            ],
+            [
+              "negative",
+              0.4066
+            ]
+          ],
+          "correct": false,
+          "neighbours": [
+            {
+              "text": "big fat liar is little more than home alone raised to a new , self-deprecating l",
+              "label": 0,
+              "cos": 0.857
+            },
+            {
+              "text": "add up to little more than a screenful of gamesmanship that 's low on both suspe",
+              "label": 0,
+              "cos": 0.847
+            },
+            {
+              "text": "to little more than a screenful of gamesmanship that 's low on both suspense and",
+              "label": 0,
+              "cos": 0.842
+            },
+            {
+              "text": "the director 's many dodges and turns add up to little more than a screenful of ",
+              "label": 0,
+              "cos": 0.841
+            },
+            {
+              "text": "add up to little more than a screenful of gamesmanship that 's low on both suspe",
+              "label": 0,
+              "cos": 0.841
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        },
+        {
+          "gold": 1,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.5961
+            ],
+            [
+              "positive",
+              0.4039
+            ]
+          ],
+          "correct": false,
+          "neighbours": [
+            {
+              "text": "a deliberative account of a lifestyle characterized by its surface-obsession -- ",
+              "label": 1,
+              "cos": 0.873
+            },
+            {
+              "text": ", it 's a real shame that so much of the movie -- again , as in the animal -- is",
+              "label": 0,
+              "cos": 0.872
+            },
+            {
+              "text": "neither quite a comedy nor a romance , more of an impish divertissement of theme",
+              "label": 1,
+              "cos": 0.866
+            },
+            {
+              "text": "'s a real shame that so much of the movie -- again , as in the animal -- is a sl",
+              "label": 0,
+              "cos": 0.863
+            },
+            {
+              "text": "it 's a real shame that so much of the movie -- again , as in the animal -- is a",
+              "label": 0,
+              "cos": 0.863
+            }
+          ],
+          "neighbour_label_agreement": 0.4
+        },
+        {
+          "gold": 0,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.5919
+            ],
+            [
+              "positive",
+              0.4081
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "the film does n't show enough of the creative process or even of what was create",
+              "label": 0,
+              "cos": 0.865
+            },
+            {
+              "text": "does n't show enough of the creative process or even of what was created for the",
+              "label": 0,
+              "cos": 0.864
+            },
+            {
+              "text": "they kept much of the plot but jettisoned the stuff that would make this a movin",
+              "label": 0,
+              "cos": 0.859
+            },
+            {
+              "text": "what might have been acceptable on the printed page of iles ' book does not tran",
+              "label": 0,
+              "cos": 0.853
+            },
+            {
+              "text": "kept much of the plot but jettisoned the stuff that would make this a moving exp",
+              "label": 0,
+              "cos": 0.853
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        },
+        {
+          "gold": 0,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.9724
+            ],
+            [
+              "positive",
+              0.0276
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "no charm , no laughs , no fun , no reason to watch .",
+              "label": 0,
+              "cos": 0.85
+            },
+            {
+              "text": "... no charm , no laughs , no fun , no reason to watch .",
+              "label": 0,
+              "cos": 0.845
+            },
+            {
+              "text": "no , paralyzed",
+              "label": 0,
+              "cos": 0.84
+            },
+            {
+              "text": "no charm , no laughs , no fun , no reason to watch",
+              "label": 0,
+              "cos": 0.837
+            },
+            {
+              "text": "no charm , no laughs , no fun ,",
+              "label": 0,
+              "cos": 0.832
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        }
+      ],
+      "test_acc": 0.7611
+    },
+    "B": {
+      "name": "gensim CBOW + HS",
+      "cases": [
+        {
+          "gold": 1,
+          "pred": 1,
+          "ranked_labels": [
+            [
+              "positive",
+              0.6943
+            ],
+            [
+              "negative",
+              0.3057
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "this is one of the year 's best films .",
+              "label": 1,
+              "cos": 0.927
+            },
+            {
+              "text": "is one of the year 's best films .",
+              "label": 1,
+              "cos": 0.865
+            },
+            {
+              "text": "is one of the year 's best films",
+              "label": 1,
+              "cos": 0.852
+            },
+            {
+              "text": "insomnia is one of the year 's best films",
+              "label": 1,
+              "cos": 0.84
+            },
+            {
+              "text": "insomnia is one of the year 's best films and",
+              "label": 1,
+              "cos": 0.827
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        },
+        {
+          "gold": 0,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.5339
+            ],
+            [
+              "positive",
+              0.4661
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "who deserve more from a vampire pic than a few shrieky special effects",
+              "label": 0,
+              "cos": 0.568
+            },
+            {
+              "text": "to a few rather than dozens",
+              "label": 0,
+              "cos": 0.554
+            },
+            {
+              "text": "to little more than punishment",
+              "label": 0,
+              "cos": 0.548
+            },
+            {
+              "text": "of the whole dead-undead genre , who deserve more from a vampire pic than a few ",
+              "label": 0,
+              "cos": 0.545
+            },
+            {
+              "text": "add up to little more than a screenful of gamesmanship that 's low on both suspe",
+              "label": 0,
+              "cos": 0.543
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        },
+        {
+          "gold": 1,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.6433
+            ],
+            [
+              "positive",
+              0.3567
+            ]
+          ],
+          "correct": false,
+          "neighbours": [
+            {
+              "text": "just a collection of this and that -- whatever fills time -- with no unified who",
+              "label": 0,
+              "cos": 0.608
+            },
+            {
+              "text": "just a collection of this and that -- whatever fills time -- with no unified who",
+              "label": 0,
+              "cos": 0.601
+            },
+            {
+              "text": "of this and that -- whatever fills time -- with no unified whole",
+              "label": 0,
+              "cos": 0.599
+            },
+            {
+              "text": "-- in a heartwarming , nonjudgmental kind of way --",
+              "label": 1,
+              "cos": 0.599
+            },
+            {
+              "text": "is a fudged opportunity of gigantic proportions -- a lunar mission with no signs",
+              "label": 0,
+              "cos": 0.598
+            }
+          ],
+          "neighbour_label_agreement": 0.2
+        },
+        {
+          "gold": 0,
+          "pred": 1,
+          "ranked_labels": [
+            [
+              "positive",
+              0.574
+            ],
+            [
+              "negative",
+              0.426
+            ]
+          ],
+          "correct": false,
+          "neighbours": [
+            {
+              "text": "if swimfan does catch on , it may be because teens are looking for something to ",
+              "label": 0,
+              "cos": 0.592
+            },
+            {
+              "text": "does n't make for great cinema",
+              "label": 0,
+              "cos": 0.59
+            },
+            {
+              "text": "it does n't make for great cinema",
+              "label": 0,
+              "cos": 0.583
+            },
+            {
+              "text": "it does n't make for great cinema ,",
+              "label": 0,
+              "cos": 0.581
+            },
+            {
+              "text": "even if you do n't understand what on earth is going on , this is a movie that w",
+              "label": 1,
+              "cos": 0.57
+            }
+          ],
+          "neighbour_label_agreement": 0.8
+        },
+        {
+          "gold": 0,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.9551
+            ],
+            [
+              "positive",
+              0.0449
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "no",
+              "label": 0,
+              "cos": 0.814
+            },
+            {
+              "text": "no",
+              "label": 0,
+              "cos": 0.814
+            },
+            {
+              "text": "no explanation",
+              "label": 0,
+              "cos": 0.806
+            },
+            {
+              "text": "no .",
+              "label": 0,
+              "cos": 0.806
+            },
+            {
+              "text": "no .",
+              "label": 0,
+              "cos": 0.806
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        }
+      ],
+      "test_acc": 0.7293
+    },
+    "D": {
+      "name": "GoogleNews fine-tuned",
+      "cases": [
+        {
+          "gold": 1,
+          "pred": 1,
+          "ranked_labels": [
+            [
+              "positive",
+              0.8085
+            ],
+            [
+              "negative",
+              0.1915
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "this is one of the year 's best films .",
+              "label": 1,
+              "cos": 0.989
+            },
+            {
+              "text": "is one of the year 's best films .",
+              "label": 1,
+              "cos": 0.977
+            },
+            {
+              "text": "is one of the year 's best films",
+              "label": 1,
+              "cos": 0.972
+            },
+            {
+              "text": "is one of this year 's very best pictures .",
+              "label": 1,
+              "cos": 0.966
+            },
+            {
+              "text": "insomnia is one of the year 's best films",
+              "label": 1,
+              "cos": 0.965
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        },
+        {
+          "gold": 0,
+          "pred": 1,
+          "ranked_labels": [
+            [
+              "positive",
+              0.5118
+            ],
+            [
+              "negative",
+              0.4882
+            ]
+          ],
+          "correct": false,
+          "neighbours": [
+            {
+              "text": "big fat liar is little more than home alone raised to a new , self-deprecating l",
+              "label": 0,
+              "cos": 0.928
+            },
+            {
+              "text": "is little more than home alone raised to a new , self-deprecating level .",
+              "label": 0,
+              "cos": 0.916
+            },
+            {
+              "text": "the film runs on a little longer than it needs to",
+              "label": 0,
+              "cos": 0.916
+            },
+            {
+              "text": "the film runs on a little longer than it needs to --",
+              "label": 0,
+              "cos": 0.915
+            },
+            {
+              "text": "is little more than home alone raised to a new , self-deprecating level",
+              "label": 0,
+              "cos": 0.911
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        },
+        {
+          "gold": 1,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.5078
+            ],
+            [
+              "positive",
+              0.4922
+            ]
+          ],
+          "correct": false,
+          "neighbours": [
+            {
+              "text": "neither quite a comedy nor a romance , more of an impish divertissement of theme",
+              "label": 1,
+              "cos": 0.95
+            },
+            {
+              "text": "singer/composer bryan adams contributes a slew of songs -- a few potential hits ",
+              "label": 1,
+              "cos": 0.944
+            },
+            {
+              "text": "singer/composer bryan adams contributes a slew of songs -- a few potential hits ",
+              "label": 1,
+              "cos": 0.942
+            },
+            {
+              "text": ", more of an impish divertissement of themes that interest attal and gainsbourg ",
+              "label": 1,
+              "cos": 0.94
+            },
+            {
+              "text": "'s a real shame that so much of the movie -- again , as in the animal -- is a sl",
+              "label": 0,
+              "cos": 0.935
+            }
+          ],
+          "neighbour_label_agreement": 0.8
+        },
+        {
+          "gold": 0,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.5024
+            ],
+            [
+              "positive",
+              0.4976
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "does n't show enough of the creative process or even of what was created for the",
+              "label": 0,
+              "cos": 0.923
+            },
+            {
+              "text": "if swimfan does catch on , it may be because teens are looking for something to ",
+              "label": 0,
+              "cos": 0.923
+            },
+            {
+              "text": "what might have been acceptable on the printed page of iles ' book does not tran",
+              "label": 0,
+              "cos": 0.921
+            },
+            {
+              "text": "the film does n't show enough of the creative process or even of what was create",
+              "label": 0,
+              "cos": 0.919
+            },
+            {
+              "text": "even if you do n't understand what on earth is going on , this is a movie that w",
+              "label": 1,
+              "cos": 0.917
+            }
+          ],
+          "neighbour_label_agreement": 0.8
+        },
+        {
+          "gold": 0,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.9889
+            ],
+            [
+              "positive",
+              0.0111
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "... no charm , no laughs , no fun , no reason to watch .",
+              "label": 0,
+              "cos": 0.924
+            },
+            {
+              "text": "no charm , no laughs , no fun , no reason to watch .",
+              "label": 0,
+              "cos": 0.922
+            },
+            {
+              "text": "no charm , no laughs , no fun , no reason to watch",
+              "label": 0,
+              "cos": 0.913
+            },
+            {
+              "text": "no . .",
+              "label": 0,
+              "cos": 0.91
+            },
+            {
+              "text": "no solace here , no entertainment value ,",
+              "label": 0,
+              "cos": 0.909
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        }
+      ],
+      "test_acc": 0.7919
+    },
+    "E": {
+      "name": "from scratch (PyTorch)",
+      "cases": [
+        {
+          "gold": 1,
+          "pred": 1,
+          "ranked_labels": [
+            [
+              "positive",
+              0.6562
+            ],
+            [
+              "negative",
+              0.3438
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "this is one of the year 's best films .",
+              "label": 1,
+              "cos": 0.99
+            },
+            {
+              "text": "the film is one of the year 's best .",
+              "label": 1,
+              "cos": 0.989
+            },
+            {
+              "text": "is one of the year 's best .",
+              "label": 1,
+              "cos": 0.988
+            },
+            {
+              "text": "is one of the year 's best films .",
+              "label": 1,
+              "cos": 0.985
+            },
+            {
+              "text": "insomnia is one of the year 's best films and",
+              "label": 1,
+              "cos": 0.984
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        },
+        {
+          "gold": 0,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.5461
+            ],
+            [
+              "positive",
+              0.4539
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "advised to take the warning literally , and log on to something more user-friend",
+              "label": 0,
+              "cos": 0.963
+            },
+            {
+              "text": "is advised to take the warning literally , and log on to something more user-fri",
+              "label": 0,
+              "cos": 0.963
+            },
+            {
+              "text": "the film runs on a little longer than it needs to",
+              "label": 0,
+              "cos": 0.962
+            },
+            {
+              "text": "is advised to take the warning literally , and log on to something more user-fri",
+              "label": 0,
+              "cos": 0.962
+            },
+            {
+              "text": "harks back to a time when movies had more to do with imagination than market res",
+              "label": 1,
+              "cos": 0.962
+            }
+          ],
+          "neighbour_label_agreement": 0.8
+        },
+        {
+          "gold": 1,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.5972
+            ],
+            [
+              "positive",
+              0.4028
+            ]
+          ],
+          "correct": false,
+          "neighbours": [
+            {
+              "text": "'s not a spark of new inspiration in it , just more of the same , done with noti",
+              "label": 0,
+              "cos": 0.982
+            },
+            {
+              "text": ", more of an impish divertissement of themes that interest attal and gainsbourg ",
+              "label": 1,
+              "cos": 0.982
+            },
+            {
+              "text": "though its rather routine script is loaded with familiar situations , the movie ",
+              "label": 1,
+              "cos": 0.981
+            },
+            {
+              "text": "'s not a spark of new inspiration in it , just more of the same , done with noti",
+              "label": 0,
+              "cos": 0.981
+            },
+            {
+              "text": "there 's not a spark of new inspiration in it , just more of the same , done wit",
+              "label": 0,
+              "cos": 0.98
+            }
+          ],
+          "neighbour_label_agreement": 0.4
+        },
+        {
+          "gold": 0,
+          "pred": 1,
+          "ranked_labels": [
+            [
+              "positive",
+              0.614
+            ],
+            [
+              "negative",
+              0.386
+            ]
+          ],
+          "correct": false,
+          "neighbours": [
+            {
+              "text": "a determined , ennui-hobbled slog that really does n't have much to say beyond t",
+              "label": 0,
+              "cos": 0.977
+            },
+            {
+              "text": "just because a walk to remember is shrewd enough to activate girlish tear ducts ",
+              "label": 0,
+              "cos": 0.977
+            },
+            {
+              "text": "scoob",
+              "label": 1,
+              "cos": 0.977
+            },
+            {
+              "text": "scoob and shag do n't eat enough during the film . '",
+              "label": 0,
+              "cos": 0.976
+            },
+            {
+              "text": "you do n't need to be a hip-hop fan to appreciate scratch , and that 's the mark",
+              "label": 1,
+              "cos": 0.976
+            }
+          ],
+          "neighbour_label_agreement": 0.6
+        },
+        {
+          "gold": 0,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.8597
+            ],
+            [
+              "positive",
+              0.1403
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "but no . .",
+              "label": 0,
+              "cos": 0.974
+            },
+            {
+              "text": "no cute factor here ... not that i mind ugly ; the problem is he has no characte",
+              "label": 0,
+              "cos": 0.967
+            },
+            {
+              "text": "has no snap to it , no wiseacre crackle or hard-bitten cynicism .",
+              "label": 0,
+              "cos": 0.966
+            },
+            {
+              "text": "there 's much tongue in cheek in the film and there 's no doubt the filmmaker is",
+              "label": 1,
+              "cos": 0.965
+            },
+            {
+              "text": "there 's much tongue in cheek in the film and there 's no doubt the filmmaker is",
+              "label": 1,
+              "cos": 0.964
+            }
+          ],
+          "neighbour_label_agreement": 0.6
+        }
+      ],
+      "test_acc": 0.7441
+    },
+    "C": {
+      "name": "GoogleNews-300 (pretrained)",
+      "cases": [
+        {
+          "gold": 1,
+          "pred": 1,
+          "ranked_labels": [
+            [
+              "positive",
+              0.8547
+            ],
+            [
+              "negative",
+              0.1453
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "this is one of the year 's best films .",
+              "label": 1,
+              "cos": 0.953
+            },
+            {
+              "text": "is one of the year 's best films .",
+              "label": 1,
+              "cos": 0.943
+            },
+            {
+              "text": "is one of the year 's best films",
+              "label": 1,
+              "cos": 0.943
+            },
+            {
+              "text": "of one of the best films",
+              "label": 1,
+              "cos": 0.918
+            },
+            {
+              "text": "one of the best films",
+              "label": 1,
+              "cos": 0.918
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        },
+        {
+          "gold": 0,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.6678
+            ],
+            [
+              "positive",
+              0.3322
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "at just over an hour , home movie will leave you wanting more , not to mention l",
+              "label": 1,
+              "cos": 0.78
+            },
+            {
+              "text": "along the way -- myriad signs , if you will -- that beneath the familiar , funny",
+              "label": 1,
+              "cos": 0.769
+            },
+            {
+              "text": "offers copious hints along the way -- myriad signs , if you will -- that beneath",
+              "label": 1,
+              "cos": 0.767
+            },
+            {
+              "text": "offers copious hints along the way -- myriad signs , if you will -- that beneath",
+              "label": 1,
+              "cos": 0.767
+            },
+            {
+              "text": "shyamalan offers copious hints along the way -- myriad signs , if you will -- th",
+              "label": 1,
+              "cos": 0.767
+            }
+          ],
+          "neighbour_label_agreement": 0.0
+        },
+        {
+          "gold": 1,
+          "pred": 1,
+          "ranked_labels": [
+            [
+              "positive",
+              0.6799
+            ],
+            [
+              "negative",
+              0.3201
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "two signs that m. night shyamalan 's debut feature sucked up all he has to give ",
+              "label": 0,
+              "cos": 0.772
+            },
+            {
+              "text": "a first-class , thoroughly involving b movie that effectively combines two suref",
+              "label": 1,
+              "cos": 0.77
+            },
+            {
+              "text": "a first-class , thoroughly involving b movie that effectively combines two suref",
+              "label": 1,
+              "cos": 0.77
+            },
+            {
+              "text": "m. night shyamalan 's debut feature sucked up all he has to give to the mystic g",
+              "label": 0,
+              "cos": 0.765
+            },
+            {
+              "text": "the movie attempts to mine laughs from a genre -- the gangster/crime comedy -- t",
+              "label": 0,
+              "cos": 0.76
+            }
+          ],
+          "neighbour_label_agreement": 0.4
+        },
+        {
+          "gold": 0,
+          "pred": 1,
+          "ranked_labels": [
+            [
+              "positive",
+              0.5647
+            ],
+            [
+              "negative",
+              0.4353
+            ]
+          ],
+          "correct": false,
+          "neighbours": [
+            {
+              "text": "even if you do n't understand what on earth is going on , this is a movie that w",
+              "label": 1,
+              "cos": 0.801
+            },
+            {
+              "text": "if swimfan does catch on , it may be because teens are looking for something to ",
+              "label": 0,
+              "cos": 0.79
+            },
+            {
+              "text": "does not make for much of a movie .",
+              "label": 0,
+              "cos": 0.784
+            },
+            {
+              "text": "does not make for much of a movie",
+              "label": 0,
+              "cos": 0.784
+            },
+            {
+              "text": "does n't show enough of the creative process or even of what was created for the",
+              "label": 0,
+              "cos": 0.783
+            }
+          ],
+          "neighbour_label_agreement": 0.8
+        },
+        {
+          "gold": 0,
+          "pred": 0,
+          "ranked_labels": [
+            [
+              "negative",
+              0.9636
+            ],
+            [
+              "positive",
+              0.0364
+            ]
+          ],
+          "correct": true,
+          "neighbours": [
+            {
+              "text": "but no . .",
+              "label": 0,
+              "cos": 0.807
+            },
+            {
+              "text": "no charm , no laughs , no fun , no reason to watch .",
+              "label": 0,
+              "cos": 0.801
+            },
+            {
+              "text": "no charm , no laughs , no fun , no reason to watch",
+              "label": 0,
+              "cos": 0.801
+            },
+            {
+              "text": "... no charm , no laughs , no fun , no reason to watch .",
+              "label": 0,
+              "cos": 0.801
+            },
+            {
+              "text": "'s not too much of anything",
+              "label": 0,
+              "cos": 0.793
+            }
+          ],
+          "neighbour_label_agreement": 1.0
+        }
+      ],
+      "test_acc": 0.7979
+    }
+  }
+}

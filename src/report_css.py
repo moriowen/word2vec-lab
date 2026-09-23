@@ -150,3 +150,17 @@ CSS = """
   footer{padding-top:64px;font-size:.82rem;color:var(--faint);
          border-top:1px solid var(--line);margin-top:64px}
 """
+
+EXTRA_CSS = """
+  .tcase{background:var(--surface);border:1px solid var(--line);border-radius:6px;
+         padding:18px;display:flex;flex-direction:column;gap:14px;margin-bottom:16px}
+  .tchead{display:flex;flex-direction:column;gap:7px}
+  .tcsent code{font-size:.92rem;background:transparent;border:0;padding:0;color:var(--ink)}
+  .tcgold{font-size:.78rem;color:var(--faint)}
+  .tcgold b{color:var(--muted)}
+  .tcase .tablewrap{border:0;background:transparent}
+  .tcase table{min-width:460px}
+  .tcnb{display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:baseline;
+        border-top:1px dashed var(--line);padding-top:12px}
+  .tcnb .chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+"""

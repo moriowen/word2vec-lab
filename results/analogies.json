@@ -189,6 +189,33 @@
             0.349
           ]
         ]
+      },
+      {
+        "query": "better - good + bad",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "concert",
+            0.368
+          ],
+          [
+            "antitrust",
+            0.363
+          ],
+          [
+            "einstein",
+            0.357
+          ],
+          [
+            "hungry-man",
+            0.356
+          ],
+          [
+            "clips",
+            0.352
+          ]
+        ]
       }
     ],
     "benchmark": {
@@ -445,6 +472,33 @@
           [
             "supporting",
             0.264
+          ]
+        ]
+      },
+      {
+        "query": "better - good + bad",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "i.q.",
+            0.321
+          ],
+          [
+            "franchise",
+            0.295
+          ],
+          [
+            "further",
+            0.288
+          ],
+          [
+            "funnier",
+            0.284
+          ],
+          [
+            "ugly",
+            0.269
           ]
         ]
       }
@@ -705,6 +759,33 @@
             0.544
           ]
         ]
+      },
+      {
+        "query": "better - good + bad",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "worse",
+            0.664
+          ],
+          [
+            "uglier",
+            0.545
+          ],
+          [
+            "differently",
+            0.525
+          ],
+          [
+            "scarier",
+            0.506
+          ],
+          [
+            "sooner",
+            0.5
+          ]
+        ]
       }
     ],
     "benchmark": {
@@ -963,6 +1044,33 @@
             0.66
           ]
         ]
+      },
+      {
+        "query": "better - good + bad",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "enacted",
+            0.706
+          ],
+          [
+            "badder",
+            0.695
+          ],
+          [
+            "videotape",
+            0.691
+          ],
+          [
+            "runner",
+            0.688
+          ],
+          [
+            "gone",
+            0.682
+          ]
+        ]
       }
     ],
     "benchmark": {
@@ -1219,6 +1327,33 @@
           [
             "finest",
             0.537
+          ]
+        ]
+      },
+      {
+        "query": "better - good + bad",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "worse",
+            0.729
+          ],
+          [
+            "uglier",
+            0.573
+          ],
+          [
+            "sooner",
+            0.531
+          ],
+          [
+            "dumber",
+            0.523
+          ],
+          [
+            "differently",
+            0.517
           ]
         ]
       }

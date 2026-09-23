@@ -544,12 +544,14 @@ def build(mode="web"):
       <p class="prose">{hw("The handout names <code>king - man + woman = queen</code> "
       "specifically.", "<code>king - man + woman = queen</code> is the canonical test of "
       "whether an embedding space supports this kind of arithmetic.")}
-      The table includes that query and six others, with ranked answers from each model. The
-      standard Google analogy benchmark follows.</p>''')
+      The table puts it next to four queries built from film-review vocabulary. Every word in
+      those four occurs in SST, so the SST-trained models cannot miss them for lack of
+      vocabulary. The standard Google analogy benchmark follows.</p>''')
     rows = []
     for mid in ORDER:
         a = ar(mid)
-        for label in ["king - man + woman", "paris - france + italy", "worst - bad + good"]:
+        for label in ["king - man + woman", "actor - man + woman", "better - good + bad",
+                      "worst - bad + good", "comedy - funny + scary"]:
             x = a[label]
             ans = ('<span class="chips">'
                    + "".join(f'<span class="chip">{e(w)} <b>{s:.2f}</b></span>'
@@ -559,9 +561,15 @@ def build(mode="web"):
     add(table(["Model", "Query", "Ranked answers"], rows, ["m", "m", "l"]))
     add(f'''<div class="note"><b>Only C and D solve the canonical analogy.</b> Both rank
       <code>queen</code> at rank 1 for <code>king - man + woman</code>. A, B and E return
-      unrelated words. The similarity benchmarks and projections point to the same conclusion:
-      {tok:,} tokens of film reviews are not enough to learn a space with useful vector
-      arithmetic.</div>''')
+      unrelated words.</div>
+      <div class="note"><b>Film vocabulary does not rescue A, B or E.</b> They miss the film
+      queries too. The one near hit is B, which ranks <code>actress</code> second for
+      <code>actor - man + woman</code>. C and D put the expected word first for the actor,
+      better and worst queries. For <code>comedy - funny + scary</code>, C returns
+      <code>horror_flick</code> and <code>horror</code>, and D returns <code>gross-out</code>
+      and <code>frightening</code>. The SST-only models fail even on their own vocabulary,
+      which agrees with the similarity benchmarks and projections: {tok:,} tokens of film
+      reviews are not enough to learn a space with useful vector arithmetic.</div>''')
     add(table(["Model", "Analogy accuracy", "Questions attempted", "Coverage", "Candidate pool"],
               [[mid, f'{ana[mid]["benchmark"]["overall_accuracy"]:.4f}',
                 f'{ana[mid]["benchmark"]["attempted"]:,} of {ana[mid]["benchmark"]["questions_in_set"]:,}',

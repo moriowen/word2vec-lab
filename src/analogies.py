@@ -29,6 +29,7 @@ DOMAIN = [
     (["comedy", "scary"], ["funny"], "comedy - funny + scary"),
     (["actor", "woman"], ["man"], "actor - man + woman"),
     (["worst", "good"], ["bad"], "worst - bad + good"),
+    (["better", "bad"], ["good"], "better - good + bad"),
 ]
 
 

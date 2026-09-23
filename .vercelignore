@@ -1,0 +1,14 @@
+# Only public/ is ever deployed. outputDirectory in vercel.json already scopes what is
+# served; this stops everything else being uploaded at all, so the corpora, the trained
+# models, the graded PDF and the harness cannot be reached even by a misconfiguration.
+/src
+/data
+/results
+/models
+/slurm
+/.venv
+/tmp
+/*.md
+/*.pdf
+/*.zip
+/requirements.txt

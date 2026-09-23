@@ -8,4 +8,10 @@ data/text8/
 *.bin.gz
 *.model
 *.npy
+
+# instructor course material, not mine to redistribute
+2026-ProgrammingAssignment-2.pdf
+
+# local build output; the deployed copy is public/index.html
+.vercel
 HW2_P_Mohite_Atharva.zip

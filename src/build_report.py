@@ -12,7 +12,7 @@ from . import arch_svg
 from .report_css import CSS, EXTRA_CSS
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "docs" / "index.html"
+OUT = ROOT / "public" / "index.html"
 K_TC = 5
 QUERIES = ["plot", "terrible", "star", "cinematography", "the"]
 ORDER = ["A", "B", "C", "D", "E"]

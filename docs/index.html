@@ -1,0 +1,400 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Five Word2Vec Models, One Classifier</title><style>
+  :root {
+    --paper:#EFF2F5; --surface:#FFFFFF; --raised:#F7F9FB;
+    --ink:#121620; --muted:#58637A; --faint:#8894A8;
+    --line:#D8DEE7; --line-2:#C3CCD9;
+    --accent:#0D6E86; --accent-soft:#D6EAF0;
+    --warm:#A8500C; --warm-soft:#F6E4D2;
+    --good:#196B3C; --bad:#9B2C2C;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --paper:#0C0F15; --surface:#141922; --raised:#1A2029;
+    --ink:#E7ECF3; --muted:#97A5B9; --faint:#6C7B91;
+    --line:#242C38; --line-2:#333D4C;
+    --accent:#3FC6E0; --accent-soft:#10323C;
+    --warm:#E3A055; --warm-soft:#3A2612;
+    --good:#5FC98A; --bad:#E08585;
+  } }
+  :root[data-theme="dark"] {
+    --paper:#0C0F15; --surface:#141922; --raised:#1A2029;
+    --ink:#E7ECF3; --muted:#97A5B9; --faint:#6C7B91;
+    --line:#242C38; --line-2:#333D4C;
+    --accent:#3FC6E0; --accent-soft:#10323C;
+    --warm:#E3A055; --warm-soft:#3A2612;
+    --good:#5FC98A; --bad:#E08585;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+       font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:980px;margin:0 auto;padding:0 24px 96px}
+  .prose{max-width:68ch}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;text-wrap:balance;margin:0}
+  h1{font-size:clamp(2.1rem,5vw,3.1rem);line-height:1.08;letter-spacing:-.015em}
+  h2{font-size:clamp(1.4rem,3vw,1.85rem);line-height:1.2}
+  h3{font-size:1.08rem;line-height:1.3}
+  p{margin:0}
+  a{color:var(--accent)}
+  code{font-family:var(--mono);font-size:.88em;background:var(--raised);
+       border:1px solid var(--line);border-radius:3px;padding:.08em .34em}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;
+           text-transform:uppercase;color:var(--faint)}
+  header.masthead{border-bottom:1px solid var(--line-2);padding:72px 0 36px;
+                  display:flex;flex-direction:column;gap:18px}
+  .lede{font-size:1.16rem;color:var(--muted);max-width:60ch}
+  .runmeta{display:flex;flex-wrap:wrap;gap:8px 22px;font-family:var(--mono);
+           font-size:.74rem;color:var(--faint)}
+  .runmeta b{color:var(--muted);font-weight:500}
+  section{padding-top:60px;display:flex;flex-direction:column;gap:22px}
+  .sechead{display:flex;flex-direction:column;gap:8px}
+  nav.toc{display:flex;flex-wrap:wrap;gap:6px 10px;font-family:var(--mono);font-size:.74rem;
+          padding:16px 0;border-bottom:1px solid var(--line)}
+  nav.toc a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent}
+  nav.toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+  .models{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:14px}
+  .mcard{background:var(--surface);border:1px solid var(--line);border-radius:6px;
+         padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px}
+  .mcard.is-focus{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+  .mcard .tag{display:flex;align-items:baseline;gap:8px}
+  .mcard .id{font-family:var(--mono);font-size:1.5rem;line-height:1;color:var(--accent)}
+  .mcard .nm{font-size:.82rem;color:var(--muted);line-height:1.35}
+  .acc{font-family:var(--mono);font-size:1.85rem;line-height:1;font-variant-numeric:tabular-nums}
+  .bar{height:5px;background:var(--raised);border-radius:3px;overflow:hidden}
+  .bar>i{display:block;height:100%;background:var(--accent)}
+  .mcard.is-focus .bar>i{background:var(--warm)}
+  .mmeta{font-family:var(--mono);font-size:.7rem;color:var(--faint);
+         display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
+
+  .figure{background:var(--surface);border:1px solid var(--line);border-radius:6px;
+          padding:22px;overflow-x:auto}
+  .figure svg{display:block;min-width:620px;width:100%;height:auto}
+  .caption{font-size:.84rem;color:var(--muted);margin-top:12px;max-width:66ch}
+  .figgrid{display:grid;grid-template-columns:1fr;gap:18px}
+
+  .tablewrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);
+             border-radius:6px}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:520px}
+  th,td{text-align:left;padding:10px 14px;border-top:1px solid var(--line);
+        font-variant-numeric:tabular-nums}
+  thead th{border-top:0;background:var(--raised);font-family:var(--mono);
+           font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);
+           font-weight:500;white-space:nowrap}
+  td.n,th.n{text-align:right;font-family:var(--mono);font-size:.82rem}
+  td.mono,th.mono{font-family:var(--mono);font-size:.8rem}
+  tr.hi td{background:var(--accent-soft)}
+  td .win{color:var(--good);font-weight:600}
+  td .lose{color:var(--bad)}
+
+  .stats{display:flex;flex-wrap:wrap;gap:30px;padding:16px 0;
+         border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .stat{display:flex;flex-direction:column;gap:3px}
+  .stat .n{font-family:var(--mono);font-size:1.35rem;font-variant-numeric:tabular-nums}
+  .stat .l{font-size:.76rem;color:var(--faint)}
+
+  .note{background:var(--raised);border-left:2px solid var(--accent);
+        padding:14px 18px;font-size:.92rem;color:var(--muted);border-radius:0 4px 4px 0}
+  .note b{color:var(--ink);font-weight:600}
+  .note.warm{border-left-color:var(--warm)}
+
+  .nbox{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .nrow{display:grid;grid-template-columns:150px 1fr;border-top:1px solid var(--line)}
+  .nrow:first-child{border-top:0}
+  .nq{padding:14px 16px;font-family:var(--mono);font-size:.82rem;background:var(--raised);
+      border-right:1px solid var(--line);display:flex;align-items:center}
+  .npair{display:flex;flex-direction:column}
+  .nline{display:grid;grid-template-columns:26px 1fr;gap:10px;padding:10px 16px;align-items:baseline}
+  .nline+.nline{border-top:1px dashed var(--line)}
+  .nlabel{font-family:var(--mono);font-size:.68rem;color:var(--faint)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-family:var(--mono);font-size:.74rem;padding:2px 8px;border-radius:3px;
+        background:var(--raised);border:1px solid var(--line);color:var(--muted)}
+  .chip.new{background:var(--warm-soft);border-color:var(--warm);color:var(--ink)}
+
+  .driftgrid{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  @media(max-width:720px){.driftgrid{grid-template-columns:1fr}.nrow{grid-template-columns:1fr}
+    .nq{border-right:0;border-bottom:1px solid var(--line)}}
+  .dcol{display:flex;flex-direction:column;gap:12px}
+  .dcol h3{font-family:var(--sans);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;
+           color:var(--faint);font-weight:600}
+  .drow{display:grid;grid-template-columns:112px 1fr 48px;align-items:center;gap:10px;font-size:.85rem}
+  .drow .w{font-family:var(--mono);font-size:.8rem;overflow:hidden;text-overflow:ellipsis}
+  .drow .t{height:9px;background:var(--raised);border-radius:2px;overflow:hidden}
+  .drow .t>i{display:block;height:100%}
+  .moved .t>i{background:var(--warm)}
+  .anchored .t>i{background:var(--line-2)}
+  .drow .v{font-family:var(--mono);font-size:.74rem;color:var(--muted);text-align:right;
+           font-variant-numeric:tabular-nums}
+
+  ol.steps{list-style:none;margin:0;padding:0;counter-reset:s;display:flex;flex-direction:column}
+  ol.steps>li{counter-increment:s;display:grid;grid-template-columns:40px 1fr;gap:18px;
+              padding:18px 0;border-top:1px solid var(--line)}
+  ol.steps>li:last-child{border-bottom:1px solid var(--line)}
+  ol.steps>li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);
+                      font-size:.78rem;color:var(--accent);padding-top:3px}
+  .step-b{display:flex;flex-direction:column;gap:7px}
+  .step-b .why{font-size:.9rem;color:var(--muted)}
+
+  .log{display:flex;flex-direction:column}
+  .lrow{display:grid;grid-template-columns:96px 1fr auto;gap:16px;padding:14px 0;
+        border-top:1px solid var(--line);align-items:baseline}
+  .lrow:last-child{border-bottom:1px solid var(--line)}
+  .lhash{font-family:var(--mono);font-size:.78rem;color:var(--accent)}
+  .lnote{font-size:.88rem;color:var(--muted);margin-top:3px}
+  .lstate{font-family:var(--mono);font-size:.7rem;color:var(--good);white-space:nowrap}
+  .lstate.todo{color:var(--faint)}
+  footer{padding-top:64px;font-size:.82rem;color:var(--faint);
+         border-top:1px solid var(--line);margin-top:64px}
+</style></head><body><div class="wrap"><header class="masthead">
+      <div class="eyebrow">CS 6220 Big Data Systems &middot; Homework 2 &middot; programming option</div>
+      <h1>Five Word2Vec Models, One Classifier</h1>
+      <p class="lede">Two models trained from scratch on movie reviews, one downloaded,
+      one fine-tuned from the downloaded weights, and one where the training algorithm itself
+      was reimplemented. Scored on sentiment, on lexical similarity, and on what they cost to
+      run.</p>
+      <div class="runmeta">
+        <span><b>Corpus</b> SST-2 phrases, 633,720 tokens</span>
+        <span><b>Vocabulary</b> 14,309</span>
+        <span><b>Dimensions</b> 300</span>
+        <span><b>Test split</b> 1,821 sentences</span>
+        <span><b>Machine</b> M2 Air</span>
+      </div>
+    </header><nav class="toc">
+      <a href="#results">Results</a><a href="#arch">Architectures</a><a href="#data">Data</a>
+      <a href="#hyper">Hyperparameters</a><a href="#neighbours">Nearest neighbours</a>
+      <a href="#similarity">Lexical similarity</a><a href="#finetune">Fine-tuning</a>
+      <a href="#scratch">From scratch</a><a href="#systems">Systems</a>
+      <a href="#errors">Errors</a><a href="#log">Build log</a></nav><section id="results">
+      <div class="sechead"><div class="eyebrow">Where things stand</div>
+      <h2>Five models, one classifier</h2></div>
+      <p class="prose">Every model is scored the same way. Look up a vector per word, average
+      them into a sentence vector, fit logistic regression, test on the same held-out SST-2
+      sentences. The classifier never changes and is never tuned per model, so any gap between
+      these numbers belongs to the embeddings and to nothing else.</p>
+      <div class="models"><div class="mcard">
+        <div class="tag"><span class="id">A</span><span class="nm">Skip-gram<br>+ negative sampling</span></div>
+        <div class="acc">0.761</div>
+        <div class="bar"><i style="width:76.1%"></i></div>
+        <div class="mmeta"><span>gensim, trained here</span><span>11.8s</span></div></div><div class="mcard">
+        <div class="tag"><span class="id">B</span><span class="nm">CBOW<br>+ hierarchical softmax</span></div>
+        <div class="acc">0.729</div>
+        <div class="bar"><i style="width:72.9%"></i></div>
+        <div class="mmeta"><span>gensim, trained here</span><span>3.6s</span></div></div><div class="mcard is-focus">
+        <div class="tag"><span class="id">C</span><span class="nm">GoogleNews-300<br>frozen</span></div>
+        <div class="acc">0.798</div>
+        <div class="bar"><i style="width:79.8%"></i></div>
+        <div class="mmeta"><span>downloaded, frozen</span><span>2.8s load</span></div></div><div class="mcard">
+        <div class="tag"><span class="id">D</span><span class="nm">GoogleNews<br>fine-tuned on SST</span></div>
+        <div class="acc">0.792</div>
+        <div class="bar"><i style="width:79.2%"></i></div>
+        <div class="mmeta"><span>fine-tuned here</span><span>13.8s</span></div></div><div class="mcard">
+        <div class="tag"><span class="id">E</span><span class="nm">Skip-gram + NS<br>written from scratch</span></div>
+        <div class="acc">0.744</div>
+        <div class="bar"><i style="width:74.4%"></i></div>
+        <div class="mmeta"><span>our implementation</span><span>160.2s</span></div></div></div>
+      <div class="note"><b>The comparison that isolates one variable is A against D.</b>
+      Same architecture, same loss, same corpus, same classifier. The only difference is where
+      the input matrix started: random for A, Google's published vectors for D. That is worth
+      0.031 accuracy, 0.761 to 0.792. D then lands 0.006 below C
+      while carrying 35 times less vocabulary.</div><div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="">Architecture</th><th class="">Loss</th><th class="n">Trained on</th><th class="n">Accuracy</th><th class="n">F1</th><th class="n">OOV</th></tr></thead><tbody><tr><td class="mono">A</td><td class="">Skip-gram</td><td class="">Negative sampling, k=10</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7611</span></td><td class="n">0.7757</td><td class="n">0.066</td></tr><tr><td class="mono">B</td><td class="">CBOW</td><td class="">Hierarchical softmax</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7293</span></td><td class="n">0.7501</td><td class="n">0.066</td></tr><tr><td class="mono">C</td><td class="">Skip-gram</td><td class="">Negative sampling, k=5</td><td class="n">100,000,000,000 tok</td><td class="n"><span class="win">0.7979</span></td><td class="n">0.8107</td><td class="n">0.271</td></tr><tr><td class="mono">D</td><td class="">Skip-gram</td><td class="">Negative sampling, k=10</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7919</span></td><td class="n">0.8089</td><td class="n">0.066</td></tr><tr><td class="mono">E</td><td class="">Skip-gram</td><td class="">Negative sampling, k=10</td><td class="n">633,720 tok</td><td class="n"><span class="">0.7441</span></td><td class="n">0.7610</td><td class="n">0.066</td></tr></tbody></table></div></section><section id="arch">
+      <div class="sechead"><div class="eyebrow">Deliverable 1</div>
+      <h2>What the two architectures actually are</h2></div>
+      <p class="prose">A word2vec model is two matrices and a dot product. There is no hidden
+      layer and no nonlinearity. <code>W_in</code> holds one row per word and is the thing you
+      keep. <code>W_out</code> exists only to compute the training loss and is discarded when
+      training ends.</p>
+      <div class="figgrid">
+        <div class="figure"><svg viewBox="0 0 740 320" role="img" aria-label="Skip-gram architecture: a one-hot input of size V multiplies through W_in to a 300-dimensional code, then through W_out to 10 context predictions.">
+  <defs>
+    <marker id="asg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6"
+            orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--line-2)"/></marker>
+  </defs><g font-family="ui-monospace, Menlo, monospace" font-size="11"><rect x="10" y="128" width="132" height="56" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="76.0" y="150" fill="var(--ink)" font-size="12" text-anchor="middle">one-hot</text><text x="76.0" y="166" fill="var(--faint)" text-anchor="middle">V = 14,309</text><line x1="146" y1="156" x2="204" y2="156" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#asg)"/><text x="175.0" y="149.0" fill="var(--muted)" font-size="10" text-anchor="middle">W_in</text><rect x="208" y="128" width="132" height="56" rx="4" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="274.0" y="150" fill="var(--ink)" font-size="12" text-anchor="middle">code</text><text x="274.0" y="166" fill="var(--faint)" text-anchor="middle">d = 300</text><line x1="344" y1="156" x2="402" y2="156" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#asg)"/><text x="373.0" y="149.0" fill="var(--muted)" font-size="10" text-anchor="middle">W_out</text><rect x="406" y="22" width="150" height="44" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="481.0" y="44" fill="var(--ink)" font-size="12" text-anchor="middle">context -5</text><line x1="392" y1="156" x2="402" y2="44" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#asg)"/><rect x="406" y="84" width="150" height="44" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="481.0" y="106" fill="var(--ink)" font-size="12" text-anchor="middle">...</text><line x1="392" y1="156" x2="402" y2="106" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#asg)"/><rect x="406" y="146" width="150" height="44" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="481.0" y="168" fill="var(--ink)" font-size="12" text-anchor="middle">context -1</text><line x1="392" y1="156" x2="402" y2="168" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#asg)"/><rect x="406" y="208" width="150" height="44" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="481.0" y="230" fill="var(--ink)" font-size="12" text-anchor="middle">context +1</text><line x1="392" y1="156" x2="402" y2="230" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#asg)"/><rect x="406" y="270" width="150" height="44" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="481.0" y="292" fill="var(--ink)" font-size="12" text-anchor="middle">... context +5</text><line x1="392" y1="156" x2="402" y2="292" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#asg)"/><rect x="586" y="128" width="140" height="56" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="656.0" y="150" fill="var(--ink)" font-size="12" text-anchor="middle">10 negatives</text><text x="656.0" y="166" fill="var(--faint)" text-anchor="middle">per positive</text><text x="656" y="206" fill="var(--faint)" text-anchor="middle">sampled from</text><text x="656" y="220" fill="var(--faint)" text-anchor="middle">unigram^0.75</text><text x="276" y="204" fill="var(--muted)" text-anchor="middle" font-size="10">encoder output, kept</text><text x="276" y="112" fill="var(--muted)" text-anchor="middle" font-size="10">no nonlinearity</text></g></svg>
+          <p class="caption"><b>A and E, skip-gram with negative sampling.</b> One centre word
+          predicts each surrounding word independently. Instead of a softmax over all 14,309
+          words, each positive pair is scored against 10 negatives
+          drawn from the unigram distribution raised to 0.75.</p></div>
+        <div class="figure"><svg viewBox="0 0 740 320" role="img" aria-label="CBOW architecture: 10 one-hot context inputs multiply through W_in and are averaged into a 300-dimensional code, then a hierarchical softmax tree predicts the centre word.">
+  <defs>
+    <marker id="acb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6"
+            orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--line-2)"/></marker>
+  </defs><g font-family="ui-monospace, Menlo, monospace" font-size="11"><rect x="10" y="22" width="150" height="44" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="85.0" y="44" fill="var(--ink)" font-size="12" text-anchor="middle">context -5</text><line x1="164" y1="44" x2="214" y2="156" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#acb)"/><rect x="10" y="84" width="150" height="44" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="85.0" y="106" fill="var(--ink)" font-size="12" text-anchor="middle">...</text><line x1="164" y1="106" x2="214" y2="156" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#acb)"/><rect x="10" y="146" width="150" height="44" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="85.0" y="168" fill="var(--ink)" font-size="12" text-anchor="middle">context -1</text><line x1="164" y1="168" x2="214" y2="156" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#acb)"/><rect x="10" y="208" width="150" height="44" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="85.0" y="230" fill="var(--ink)" font-size="12" text-anchor="middle">context +1</text><line x1="164" y1="230" x2="214" y2="156" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#acb)"/><rect x="10" y="270" width="150" height="44" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="85.0" y="292" fill="var(--ink)" font-size="12" text-anchor="middle">... context +5</text><line x1="164" y1="292" x2="214" y2="156" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#acb)"/><rect x="218" y="128" width="122" height="56" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="279.0" y="150" fill="var(--ink)" font-size="12" text-anchor="middle">mean</text><text x="279.0" y="166" fill="var(--faint)" text-anchor="middle">of C rows</text><text x="279" y="112" fill="var(--muted)" text-anchor="middle" font-size="10">W_in, shared</text><line x1="344" y1="156" x2="396" y2="156" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#acb)"/><rect x="400" y="128" width="122" height="56" rx="4" fill="var(--accent-soft)" stroke="var(--accent)"/><text x="461.0" y="150" fill="var(--ink)" font-size="12" text-anchor="middle">code</text><text x="461.0" y="166" fill="var(--faint)" text-anchor="middle">d = 300</text><line x1="526" y1="156" x2="578" y2="156" stroke="var(--line-2)" stroke-width="1.4" marker-end="url(#acb)"/><text x="552.0" y="149.0" fill="var(--muted)" font-size="10" text-anchor="middle">W_out</text><rect x="582" y="118" width="148" height="76" rx="4" fill="var(--raised)" stroke="var(--line)"/><text x="656.0" y="140" fill="var(--ink)" font-size="12" text-anchor="middle">Huffman tree</text><text x="656.0" y="156" fill="var(--faint)" text-anchor="middle">log2(V) ~ 14 nodes</text><text x="656" y="214" fill="var(--faint)" text-anchor="middle">hierarchical softmax</text><text x="461" y="204" fill="var(--muted)" text-anchor="middle" font-size="10">encoder output, kept</text></g></svg>
+          <p class="caption"><b>B, CBOW with hierarchical softmax.</b> The context rows are
+          averaged into a single vector that predicts the centre word. The output is a binary
+          tree over the vocabulary, so one prediction costs log2(V) decisions rather than V.</p></div>
+      </div>
+      <div class="note warm"><b>On the handout's encoder / code / decoder framing.</b>
+      It is borrowed from autoencoders and fits word2vec only loosely. An autoencoder
+      reconstructs its own input; word2vec reconstructs a <i>neighbouring</i> word, and it
+      throws the decoder away. The mapping used above is the honest one: the one-hot input is
+      the input layer, <code>W_in</code> is the encoder, the 300-dimensional row is the code,
+      <code>W_out</code> is the decoder, and the context prediction is the output.</div>
+    </section><section id="data">
+      <div class="sechead"><div class="eyebrow">Deliverable 2</div>
+      <h2>Training and test data</h2></div>
+      <p class="prose">Sentiment data is SST-2. Two releases exist and the choice matters. The
+      GLUE copy sets every test label to -1 because that split is held out for the leaderboard,
+      so test labels come from the SetFit release instead, and <code>src/data.py</code> raises
+      if a loaded test split is not two-class.</p><div class="tablewrap"><table><thead><tr><th class="mono">Split</th><th class="">Source</th><th class="n">Rows</th><th class="n">Tokens</th><th class="n">Positive</th><th class="">Used for</th></tr></thead><tbody><tr><td class="mono">train</td><td class="">stanfordnlp/sst2 (phrase level)</td><td class="n">67,348</td><td class="n">633,720</td><td class="n">55.8%</td><td class="">embedding training and classifier fitting</td></tr><tr><td class="mono">dev</td><td class="">SetFit/sst2</td><td class="n">872</td><td class="n">17,046</td><td class="n">50.9%</td><td class="">held out, unused</td></tr><tr><td class="mono">test</td><td class="">SetFit/sst2</td><td class="n">1,821</td><td class="n">35,023</td><td class="n">49.9%</td><td class="">every number on this page</td></tr></tbody></table></div><div class="note"><b>Leakage check.</b> The phrase rows are labelled subtrees of
+      the treebank and come from the train split only, but they were still checked against the
+      evaluation splits by exact string match: zero overlap with dev, and one row overlapping
+      test, the fragment <code>what 's next ?</code>. It is dropped, which is why 67,349 rows
+      become 67,348.</div>
+      <p class="prose">The pretrained model is GoogleNews-300, genuine skip-gram with negative
+      sampling trained on roughly 100 billion tokens of news text, from
+      <a href="https://code.google.com/archive/p/word2vec/">code.google.com/archive/p/word2vec</a>,
+      loaded through gensim-data and capped at the 500,000 most frequent
+      words. GloVe was deliberately not used as the pretrained baseline: it factorises a
+      co-occurrence matrix and is not a Word2Vec model, so it would answer a different
+      question than the one asked.</p></section><section id="hyper">
+      <div class="sechead"><div class="eyebrow">Deliverable 5</div>
+      <h2>Hyperparameters</h2></div>
+      <p class="prose">A and B differ on two axes at once, architecture and loss, which is
+      deliberate: it gives the comparison two things to say rather than one. Everything else is
+      held constant between them.</p><div class="tablewrap"><table><thead><tr><th class=""></th><th class="n">A</th><th class="n">B</th><th class="n">C</th><th class="n">D</th><th class="n">E</th></tr></thead><tbody><tr><td class="">Architecture (sg)</td><td class="n">1</td><td class="n">0</td><td class="n">1</td><td class="n">1</td><td class="n">1</td></tr><tr><td class="">Hierarchical softmax</td><td class="n">0</td><td class="n">1</td><td class="n">0</td><td class="n">0</td><td class="n">0</td></tr><tr><td class="">Negatives</td><td class="n">10</td><td class="n">0</td><td class="n">5</td><td class="n">10</td><td class="n">10</td></tr><tr><td class="">Dimensions</td><td class="n">300</td><td class="n">300</td><td class="n">300</td><td class="n">300</td><td class="n">300</td></tr><tr><td class="">Window</td><td class="n">5</td><td class="n">5</td><td class="n">5</td><td class="n">5</td><td class="n">5</td></tr><tr><td class="">Min count</td><td class="n">2</td><td class="n">2</td><td class="n">5</td><td class="n">2</td><td class="n">2</td></tr><tr><td class="">Epochs</td><td class="n">10</td><td class="n">10</td><td class="n">None</td><td class="n">8</td><td class="n">10</td></tr><tr><td class="">Initial LR</td><td class="n">0.025</td><td class="n">0.025</td><td class="n">0.025</td><td class="n">0.005</td><td class="n">0.001</td></tr><tr><td class="">Subsample threshold</td><td class="n">0.001</td><td class="n">0.001</td><td class="n">1e-05</td><td class="n">0.001</td><td class="n">0.001</td></tr></tbody></table></div></section><section id="neighbours">
+      <div class="sechead"><div class="eyebrow">Deliverables 3 and 5</div>
+      <h2>Top-ranked neighbours for five queries</h2></div>
+      <p class="prose">Five words chosen to separate the models rather than flatter them:
+      a polysemous noun, a sentiment adjective, a word whose sense depends on domain, a rare
+      domain term, and the most frequent word in English. Highlighted chips on row D are
+      neighbours that are not in C's list for the same query, so they are what fine-tuning
+      introduced.</p>
+      <div class="nbox"><div class="nrow"><div class="nq">plot</div><div class="npair"><div class="nline"><span class="nlabel">A</span><span class="chips"><span class="chip">twists</span><span class="chip">pawn</span><span class="chip">device</span><span class="chip">court</span><span class="chip">oh-so</span><span class="chip">nifty</span><span class="chip">cliché-riddled</span><span class="chip">stop-and-start</span></span></div><div class="nline"><span class="nlabel">B</span><span class="chips"><span class="chip">ending</span><span class="chip">accomplishment</span><span class="chip">sweetness</span><span class="chip">flourish</span><span class="chip">despair</span><span class="chip">flashy</span><span class="chip">mastering</span><span class="chip">clancy</span></span></div><div class="nline"><span class="nlabel">C</span><span class="chips"><span class="chip">plots</span><span class="chip">Plot</span><span class="chip">plotting</span><span class="chip">plotted</span><span class="chip">plotline</span><span class="chip">plotters</span><span class="chip">storyline</span><span class="chip">conspiracies</span></span></div><div class="nline"><span class="nlabel">D</span><span class="chips"><span class="chip">plots</span><span class="chip">plotting</span><span class="chip">plotted</span><span class="chip">plotline</span><span class="chip">storyline</span><span class="chip">conspiracies</span><span class="chip">conspiracy</span><span class="chip new">oh-so</span></span></div><div class="nline"><span class="nlabel">E</span><span class="chips"><span class="chip">twists</span><span class="chip">device</span><span class="chip">oh-so</span><span class="chip">halfwit</span><span class="chip">court</span><span class="chip">stop-and-start</span><span class="chip">maneuvers</span><span class="chip">sillified</span></span></div></div></div><div class="nrow"><div class="nq">terrible</div><div class="npair"><div class="nline"><span class="nlabel">A</span><span class="chips"><span class="chip">fitting</span><span class="chip">synergistic</span><span class="chip">stultifyingly</span><span class="chip">reconstruction</span><span class="chip">bloodwork</span><span class="chip">besotted</span><span class="chip">impulse</span><span class="chip">propelled</span></span></div><div class="nline"><span class="nlabel">B</span><span class="chips"><span class="chip">thrilling</span><span class="chip">chump</span><span class="chip">ballistic</span><span class="chip">motion</span><span class="chip">paint-by-numbers</span><span class="chip">view</span><span class="chip">derrida</span><span class="chip">ecks</span></span></div><div class="nline"><span class="nlabel">C</span><span class="chips"><span class="chip">horrible</span><span class="chip">horrendous</span><span class="chip">dreadful</span><span class="chip">awful</span><span class="chip">horrid</span><span class="chip">atrocious</span><span class="chip">horrific</span><span class="chip">bad</span></span></div><div class="nline"><span class="nlabel">D</span><span class="chips"><span class="chip">horrible</span><span class="chip">dreadful</span><span class="chip">awful</span><span class="chip">atrocious</span><span class="chip">horrid</span><span class="chip">appalling</span><span class="chip">horrific</span><span class="chip new">lousy</span></span></div><div class="nline"><span class="nlabel">E</span><span class="chips"><span class="chip">+</span><span class="chip">besotted</span><span class="chip">allegedly</span><span class="chip">unfulfilling</span><span class="chip">dungeons</span><span class="chip">phenomenal</span><span class="chip">lanes</span><span class="chip">retread</span></span></div></div></div><div class="nrow"><div class="nq">star</div><div class="npair"><div class="nline"><span class="nlabel">A</span><span class="chips"><span class="chip">raving</span><span class="chip">trek</span><span class="chip">high-powered</span><span class="chip">pop-induced</span><span class="chip">jake</span><span class="chip">bestowed</span><span class="chip">anteing</span><span class="chip">wattage</span></span></div><div class="nline"><span class="nlabel">B</span><span class="chips"><span class="chip">winners</span><span class="chip">kevin</span><span class="chip">splendid</span><span class="chip">has</span><span class="chip">acting</span><span class="chip">pulls</span><span class="chip">watstein</span><span class="chip">contributes</span></span></div><div class="nline"><span class="nlabel">C</span><span class="chips"><span class="chip">stars</span><span class="chip">superstar</span><span class="chip">starlet</span><span class="chip">megastar</span><span class="chip">heart_throb</span><span class="chip">heartthrob</span><span class="chip">superstars</span><span class="chip">standout</span></span></div><div class="nline"><span class="nlabel">D</span><span class="chips"><span class="chip">superstar</span><span class="chip">stars</span><span class="chip new">gyllenhaal</span><span class="chip new">top-billed</span><span class="chip new">pop-induced</span><span class="chip new">first-rate</span><span class="chip">standout</span><span class="chip new">starring</span></span></div><div class="nline"><span class="nlabel">E</span><span class="chips"><span class="chip">jake</span><span class="chip">rising</span><span class="chip">gyllenhaal</span><span class="chip">charismatic</span><span class="chip">top-billed</span><span class="chip">pop-induced</span><span class="chip">willis</span><span class="chip">bestowed</span></span></div></div></div><div class="nrow"><div class="nq">cinematography</div><div class="npair"><div class="nline"><span class="nlabel">A</span><span class="chips"><span class="chip">rinzler</span><span class="chip">water-born</span><span class="chip">shimmering</span><span class="chip">hennings</span><span class="chip">lisa</span><span class="chip">l.</span><span class="chip">conrad</span><span class="chip">italicized</span></span></div><div class="nline"><span class="nlabel">B</span><span class="chips"><span class="chip">color</span><span class="chip">gantz</span><span class="chip">beaches</span><span class="chip">mattei</span><span class="chip">hotels</span><span class="chip">improbability</span><span class="chip">acting</span><span class="chip">lumpen</span></span></div><div class="nline"><span class="nlabel">C</span><span class="chips"><span class="chip">camerawork</span><span class="chip">cinematographer</span><span class="chip">Cinematography</span><span class="chip">Cinematographer</span><span class="chip">cinematography_editing</span><span class="chip">cinematographers</span><span class="chip">Best_Cinematography</span><span class="chip">visual_effects</span></span></div><div class="nline"><span class="nlabel">D</span><span class="chips"><span class="chip">camerawork</span><span class="chip">cinematographer</span><span class="chip">visuals</span><span class="chip new">screenplay</span><span class="chip new">photography</span><span class="chip new">choreography</span><span class="chip">filmmaking</span><span class="chip new">helmer</span></span></div><div class="nline"><span class="nlabel">E</span><span class="chips"><span class="chip">hennings</span><span class="chip">water-born</span><span class="chip">dubbed</span><span class="chip">naturalistic</span><span class="chip">murky</span><span class="chip">shimmering</span><span class="chip">phenomenal</span><span class="chip">robotically</span></span></div></div></div><div class="nrow"><div class="nq">the</div><div class="npair"><div class="nline"><span class="nlabel">A</span><span class="chips"><span class="chip">of</span><span class="chip">deleting</span><span class="chip">outward</span><span class="chip">tully</span><span class="chip">1987</span><span class="chip">unambitious</span><span class="chip">screenplays</span><span class="chip">hubristic</span></span></div><div class="nline"><span class="nlabel">B</span><span class="chips"><span class="chip">our</span><span class="chip">his</span><span class="chip">current</span><span class="chip">dong</span><span class="chip">whose</span><span class="chip">german</span><span class="chip">of</span><span class="chip">my</span></span></div><div class="nline"><span class="nlabel">C</span><span class="chips"><span class="chip">this</span><span class="chip">in</span><span class="chip">that</span><span class="chip">ofthe</span><span class="chip">another</span><span class="chip">however</span><span class="chip">one</span><span class="chip">entire</span></span></div><div class="nline"><span class="nlabel">D</span><span class="chips"><span class="chip new">of</span><span class="chip new">.</span><span class="chip new">2002</span><span class="chip new">spielberg</span><span class="chip">entire</span><span class="chip new">salton</span><span class="chip new">self-conscious</span><span class="chip new">pacino</span></span></div><div class="nline"><span class="nlabel">E</span><span class="chips"><span class="chip">inside-show-biz</span><span class="chip">producing</span><span class="chip">pierce</span><span class="chip">silent</span><span class="chip">1790</span><span class="chip">savaged</span><span class="chip">democratic</span><span class="chip">shoulder</span></span></div></div></div></div>
+      <div class="note"><b>Read the C and D rows against A, B and E.</b> C returns clean
+      synonyms and inflections. D keeps them and adds film-specific associations:
+      <code>visuals</code>, <code>screenplay</code> and <code>photography</code> enter
+      <code>cinematography</code>, and <code>storyline</code> enters <code>plot</code>.
+      A, B and E return something close to noise for every query. At 633,720 tokens there is
+      not enough co-occurrence evidence to place a word, and the next section puts a number
+      on exactly how little.</div></section><section id="similarity">
+      <div class="sechead"><div class="eyebrow">The result worth reporting</div>
+      <h2>Good at sentiment, useless at similarity</h2></div>
+      <p class="prose">Spearman correlation between human similarity ratings and cosine
+      similarity, on three standard benchmarks. Coverage is the share of pairs where both words
+      were in vocabulary, and it is part of the result rather than a footnote: the SST-trained
+      models are scored on roughly half of WordSim-353 because film reviews never mention the
+      rest.</p><div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="n">WordSim-353</th><th class="n">SimLex-999</th><th class="n">MEN-3k</th><th class="n">Coverage</th><th class="n">SST-2 accuracy</th></tr></thead><tbody><tr><td class="mono">A</td><td class="n"><span class="lose">+0.029</span></td><td class="n">+0.045</td><td class="n">+0.118</td><td class="n">50.1%</td><td class="n">0.761</td></tr><tr><td class="mono">B</td><td class="n"><span class="lose">-0.036</span></td><td class="n">+0.069</td><td class="n">-0.010</td><td class="n">50.1%</td><td class="n">0.729</td></tr><tr><td class="mono">C</td><td class="n"><span class="win">+0.700</span></td><td class="n">+0.442</td><td class="n">+0.771</td><td class="n">100.0%</td><td class="n">0.798</td></tr><tr><td class="mono">D</td><td class="n"><span class="win">+0.585</span></td><td class="n">+0.405</td><td class="n">+0.702</td><td class="n">50.1%</td><td class="n">0.792</td></tr><tr><td class="mono">E</td><td class="n"><span class="lose">+0.005</span></td><td class="n">+0.033</td><td class="n">+0.096</td><td class="n">50.1%</td><td class="n">0.744</td></tr></tbody></table></div><div class="note warm"><b>A, B and E have no measurable lexical similarity
+      structure at all.</b> B is slightly negative on two of three benchmarks, which is a
+      correlation indistinguishable from none. Those same three models score
+      0.729 to 0.761 on sentiment, within 0.069 of
+      GoogleNews. Mean-pooled logistic regression needs only that sentiment-bearing words
+      occupy consistent directions. It does not need <code>tiger</code> to sit near
+      <code>cat</code>. A report that evaluated downstream accuracy alone would conclude these
+      embeddings are nearly as good as GoogleNews, and it would be wrong.</div>
+      <p class="prose">It also reframes what the warm start bought. D scores
+      0.585 on WordSim-353 against 0.029 for A,
+      trained from scratch on the identical corpus with identical settings. The pretrained
+      initialisation is not a 0.031-accuracy trick. It is the entire source of lexical
+      structure in Model D.</p></section><section id="finetune">
+      <div class="sechead"><div class="eyebrow">Model D</div>
+      <h2>What fine-tuning means for word2vec</h2></div>
+      <p class="prose">Not what it means for a transformer. There are no frozen layers and no
+      adapter. Initialise <code>W_in</code> from the published vectors, then run ordinary
+      skip-gram training on movie reviews at a low learning rate.</p>
+      <div class="stats">
+        <div class="stat"><span class="n">12,032</span>
+          <span class="l">rows seeded from GoogleNews</span></div>
+        <div class="stat"><span class="n">2,277</span>
+          <span class="l">rows Google's vocabulary lacks</span></div>
+        <div class="stat"><span class="n">0.961</span>
+          <span class="l">mean cosine, before against after</span></div>
+        <div class="stat"><span class="n">+0.031</span>
+          <span class="l">accuracy over training from scratch</span></div>
+      </div>
+      <div class="driftgrid">
+        <div class="dcol"><h3>Moved most</h3><div class="drow moved"><span class="w">kidman</span><span class="t"><i style="width:89%"></i></span><span class="v">0.553</span></div><div class="drow moved"><span class="w">philippe</span><span class="t"><i style="width:80%"></i></span><span class="v">0.599</span></div><div class="drow moved"><span class="w">schwarzenegger</span><span class="t"><i style="width:78%"></i></span><span class="v">0.608</span></div><div class="drow moved"><span class="w">holm</span><span class="t"><i style="width:71%"></i></span><span class="v">0.647</span></div><div class="drow moved"><span class="w">griffiths</span><span class="t"><i style="width:67%"></i></span><span class="v">0.663</span></div><div class="drow moved"><span class="w">sheridan</span><span class="t"><i style="width:66%"></i></span><span class="v">0.669</span></div><div class="drow moved"><span class="w">evelyn</span><span class="t"><i style="width:65%"></i></span><span class="v">0.677</span></div><div class="drow moved"><span class="w">clooney</span><span class="t"><i style="width:60%"></i></span><span class="v">0.700</span></div></div>
+        <div class="dcol"><h3>Did not move at all</h3><div class="drow anchored"><span class="w">oozes</span><span class="t"><i style="width:2%"></i></span><span class="v">1.000</span></div><div class="drow anchored"><span class="w">priggish</span><span class="t"><i style="width:2%"></i></span><span class="v">1.000</span></div><div class="drow anchored"><span class="w">plod</span><span class="t"><i style="width:2%"></i></span><span class="v">1.000</span></div><div class="drow anchored"><span class="w">worshipful</span><span class="t"><i style="width:2%"></i></span><span class="v">1.000</span></div><div class="drow anchored"><span class="w">drudgery</span><span class="t"><i style="width:2%"></i></span><span class="v">1.000</span></div><div class="drow anchored"><span class="w">abysmally</span><span class="t"><i style="width:2%"></i></span><span class="v">1.000</span></div><div class="drow anchored"><span class="w">poo</span><span class="t"><i style="width:2%"></i></span><span class="v">1.000</span></div><div class="drow anchored"><span class="w">execrable</span><span class="t"><i style="width:2%"></i></span><span class="v">1.000</span></div></div>
+      </div>
+      <div class="note"><b>The drift ranking is a readout of corpus frequency.</b> Everything
+      at the top is an actor surname: frequent in reviews, rare in news, so heavily retrained.
+      Everything at the bottom sits at cosine 1.000, unmoved: rare sentiment adjectives that
+      appear once or twice in SST and never accumulate enough gradient. This answers "what did
+      fine-tuning do" better than any single-word anecdote could.</div>
+      <ol class="steps">
+        <li><div class="step-b"><b>Build the vocabulary from our corpus first</b>
+          <span class="why"><code>intersect_word2vec_format</code> only overwrites rows that
+          already exist. It does not import Google's three million words, which is what we
+          want, but it needs stating.</span></div></li>
+        <li><div class="step-b"><b>Set <code>vectors_lockf</code> to ones explicitly</b>
+          <span class="why">gensim 4.x does not create it. Without it the import either fails
+          or silently freezes every row, producing a model that looks fine-tuned and is not.</span></div></li>
+        <li><div class="step-b"><b>Keep the learning rate low: alpha 0.005, 8 epochs</b>
+          <span class="why">Google never published their output matrix, so <code>W_out</code>
+          starts random and the first updates are partly spent re-learning a decoder. A normal
+          learning rate scrambles the imported vectors in the first epoch.</span></div></li>
+        <li><div class="step-b"><b>Measure drift rather than assuming it</b>
+          <span class="why">Cosine between each word's warm-start vector and its final vector.
+          Mean 0.9609, median 0.9731, so the low
+          learning rate held.</span></div></li>
+      </ol></section><section id="scratch">
+      <div class="sechead"><div class="eyebrow">Model E, beyond the requirement</div>
+      <h2>Writing skip-gram with negative sampling</h2></div>
+      <p class="prose">The handout suggests taking a superficial look at the code. Writing it
+      instead is the difference between having used word2vec and understanding it.
+      <code>src/sgns.py</code> implements the vocabulary and counts, subsampling of frequent
+      words, the unigram^0.75 noise table, a dynamic window, the two embedding matrices, and
+      linear learning rate decay. <code>to_keyedvectors</code> then wraps <code>W_in</code> in
+      a gensim object so E runs through the existing evaluation code unchanged.</p><div class="tablewrap"><table><thead><tr><th class=""></th><th class="n">A, gensim</th><th class="n">E, from scratch</th></tr></thead><tbody><tr><td class="">SST-2 accuracy</td><td class="n">0.7611</td><td class="n">0.7441</td></tr><tr><td class="">Wall clock</td><td class="n">11.8 s</td><td class="n">160.2 s</td></tr><tr><td class="">Words per second</td><td class="n">537,887</td><td class="n">39,571</td></tr><tr><td class="">Loss, first to last epoch</td><td class="n">not exposed</td><td class="n">4.2288 to 2.8681</td></tr></tbody></table></div><div class="note warm"><b>The first version did not learn, and the failure is
+      worth keeping.</b> Loss sat at exactly 1.3863 for all ten epochs and accuracy came out
+      0.4992, which is chance on a balanced split. 1.3863 is 2&middot;ln 2, the loss of a model
+      whose every logit is zero. The cause was the loss reduction, not the sampling: calling
+      <code>BCEWithLogitsLoss</code> once on the positives and once on the negatives averages
+      over B entries and over B&middot;k entries, so at a batch of
+      8,192 the effective per-pair learning rate was about 3e-6.
+      Measured gradient norm on <code>W_in</code> was exactly 0.0. Writing Mikolov's equation 4
+      directly, summing over the k negatives and averaging only over the batch, fixed it.</div>
+      <p class="prose">Two component checks were run before training anything, and they are
+      what made that failure quick to localise. Subsampling keeps 17.6% of occurrences of
+      <code>the</code>. The noise table maps <code>the</code> from a raw frequency of 4.30%
+      down to a sampled 1.31% while lifting <code>execrable</code> from effectively zero to
+      2e-5. Both are the 0.75 exponent behaving correctly.</p></section><section id="systems">
+      <div class="sechead"><div class="eyebrow">Deliverable 4</div>
+      <h2>What these models cost to run</h2></div>
+      <p class="prose">Query latency is brute-force <code>most_similar</code>, a dense
+      matrix-vector product over the whole vocabulary, measured over
+      200 calls. Memory is an RSS delta measured in an isolated subprocess,
+      against the size of the matrices actually retained.</p><div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="n">Vocab</th><th class="n">p50 ms</th><th class="n">p95 ms</th><th class="n">Keeps</th><th class="n">Predicted MB</th><th class="n">Measured MB</th><th class="n">Ratio</th></tr></thead><tbody><tr><td class="mono">A</td><td class="n">14,309</td><td class="n">0.41</td><td class="n">2.41</td><td class="n">2</td><td class="n">34.3</td><td class="n">35.0</td><td class="n">1.02</td></tr><tr><td class="mono">B</td><td class="n">14,309</td><td class="n">0.36</td><td class="n">1.40</td><td class="n">2</td><td class="n">34.3</td><td class="n">48.0</td><td class="n">1.40</td></tr><tr><td class="mono">C</td><td class="n">500,000</td><td class="n">15.08</td><td class="n">26.94</td><td class="n">1</td><td class="n">600.0</td><td class="n">195.6</td><td class="n">0.33</td></tr><tr><td class="mono">D</td><td class="n">14,309</td><td class="n">0.41</td><td class="n">3.07</td><td class="n">2</td><td class="n">34.3</td><td class="n">34.8</td><td class="n">1.01</td></tr><tr><td class="mono">E</td><td class="n">14,309</td><td class="n">0.37</td><td class="n">1.51</td><td class="n">1</td><td class="n">17.2</td><td class="n">17.8</td><td class="n">1.03</td></tr></tbody></table></div><div class="note"><b>Query latency is linear in vocabulary, as brute force should
+      be.</b> C carries 35 times the vocabulary of the SST models and is
+      37 times slower at p50. That is the argument for an approximate index stated
+      as a measurement: at 14,309 words nobody needs one, at
+      500,000 it is 15 ms per query, and at Google's
+      full three million it would be roughly 90 ms.</div>
+      <p class="prose">The <code>2 &middot; V &middot; d &middot; 4</code> prediction holds
+      within 3% for A, D and E. B comes in at
+      1.40 because hierarchical softmax also
+      keeps the Huffman tree's code and point arrays, which the formula does not count.</p>
+      <div class="note warm"><b>C does not fit, and the cause is not established.</b>
+      500,000 by 300 float32 is 600 MB and the
+      measured delta is 195.6 MB, a third of it. The likely explanation is
+      macOS memory compression, which compresses inactive anonymous pages so
+      <code>ru_maxrss</code> reports below the allocation. That is testable: the same
+      measurement on a Linux node should come out near
+      600 MB. Until it runs, this is an open discrepancy and not a
+      finding.</div>
+      <p class="prose">One more measurement decided how E trains. On this vocabulary, MPS is
+      slower than CPU (64.3 against 44.6 ms per batch) and sparse gradients are slower than
+      dense (52.6 against 44.6). The GPU loses because the model is small enough that launch
+      and transfer overhead dominate. Sparsity loses for a specific reason: a batch of
+      8,192 pairs with 10 negatives
+      touches roughly 90,000 index slots over 14,309 rows, so nearly every row updates on every
+      step and there is no sparsity left to exploit. Both results should reverse on a larger
+      corpus, which is the measurement text8 exists to take.</p></section><section id="errors">
+      <div class="sechead"><div class="eyebrow">Deliverable 2c</div>
+      <h2>Where every model fails, and why it is the same place</h2></div><div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="n">Errors / 1,821</th><th class="n">Negation</th><th class="n">Contrast</th><th class="n">Other</th></tr></thead><tbody><tr><td class="mono">C</td><td class="n">368</td><td class="n">102</td><td class="n">64</td><td class="n">202</td></tr><tr><td class="mono">D</td><td class="n">379</td><td class="n">96</td><td class="n">64</td><td class="n">219</td></tr><tr><td class="mono">A</td><td class="n">435</td><td class="n">101</td><td class="n">72</td><td class="n">262</td></tr><tr><td class="mono">E</td><td class="n">466</td><td class="n">114</td><td class="n">79</td><td class="n">273</td></tr><tr><td class="mono">B</td><td class="n">493</td><td class="n">120</td><td class="n">62</td><td class="n">311</td></tr></tbody></table></div><div class="note"><b>Negation and contrast are 38 to 45% of every model's errors,
+      against roughly 20% of the test set overall.</b> That holds for GoogleNews too, which
+      means it is not an embedding-quality problem. It is the pooling step: averaging discards
+      word order, so no amount of embedding quality recovers a scope-of-negation judgement.</div><div class="tablewrap"><table><thead><tr><th class="mono">Model</th><th class="">Sentence</th><th class="n">Gold</th><th class="n">Predicted</th><th class="n">Confidence</th><th class="mono">Category</th></tr></thead><tbody><tr><td class="mono">A</td><td class=""><code>not a bad journey at all .</code></td><td class="n">pos</td><td class="n">neg</td><td class="n">0.958</td><td class="mono">negation</td></tr><tr><td class="mono">A</td><td class=""><code>an ultra-low-budget indie debut that smacks more of good intentions than talent .</code></td><td class="n">neg</td><td class="n">pos</td><td class="n">0.917</td><td class="mono">other</td></tr><tr><td class="mono">A</td><td class=""><code>a well acted and well intentioned snoozer .</code></td><td class="n">neg</td><td class="n">pos</td><td class="n">0.898</td><td class="mono">other</td></tr><tr><td class="mono">D</td><td class=""><code>never -lrb- sinks -rrb- into exploitation .</code></td><td class="n">pos</td><td class="n">neg</td><td class="n">0.990</td><td class="mono">negation</td></tr><tr><td class="mono">D</td><td class=""><code>there is n&#x27;t a weak or careless performance amongst them .</code></td><td class="n">pos</td><td class="n">neg</td><td class="n">0.973</td><td class="mono">negation</td></tr><tr><td class="mono">D</td><td class=""><code>despite the long running time , the pace never feels slack -- there &#x27;s no scene that scr</code></td><td class="n">pos</td><td class="n">neg</td><td class="n">0.955</td><td class="mono">negation</td></tr></tbody></table></div><p class="prose">Each has a mechanical explanation.
+      <code>not a bad journey at all</code> averages <code>not</code> and <code>bad</code> into
+      negative territory. <code>there is n't a weak or careless performance amongst them</code>
+      pools two strongly negative adjectives that the negation was supposed to invert.
+      <code>a great deal of sizzle and very little steak</code> is an idiom whose negative
+      reading lives entirely in the contrast between its clauses. The handout warns that a test
+      set producing no failures must be made harder. That did not arise, since SST supplies
+      these unaided.</p></section><section id="log">
+      <div class="sechead"><div class="eyebrow">Provenance</div><h2>Build log</h2></div>
+      <div class="log"><div class="lrow"><span class="lhash">47fa014</span><span><b>HW2 phases 0-3</b><div class="lnote">env, SST-2 data, gensim models A and B, sentiment pipeline</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">5cb380c</span><span><b>Phase 4</b><div class="lnote">phrase-level SST corpus (4.7x text), Model C GoogleNews-300, OOV diagnostic</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">c86ba65</span><span><b>Phase 5</b><div class="lnote">Model D, GoogleNews warm start fine-tuned on SST, with cosine drift analysis</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">340fe91</span><span><b>Phase 10</b><div class="lnote">Model E, skip-gram with negative sampling from scratch in PyTorch</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">5551046</span><span><b>Phases 6-8</b><div class="lnote">similarity benchmarks, latency and memory measurement, error mining</div></span><span class="lstate">done</span></div><div class="lrow"><span class="lhash">&mdash;</span><span><b>text8</b><div class="lnote">Train A, B and E on 17M tokens; retest the MPS and sparse crossovers</div></span><span class="lstate todo">queued</span></div><div class="lrow"><span class="lhash">&mdash;</span><span><b>Hogwild scaling</b><div class="lnote">words/sec against worker count on a multi-core node</div></span><span class="lstate todo">queued</span></div><div class="lrow"><span class="lhash">&mdash;</span><span><b>Hyperparameter sweep</b><div class="lnote">training cost against accuracy for window, dimension and negatives</div></span><span class="lstate todo">queued</span></div></div>
+      <p class="prose">Every figure on this page is read from <code>results/*.json</code> at
+      build time by <code>src/build_report.py</code>. Nothing is typed into the prose, so
+      re-running a model and rebuilding cannot leave a stale number behind.</p></section><footer>CS 6220 Big Data Systems, Fall 2026. Report generated from
+      5 result records.</footer></div></body></html>

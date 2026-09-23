@@ -47,7 +47,7 @@ python -m src.run_eval               # phases 6-8: intrinsic benchmarks, latency
 
 There is no test suite. Correctness is judged by the acceptance checks in
 `IMPLEMENTATION.md` — e.g. `most_similar("good")` returns sensible neighbours, SST-2 accuracy
-lands in a known range, fine-tune cosine drift stays under ~0.4 — never by the training loss
+lands in a known range, fine-tune mean cosine between warm-start and final vectors stays above ~0.6 — never by the training loss
 curve alone (see the repo-specific gotchas in `CLAUDE.md`).
 
 ## Headline results (phrase-level corpus, 67k rows)

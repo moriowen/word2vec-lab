@@ -152,6 +152,27 @@ CSS = """
 """
 
 EXTRA_CSS = """
+  .cover{display:none}
+  @media print{
+    :root{--paper:#fff;--surface:#fff;--raised:#f4f6f8;--ink:#111;--muted:#444;
+          --faint:#666;--line:#ccc;--line-2:#aaa;--accent:#0D6E86;--accent-soft:#e8f2f5;
+          --warm:#A8500C;--warm-soft:#f6e9dc;--good:#196B3C;--bad:#9B2C2C}
+    @page{margin:14mm}
+    body{font-size:10.5pt}
+    .wrap{max-width:none;padding:0}
+    nav.toc{display:none}
+    .cover{display:flex;flex-direction:column;gap:6px;padding-bottom:18px;
+           border-bottom:2px solid var(--line-2);margin-bottom:8px}
+    .cover .f{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+    header.masthead{padding-top:18px;break-after:avoid}
+    section{padding-top:26px;break-inside:auto}
+    h2,h3{break-after:avoid}
+    .mcard,.tcase,.figure,.note,.tablewrap,.models,.driftgrid{break-inside:avoid}
+    .stats,ol.steps>li,.nrow,.lrow{break-inside:avoid}
+    table{min-width:0}
+    .figure svg{min-width:0}
+    a{text-decoration:none}
+  }
   .tcase{background:var(--surface);border:1px solid var(--line);border-radius:6px;
          padding:18px;display:flex;flex-direction:column;gap:14px;margin-bottom:16px}
   .tchead{display:flex;flex-direction:column;gap:7px}
@@ -163,4 +184,5 @@ EXTRA_CSS = """
   .tcnb{display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:baseline;
         border-top:1px dashed var(--line);padding-top:12px}
   .tcnb .chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tclegend{font-size:.74rem;color:var(--faint);margin-top:-4px}
 """

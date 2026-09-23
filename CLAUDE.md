@@ -20,7 +20,7 @@ python -m src.data                 # print corpus stats for both training-corpus
 
 There is no test suite. Correctness is judged by the acceptance checks in `IMPLEMENTATION.md`
 (e.g. `model.wv.most_similar("good")` returns sensible neighbours, SST-2 accuracy lands in a
-specific range, mean cosine drift for the fine-tune is below ~0.4) — not by unit tests.
+specific range, mean cosine between the fine-tune's warm-start and final vectors is above ~0.6) — not by unit tests.
 
 ## Architecture
 

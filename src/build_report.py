@@ -28,9 +28,9 @@ e = html.escape
 def load():
     recs = {}
     for p in (ROOT / "results").glob("*.json"):
-        if p.name == "testcases.json":      # not a model record
-            continue
         r = json.loads(p.read_text())
+        if "model_id" not in r:        # sidecar data, not a model record
+            continue
         if r["corpus"] == "sst2":      # superseded sentence-level run, kept on disk only
             continue
         recs[r["model_id"]] = r
@@ -96,6 +96,19 @@ def neighbour_box(recs, ids):
     return f'<div class="nbox">{"".join(rows)}</div>'
 
 
+def ex2b():
+    ex = json.loads((ROOT / "results" / "examples_2b.json").read_text())
+    out = []
+    for key, head in [("train", "Five training examples"), ("test", "Four test examples")]:
+        rows = [[x["why"], f'<code>{e(x["text"][:92])}</code>',
+                 "positive" if x["label"] else "negative"] for x in ex[key]]
+        out.append(f"<h3 style=\"margin-top:12px;font-size:.82rem;letter-spacing:.1em;"
+                   f"text-transform:uppercase;font-family:var(--sans);color:var(--faint)\">"
+                   f"{head}</h3>")
+        out.append(table(["Selected for", "Text", "Gold label"], rows, ["m", "l", "n"]))
+    return "".join(out)
+
+
 def testcase_section():
     tc = json.loads((ROOT / "results" / "testcases.json").read_text())
     blocks = []
@@ -119,7 +132,10 @@ def testcase_section():
           {table(["Model", "Rank 1", "Rank 2", "Result", "Neighbour agreement"], rows,
                  ["m", "n", "n", "n", "n"])}
           <div class="tcnb"><span class="nlabel">D retrieves</span>
-            <span class="chips">{chips}</span></div></div>''')
+            <span class="chips">{chips}</span></div>
+          <p class="tclegend">Retrieved training sentences, nearest first, with cosine.
+          Highlighted where the training sentence's own label matches this test sentence's
+          gold label.</p></div>''')
     return "".join(blocks)
 
 
@@ -158,6 +174,11 @@ def build():
     S = []
     add = S.append
 
+    add('''<div class="cover">
+      <div class="f">Student Name: Atharva Mohite</div>
+      <div class="f">Student Session: cs6220</div>
+      <div class="f">CS 6220 Big Data Systems, Fall 2026 &middot; Homework 2, programming option</div>
+    </div>''')
     add(f'''<header class="masthead">
       <div class="eyebrow">CS 6220 Big Data Systems &middot; Homework 2 &middot; programming option</div>
       <h1>Five Word2Vec Models, One Classifier</h1>
@@ -179,7 +200,7 @@ def build():
       <a href="#hyper">Hyperparameters</a><a href="#neighbours">Nearest neighbours</a>
       <a href="#similarity">Lexical similarity</a><a href="#finetune">Fine-tuning</a>
       <a href="#scratch">From scratch</a><a href="#systems">Systems</a>
-      <a href="#errors">Errors</a><a href="#log">Build log</a></nav>''')
+      <a href="#errors">Errors</a><a href="#running">Running it</a><a href="#log">Build log</a></nav>''')
 
     # ---- results
     add(f'''<section id="results">
@@ -286,7 +307,11 @@ def build():
       loaded through gensim-data and capped at the {C["train"]["vocab_limit"]:,} most frequent
       words. GloVe was deliberately not used as the pretrained baseline: it factorises a
       co-occurrence matrix and is not a Word2Vec model, so it would answer a different
-      question than the one asked.</p></section>''')
+      question than the one asked.</p>
+      <h3 style="margin-top:14px">Representative examples</h3>
+      <p class="prose">Deliverable 2b asks for five training examples and four test examples,
+      two positive and two negative. Selected by rule rather than by eye, with the selecting
+      rule named beside each.</p>{ex2b()}</section>''')
 
     # ---- hyperparameters
     add(f'''<section id="hyper">
@@ -368,7 +393,7 @@ def build():
           <span class="l">rows seeded from GoogleNews</span></div>
         <div class="stat"><span class="n">{ft["randomly_initialised"]:,}</span>
           <span class="l">rows Google's vocabulary lacks</span></div>
-        <div class="stat"><span class="n">{ft["mean_cosine_drift"]:.3f}</span>
+        <div class="stat"><span class="n">{ft["mean_cosine_before_after"]:.3f}</span>
           <span class="l">mean cosine, before against after</span></div>
         <div class="stat"><span class="n">+{gap_ad:.3f}</span>
           <span class="l">accuracy over training from scratch</span></div>
@@ -396,7 +421,7 @@ def build():
           learning rate scrambles the imported vectors in the first epoch.</span></div></li>
         <li><div class="step-b"><b>Measure drift rather than assuming it</b>
           <span class="why">Cosine between each word's warm-start vector and its final vector.
-          Mean {ft["mean_cosine_drift"]:.4f}, median {ft["median_cosine_drift"]:.4f}, so the low
+          Mean {ft["mean_cosine_before_after"]:.4f}, median {ft["median_cosine_before_after"]:.4f}, so the low
           learning rate held.</span></div></li>
       </ol></section>''')
 
@@ -504,6 +529,42 @@ def build():
       reading lives entirely in the contrast between its clauses. The handout warns that a test
       set producing no failures must be made harder. That did not arise, since SST supplies
       these unaided.</p></section>''')
+
+    # ---- deliverable 6
+    add(f'''<section id="running">
+      <div class="sechead"><div class="eyebrow">Deliverable 6</div>
+      <h2>Installation, running and measurement</h2></div>
+      <p class="prose">Four things cost real time, and each reported something other than its
+      actual cause. They are recorded here because the handout asks for the experience, and
+      because each has a specific tell.</p>
+      <ol class="steps">
+        <li><div class="step-b"><b>gensim has no wheels for Python 3.14</b>
+          <span class="why">The machine's default interpreter is 3.14. Installing gensim there
+          tries to compile Cython from source and fails a long way in. Homebrew's Python 3.11
+          is what the virtual environment uses.</span></div></li>
+        <li><div class="step-b"><b><code>import gensim</code> fails on a fresh unpinned install</b>
+          <span class="why">gensim 4.3.x imports <code>scipy.linalg.triu</code>, which scipy
+          1.13 removed. The ImportError names gensim, so it reads as a broken gensim rather
+          than a version conflict. <code>requirements.txt</code> pins <code>scipy&lt;1.13</code>
+          and <code>numpy&lt;2</code>.</span></div></li>
+        <li><div class="step-b"><b>The SST-2 split with hidden labels</b>
+          <span class="why">The GLUE copy sets every test label to -1. Accuracy against it is
+          meaningless and looks plausible. <code>src/data.py</code> asserts the test split is
+          two-class and raises otherwise.</span></div></li>
+        <li><div class="step-b"><b>Whole-process peak RSS is not a model measurement</b>
+          <span class="why">The first memory table compared process peak RSS against the matrix
+          prediction and reported 297.8 MB for a model whose matrices are 34.3 MB. Peak RSS
+          includes the interpreter, gensim, numpy, torch and the resident corpus.
+          <code>src/measure_mem.py</code> now measures an RSS delta in an isolated
+          subprocess per model.</span></div></li>
+      </ol>
+      <p class="prose">Reproducing everything on this page is four commands after
+      <code>pip install -r requirements.txt</code>: <code>python -m src.main</code> trains A
+      and B and loads C, <code>python -m src.run_eval</code> adds the similarity, latency and
+      error measurements, <code>python -m src.measure_mem</code> fills the memory table, and
+      <code>python -m src.build_report</code> regenerates this page. Model E is
+      <code>python -m src.run_e</code> and takes {E["train"]["wall_s"]:.0f} seconds on
+      CPU.</p></section>''')
 
     # ---- log
     rows = "".join(

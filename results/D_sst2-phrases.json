@@ -26,8 +26,6 @@
   "finetune": {
     "seeded_from_pretrained": 12032,
     "randomly_initialised": 2277,
-    "mean_cosine_drift": 0.9609,
-    "median_cosine_drift": 0.9731,
     "moved_most": [
       [
         "kidman",
@@ -111,7 +109,9 @@
         "execrable",
         1.0
       ]
-    ]
+    ],
+    "mean_cosine_before_after": 0.9609,
+    "median_cosine_before_after": 0.9731
   },
   "extrinsic": {
     "sst2_test_acc": 0.7919,

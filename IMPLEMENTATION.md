@@ -774,3 +774,45 @@ as competence.
 Also reframed the lexical similarity section, which had been titled as the headline result.
 It is analysis beyond the requirement and now says so, so the required sentiment work reads
 as primary. No measurement changed.
+
+### Sep 23, phase 9 closed out, plus an audit
+
+Audited the tracked tree against the handout's six deliverables rather than against memory.
+Three gaps and one defect.
+
+**Deliverable 2b was missing.** The handout asks for five representative training examples
+and four test examples, two positive and two negative, quoted verbatim. None were in the
+report. `results/examples_2b.json` now holds them, selected by rule with the rule recorded,
+and they render into the data section.
+
+**Deliverable 6 was missing.** The installation and running notes existed only in this log.
+They are now a section of the report: the Python 3.14 wheel problem, the
+`scipy.linalg.triu` pin, the SST-2 hidden-label split, and the peak-RSS mistake. Each is
+recorded with the misleading symptom rather than just the fix, which is what makes the
+section worth reading.
+
+**A defect in a field name, which had already produced two wrong sentences.**
+`finetune.mean_cosine_drift` held 0.9609, a cosine *similarity*, not a drift. Two files
+stated the acceptance gate as "drift stays under ~0.4", which is only true under the
+opposite convention, where drift is 1 minus cosine. `PLAN.md` made the same slip in reverse,
+writing the threshold as a distance in one place and as a similarity in another.
+
+The field is renamed `mean_cosine_before_after` (and `median_...`), which cannot be read
+two ways, and the existing record was migrated rather than retrained since the value is
+unchanged. Worth recording as a lesson rather than a tidy-up: a name that admits two
+conventions will eventually be read in both, and the wrong reading produces prose that looks
+fine.
+
+**Two files were not written by this session.** `README.md` and `CLAUDE.md` were produced by
+side agents and swept into commits `5551046` and `340fe91` by `git add -A`. Content was
+checked against the results and is accurate apart from the drift statement above, now fixed.
+Flagged because authorship matters for a graded artefact.
+
+**Submission built.** `HW2_P_Mohite_Atharva.pdf`, 21 pages, rendered from `docs/index.html`
+through headless Chrome with a print stylesheet that forces the light palette and keeps
+cards, tables and examples off page boundaries. `HW2_P_Mohite_Atharva.zip` is 3.6 MB and
+contains the PDF, `data/`, `src/`, `results/`, `docs/` and the three markdown documents. The
+zip is gitignored, being a build artefact.
+
+Still open: the repo has no remote, so every commit is local. Model C's memory discrepancy
+is unexplained and needs one run on a Linux node. Phases 11 to 13 are untouched.

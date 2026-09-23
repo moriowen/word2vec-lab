@@ -1,0 +1,60 @@
+{
+  "train": [
+    {
+      "i": 2,
+      "why": "positive, plain",
+      "text": "that loves its characters and communicates something rather beautiful about human nature",
+      "label": 1
+    },
+    {
+      "i": 3,
+      "why": "negative, plain",
+      "text": "remains utterly satisfied to remain the same throughout",
+      "label": 0
+    },
+    {
+      "i": 11,
+      "why": "negation",
+      "text": "for those moviegoers who complain that ` they do n't make movies like they used to anymore",
+      "label": 0
+    },
+    {
+      "i": 29,
+      "why": "contrastive clause",
+      "text": "the plot is nothing but boilerplate clich\u00e9s from start to finish ,",
+      "label": 0
+    },
+    {
+      "i": 473,
+      "why": "film-domain vocabulary",
+      "text": ", good action , good acting , good dialogue , good pace , good cinematography .",
+      "label": 1
+    }
+  ],
+  "test": [
+    {
+      "i": 4,
+      "why": "positive",
+      "text": "this is one of polanski 's best films .",
+      "label": 1
+    },
+    {
+      "i": 30,
+      "why": "positive",
+      "text": "finally , a genre movie that delivers -- in a couple of genres , no less .",
+      "label": 1
+    },
+    {
+      "i": 8,
+      "why": "negative",
+      "text": "arnold 's jump from little screen to big will leave frowns on more than a few faces .",
+      "label": 0
+    },
+    {
+      "i": 0,
+      "why": "negative",
+      "text": "no movement , no yuks , not much of anything .",
+      "label": 0
+    }
+  ]
+}

@@ -70,8 +70,10 @@ def finetune(corpus_sents, corpus_name="sst2-phrases"):
         "finetune": {
             "seeded_from_pretrained": int(seeded.sum()),
             "randomly_initialised": int((~seeded).sum()),
-            "mean_cosine_drift": round(float(drift.mean()), 4),
-            "median_cosine_drift": round(float(np.median(drift)), 4),
+            # Cosine between warm-start and final vector: 1.0 means the word did not move.
+            # Named for what it holds (a similarity) rather than "drift", which reads inverted.
+            "mean_cosine_before_after": round(float(drift.mean()), 4),
+            "median_cosine_before_after": round(float(np.median(drift)), 4),
             "moved_most": [[words[i], round(float(drift[i]), 3)] for i in order[:10]],
             "moved_least": [[words[i], round(float(drift[i]), 3)] for i in order[-10:]],
         },

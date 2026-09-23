@@ -420,13 +420,29 @@ def build(mode="web"):
       swapped freely. GLUE replaces every test label with -1 because the split is reserved for
       its leaderboard. I use the labelled SetFit test split instead. <code>src/data.py</code>
       raises an error unless both classes appear in the loaded test labels.</p>''')
-    add(table(["Split", "Source", "Rows", "Tokens", "Positive", "Used for"],
-              [["train", "stanfordnlp/sst2 (phrase level)", "67,348", f"{tok:,}", "55.8%",
-                "embedding training and classifier fitting"],
-               ["dev", "SetFit/sst2", "872", "17,046", "50.9%", "held out, unused"],
-               ["test", "SetFit/sst2", "1,821", "35,023", "49.9%", "every number on this page"]],
-              ["m", "l", "n", "n", "n", "l"]))
-    add(f'''<div class="note"><b>The leakage check found one duplicate.</b> The phrase rows
+    add(table(["Split", "Source", "Rows", "Tokens", "Mean length", "Positive", "Used for"],
+              [["train", "stanfordnlp/sst2 (phrase level)", "67,348", f"{tok:,}", "9.4",
+                "55.8%", "embedding training and classifier fitting"],
+               ["dev", "SetFit/sst2", "872", "17,046", "19.5", "50.9%", "held out, unused"],
+               ["test", "SetFit/sst2", "1,821", "35,023", "19.2", "49.9%",
+                "every number on this page"]],
+              ["m", "l", "n", "n", "n", "n", "l"]))
+    add(f'''<div class="stats">
+        <div class="stat"><span class="n">{V:,}</span>
+          <span class="l">vocabulary at min_count=2, phrase-level train</span></div>
+        <div class="stat"><span class="n">7,140</span>
+          <span class="l">vocabulary at min_count=2, sentence-level train</span></div>
+        <div class="stat"><span class="n">6.6%</span>
+          <span class="l">test-token OOV rate, SST-trained vocabulary</span></div>
+        <div class="stat"><span class="n">27.1%</span>
+          <span class="l">test-token OOV rate, GoogleNews-300 vocabulary</span></div>
+      </div>
+      <h3 style="margin-top:14px">What the rows look like</h3>
+      <p class="prose">{hw("Deliverable 2b asks for five training examples and four test "
+      "examples, two positive and two negative.", "Five training examples and four test "
+      "examples, two positive and two negative.")} Each example was selected by a stated
+      rule rather than picked by eye.</p>{ex2b()}
+      <div class="note"><b>The leakage check found one duplicate.</b> The phrase rows
       are labelled treebank subtrees taken only from the training split. An exact string check
       still found the fragment <code>what 's next ?</code> in both training and test data. I
       removed it. There was no overlap with dev, and the training count fell from 67,349 to
@@ -438,12 +454,7 @@ def build(mode="web"):
       frequent words. I did not use GloVe as the pretrained baseline because it factorizes a
       co-occurrence matrix rather than training Word2Vec. That would change the question being
       tested.</p>
-      <h3 class="subhead">{hw("Pretrained model, as deliverable 2a asks", "The pretrained model")}</h3>{pretrained_table}
-      <h3 style="margin-top:14px">Representative examples</h3>
-      <p class="prose">{hw("Deliverable 2b asks for five training examples and four test "
-      "examples, two positive and two negative.", "Five training examples and four test "
-      "examples, two positive and two negative.")} Each example was selected by a stated
-      rule rather than picked by eye.</p>{ex2b()}</section>''')
+      <h3 class="subhead">{hw("Pretrained model, as deliverable 2a asks", "The pretrained model")}</h3>{pretrained_table}</section>''')
 
     # ---- hyperparameters
     sec("hyper")

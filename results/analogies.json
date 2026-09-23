@@ -1,0 +1,1292 @@
+{
+  "A": {
+    "arithmetic": [
+      {
+        "query": "king - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "scorpion",
+            0.539
+          ],
+          [
+            "lion",
+            0.504
+          ],
+          [
+            "lear",
+            0.501
+          ],
+          [
+            "nuts",
+            0.49
+          ],
+          [
+            "titus",
+            0.49
+          ]
+        ]
+      },
+      {
+        "query": "paris - france + italy",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "beckons",
+            0.723
+          ],
+          [
+            "1995",
+            0.703
+          ],
+          [
+            "marvin",
+            0.7
+          ],
+          [
+            "holland",
+            0.692
+          ],
+          [
+            "ignites",
+            0.691
+          ]
+        ]
+      },
+      {
+        "query": "bigger - big + small",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "fatter",
+            0.575
+          ],
+          [
+            "hard-pressed",
+            0.561
+          ],
+          [
+            "raucously",
+            0.515
+          ],
+          [
+            "attempts",
+            0.506
+          ],
+          [
+            "addressing",
+            0.494
+          ]
+        ]
+      },
+      {
+        "query": "walking - walk + swim",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "olympic",
+            0.661
+          ],
+          [
+            "gaping",
+            0.575
+          ],
+          [
+            "wrap",
+            0.561
+          ],
+          [
+            "filter",
+            0.547
+          ],
+          [
+            "ounce",
+            0.537
+          ]
+        ]
+      },
+      {
+        "query": "comedy - funny + scary",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "school-age",
+            0.422
+          ],
+          [
+            "zippy",
+            0.417
+          ],
+          [
+            "quadrangle",
+            0.413
+          ],
+          [
+            "dumb",
+            0.411
+          ],
+          [
+            "nickelodeon-esque",
+            0.406
+          ]
+        ]
+      },
+      {
+        "query": "actor - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "davies",
+            0.471
+          ],
+          [
+            "macdowell",
+            0.462
+          ],
+          [
+            "michel",
+            0.461
+          ],
+          [
+            "stoop",
+            0.456
+          ],
+          [
+            "appearing",
+            0.451
+          ]
+        ]
+      },
+      {
+        "query": "worst - bad + good",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "moronic",
+            0.361
+          ],
+          [
+            "drowns",
+            0.361
+          ],
+          [
+            "resources",
+            0.358
+          ],
+          [
+            "bloated",
+            0.349
+          ],
+          [
+            "carpenter",
+            0.349
+          ]
+        ]
+      }
+    ],
+    "benchmark": {
+      "overall_accuracy": 0.0006,
+      "attempted": 3563,
+      "restrict_vocab": 50000,
+      "questions_in_set": 19544,
+      "coverage": 0.1823,
+      "sections": {
+        "capital-common-countries": {
+          "accuracy": 0.0,
+          "attempted": 12
+        },
+        "capital-world": {
+          "accuracy": 0.0,
+          "attempted": 9
+        },
+        "currency": {
+          "accuracy": 0.0,
+          "attempted": 6
+        },
+        "city-in-state": {
+          "accuracy": 0.0,
+          "attempted": 1
+        },
+        "family": {
+          "accuracy": 0.011,
+          "attempted": 182
+        },
+        "gram1-adjective-to-adverb": {
+          "accuracy": 0.0,
+          "attempted": 552
+        },
+        "gram2-opposite": {
+          "accuracy": 0.0,
+          "attempted": 240
+        },
+        "gram3-comparative": {
+          "accuracy": 0.0,
+          "attempted": 600
+        },
+        "gram4-superlative": {
+          "accuracy": 0.0,
+          "attempted": 210
+        },
+        "gram5-present-participle": {
+          "accuracy": 0.0,
+          "attempted": 462
+        },
+        "gram6-nationality-adjective": {
+          "accuracy": 0.0,
+          "attempted": 175
+        },
+        "gram7-past-tense": {
+          "accuracy": 0.0,
+          "attempted": 462
+        },
+        "gram8-plural": {
+          "accuracy": 0.0,
+          "attempted": 272
+        },
+        "gram9-plural-verbs": {
+          "accuracy": 0.0,
+          "attempted": 380
+        }
+      }
+    }
+  },
+  "B": {
+    "arithmetic": [
+      {
+        "query": "king - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "sugar",
+            0.391
+          ],
+          [
+            "abbott",
+            0.361
+          ],
+          [
+            "ernest",
+            0.356
+          ],
+          [
+            "wildcard",
+            0.352
+          ],
+          [
+            "temperamental",
+            0.332
+          ]
+        ]
+      },
+      {
+        "query": "paris - france + italy",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "1995",
+            0.59
+          ],
+          [
+            "dog-tag",
+            0.534
+          ],
+          [
+            "junk-calorie",
+            0.517
+          ],
+          [
+            "gobble",
+            0.506
+          ],
+          [
+            "grossly",
+            0.506
+          ]
+        ]
+      },
+      {
+        "query": "bigger - big + small",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "larger",
+            0.345
+          ],
+          [
+            "heroine",
+            0.33
+          ],
+          [
+            "attracting",
+            0.323
+          ],
+          [
+            "less",
+            0.32
+          ],
+          [
+            "batman",
+            0.313
+          ]
+        ]
+      },
+      {
+        "query": "walking - walk + swim",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "east",
+            0.442
+          ],
+          [
+            "expecting",
+            0.44
+          ],
+          [
+            "languishing",
+            0.44
+          ],
+          [
+            "olympic",
+            0.414
+          ],
+          [
+            "wades",
+            0.411
+          ]
+        ]
+      },
+      {
+        "query": "comedy - funny + scary",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "flick",
+            0.36
+          ],
+          [
+            "opens",
+            0.281
+          ],
+          [
+            "drama",
+            0.28
+          ],
+          [
+            "innovations",
+            0.265
+          ],
+          [
+            "liability",
+            0.256
+          ]
+        ]
+      },
+      {
+        "query": "actor - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "enigma",
+            0.316
+          ],
+          [
+            "actress",
+            0.315
+          ],
+          [
+            "unhinged",
+            0.312
+          ],
+          [
+            "role",
+            0.305
+          ],
+          [
+            "nonstop",
+            0.305
+          ]
+        ]
+      },
+      {
+        "query": "worst - bad + good",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "parents",
+            0.306
+          ],
+          [
+            "teen-driven",
+            0.281
+          ],
+          [
+            "made",
+            0.278
+          ],
+          [
+            "shining",
+            0.277
+          ],
+          [
+            "supporting",
+            0.264
+          ]
+        ]
+      }
+    ],
+    "benchmark": {
+      "overall_accuracy": 0.002,
+      "attempted": 3563,
+      "restrict_vocab": 50000,
+      "questions_in_set": 19544,
+      "coverage": 0.1823,
+      "sections": {
+        "capital-common-countries": {
+          "accuracy": 0.0,
+          "attempted": 12
+        },
+        "capital-world": {
+          "accuracy": 0.0,
+          "attempted": 9
+        },
+        "currency": {
+          "accuracy": 0.0,
+          "attempted": 6
+        },
+        "city-in-state": {
+          "accuracy": 0.0,
+          "attempted": 1
+        },
+        "family": {
+          "accuracy": 0.0,
+          "attempted": 182
+        },
+        "gram1-adjective-to-adverb": {
+          "accuracy": 0.0,
+          "attempted": 552
+        },
+        "gram2-opposite": {
+          "accuracy": 0.0,
+          "attempted": 240
+        },
+        "gram3-comparative": {
+          "accuracy": 0.0,
+          "attempted": 600
+        },
+        "gram4-superlative": {
+          "accuracy": 0.0,
+          "attempted": 210
+        },
+        "gram5-present-participle": {
+          "accuracy": 0.0065,
+          "attempted": 462
+        },
+        "gram6-nationality-adjective": {
+          "accuracy": 0.0,
+          "attempted": 175
+        },
+        "gram7-past-tense": {
+          "accuracy": 0.0,
+          "attempted": 462
+        },
+        "gram8-plural": {
+          "accuracy": 0.0,
+          "attempted": 272
+        },
+        "gram9-plural-verbs": {
+          "accuracy": 0.0105,
+          "attempted": 380
+        }
+      }
+    }
+  },
+  "D": {
+    "arithmetic": [
+      {
+        "query": "king - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "queen",
+            0.704
+          ],
+          [
+            "princess",
+            0.603
+          ],
+          [
+            "prince",
+            0.574
+          ],
+          [
+            "queens",
+            0.559
+          ],
+          [
+            "ya-ya",
+            0.491
+          ]
+        ]
+      },
+      {
+        "query": "paris - france + italy",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "spain",
+            0.484
+          ],
+          [
+            "diego",
+            0.479
+          ],
+          [
+            "travis",
+            0.473
+          ],
+          [
+            "samuel",
+            0.47
+          ],
+          [
+            "ashley",
+            0.469
+          ]
+        ]
+      },
+      {
+        "query": "bigger - big + small",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "larger",
+            0.728
+          ],
+          [
+            "smaller",
+            0.62
+          ],
+          [
+            "large",
+            0.609
+          ],
+          [
+            "thought-provoking",
+            0.599
+          ],
+          [
+            "tiny",
+            0.588
+          ]
+        ]
+      },
+      {
+        "query": "walking - walk + swim",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "swimming",
+            0.808
+          ],
+          [
+            "swims",
+            0.669
+          ],
+          [
+            "diver",
+            0.49
+          ],
+          [
+            "splashing",
+            0.466
+          ],
+          [
+            "gliding",
+            0.465
+          ]
+        ]
+      },
+      {
+        "query": "comedy - funny + scary",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "gross-out",
+            0.534
+          ],
+          [
+            "frightening",
+            0.499
+          ],
+          [
+            "scarier",
+            0.497
+          ],
+          [
+            "dramas",
+            0.496
+          ],
+          [
+            "sci-fi",
+            0.496
+          ]
+        ]
+      },
+      {
+        "query": "actor - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "actress",
+            0.821
+          ],
+          [
+            "actresses",
+            0.686
+          ],
+          [
+            "singer",
+            0.554
+          ],
+          [
+            "actors",
+            0.553
+          ],
+          [
+            "lady",
+            0.509
+          ]
+        ]
+      },
+      {
+        "query": "worst - bad + good",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "best",
+            0.577
+          ],
+          [
+            "strongest",
+            0.568
+          ],
+          [
+            "finest",
+            0.564
+          ],
+          [
+            "highest",
+            0.557
+          ],
+          [
+            "biggest",
+            0.544
+          ]
+        ]
+      }
+    ],
+    "benchmark": {
+      "overall_accuracy": 0.675,
+      "attempted": 3563,
+      "restrict_vocab": 50000,
+      "questions_in_set": 19544,
+      "coverage": 0.1823,
+      "sections": {
+        "capital-common-countries": {
+          "accuracy": 0.4167,
+          "attempted": 12
+        },
+        "capital-world": {
+          "accuracy": 0.1111,
+          "attempted": 9
+        },
+        "currency": {
+          "accuracy": 0.0,
+          "attempted": 6
+        },
+        "city-in-state": {
+          "accuracy": 0.0,
+          "attempted": 1
+        },
+        "family": {
+          "accuracy": 0.8681,
+          "attempted": 182
+        },
+        "gram1-adjective-to-adverb": {
+          "accuracy": 0.3641,
+          "attempted": 552
+        },
+        "gram2-opposite": {
+          "accuracy": 0.4042,
+          "attempted": 240
+        },
+        "gram3-comparative": {
+          "accuracy": 0.81,
+          "attempted": 600
+        },
+        "gram4-superlative": {
+          "accuracy": 0.9048,
+          "attempted": 210
+        },
+        "gram5-present-participle": {
+          "accuracy": 0.7684,
+          "attempted": 462
+        },
+        "gram6-nationality-adjective": {
+          "accuracy": 0.5829,
+          "attempted": 175
+        },
+        "gram7-past-tense": {
+          "accuracy": 0.6688,
+          "attempted": 462
+        },
+        "gram8-plural": {
+          "accuracy": 0.8566,
+          "attempted": 272
+        },
+        "gram9-plural-verbs": {
+          "accuracy": 0.7053,
+          "attempted": 380
+        }
+      }
+    }
+  },
+  "E": {
+    "arithmetic": [
+      {
+        "query": "king - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "middle-aged",
+            0.713
+          ],
+          [
+            "lion",
+            0.706
+          ],
+          [
+            "creek",
+            0.704
+          ],
+          [
+            "haynes",
+            0.696
+          ],
+          [
+            "grunge-pirate",
+            0.693
+          ]
+        ]
+      },
+      {
+        "query": "paris - france + italy",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "insulted",
+            0.916
+          ],
+          [
+            "startled",
+            0.907
+          ],
+          [
+            "stardom",
+            0.906
+          ],
+          [
+            "forewarned",
+            0.906
+          ],
+          [
+            "compelled",
+            0.905
+          ]
+        ]
+      },
+      {
+        "query": "bigger - big + small",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "addressing",
+            0.717
+          ],
+          [
+            "complex",
+            0.715
+          ],
+          [
+            "puzzling",
+            0.71
+          ],
+          [
+            "worthwhile",
+            0.709
+          ],
+          [
+            "poignant",
+            0.703
+          ]
+        ]
+      },
+      {
+        "query": "walking - walk + swim",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "neatly",
+            0.821
+          ],
+          [
+            "wrap",
+            0.819
+          ],
+          [
+            "encompassing",
+            0.816
+          ],
+          [
+            "transcend",
+            0.815
+          ],
+          [
+            "socially",
+            0.801
+          ]
+        ]
+      },
+      {
+        "query": "comedy - funny + scary",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "gross-out",
+            0.764
+          ],
+          [
+            "psychotic",
+            0.756
+          ],
+          [
+            "pandering",
+            0.75
+          ],
+          [
+            "aspires",
+            0.739
+          ],
+          [
+            "facetious",
+            0.732
+          ]
+        ]
+      },
+      {
+        "query": "actor - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "succumb",
+            0.651
+          ],
+          [
+            "academy",
+            0.616
+          ],
+          [
+            "madonna",
+            0.607
+          ],
+          [
+            "appearing",
+            0.595
+          ],
+          [
+            "mirren",
+            0.595
+          ]
+        ]
+      },
+      {
+        "query": "worst - bad + good",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "moronic",
+            0.695
+          ],
+          [
+            "screenplays",
+            0.694
+          ],
+          [
+            "simmer",
+            0.693
+          ],
+          [
+            "sporting",
+            0.662
+          ],
+          [
+            "year",
+            0.66
+          ]
+        ]
+      }
+    ],
+    "benchmark": {
+      "overall_accuracy": 0.0022,
+      "attempted": 3563,
+      "restrict_vocab": 50000,
+      "questions_in_set": 19544,
+      "coverage": 0.1823,
+      "sections": {
+        "capital-common-countries": {
+          "accuracy": 0.0,
+          "attempted": 12
+        },
+        "capital-world": {
+          "accuracy": 0.0,
+          "attempted": 9
+        },
+        "currency": {
+          "accuracy": 0.0,
+          "attempted": 6
+        },
+        "city-in-state": {
+          "accuracy": 0.0,
+          "attempted": 1
+        },
+        "family": {
+          "accuracy": 0.033,
+          "attempted": 182
+        },
+        "gram1-adjective-to-adverb": {
+          "accuracy": 0.0,
+          "attempted": 552
+        },
+        "gram2-opposite": {
+          "accuracy": 0.0,
+          "attempted": 240
+        },
+        "gram3-comparative": {
+          "accuracy": 0.0,
+          "attempted": 600
+        },
+        "gram4-superlative": {
+          "accuracy": 0.0048,
+          "attempted": 210
+        },
+        "gram5-present-participle": {
+          "accuracy": 0.0022,
+          "attempted": 462
+        },
+        "gram6-nationality-adjective": {
+          "accuracy": 0.0,
+          "attempted": 175
+        },
+        "gram7-past-tense": {
+          "accuracy": 0.0,
+          "attempted": 462
+        },
+        "gram8-plural": {
+          "accuracy": 0.0,
+          "attempted": 272
+        },
+        "gram9-plural-verbs": {
+          "accuracy": 0.0,
+          "attempted": 380
+        }
+      }
+    }
+  },
+  "C": {
+    "arithmetic": [
+      {
+        "query": "king - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "queen",
+            0.712
+          ],
+          [
+            "monarch",
+            0.619
+          ],
+          [
+            "princess",
+            0.59
+          ],
+          [
+            "crown_prince",
+            0.55
+          ],
+          [
+            "prince",
+            0.538
+          ]
+        ]
+      },
+      {
+        "query": "paris - france + italy",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "madrid",
+            0.482
+          ],
+          [
+            "rome",
+            0.461
+          ],
+          [
+            "barcelona",
+            0.459
+          ],
+          [
+            "spain",
+            0.458
+          ],
+          [
+            "britney",
+            0.451
+          ]
+        ]
+      },
+      {
+        "query": "bigger - big + small",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "larger",
+            0.74
+          ],
+          [
+            "smaller",
+            0.733
+          ],
+          [
+            "tiny",
+            0.57
+          ],
+          [
+            "tinier",
+            0.544
+          ],
+          [
+            "large",
+            0.519
+          ]
+        ]
+      },
+      {
+        "query": "walking - walk + swim",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "swimming",
+            0.825
+          ],
+          [
+            "swam",
+            0.681
+          ],
+          [
+            "swims",
+            0.654
+          ],
+          [
+            "swimmers",
+            0.649
+          ],
+          [
+            "paddling",
+            0.642
+          ]
+        ]
+      },
+      {
+        "query": "comedy - funny + scary",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "horror_flick",
+            0.547
+          ],
+          [
+            "horror",
+            0.511
+          ],
+          [
+            "horror_thriller",
+            0.511
+          ],
+          [
+            "terrifying",
+            0.506
+          ],
+          [
+            "supernatural_thriller",
+            0.494
+          ]
+        ]
+      },
+      {
+        "query": "actor - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "actress",
+            0.86
+          ],
+          [
+            "actresses",
+            0.66
+          ],
+          [
+            "thesp",
+            0.629
+          ],
+          [
+            "Actress",
+            0.617
+          ],
+          [
+            "actress_Rachel_Weisz",
+            0.6
+          ]
+        ]
+      },
+      {
+        "query": "worst - bad + good",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "best",
+            0.693
+          ],
+          [
+            "strongest",
+            0.626
+          ],
+          [
+            "greatest",
+            0.575
+          ],
+          [
+            "weakest",
+            0.573
+          ],
+          [
+            "finest",
+            0.537
+          ]
+        ]
+      }
+    ],
+    "benchmark": {
+      "overall_accuracy": 0.7561,
+      "attempted": 15434,
+      "restrict_vocab": 50000,
+      "questions_in_set": 19544,
+      "coverage": 0.7897,
+      "sections": {
+        "capital-common-countries": {
+          "accuracy": 0.836,
+          "attempted": 506
+        },
+        "capital-world": {
+          "accuracy": 0.8343,
+          "attempted": 2143
+        },
+        "currency": {
+          "accuracy": 0.3835,
+          "attempted": 206
+        },
+        "city-in-state": {
+          "accuracy": 0.7314,
+          "attempted": 2394
+        },
+        "family": {
+          "accuracy": 0.8976,
+          "attempted": 420
+        },
+        "gram1-adjective-to-adverb": {
+          "accuracy": 0.3095,
+          "attempted": 992
+        },
+        "gram2-opposite": {
+          "accuracy": 0.453,
+          "attempted": 702
+        },
+        "gram3-comparative": {
+          "accuracy": 0.9189,
+          "attempted": 1332
+        },
+        "gram4-superlative": {
+          "accuracy": 0.9,
+          "attempted": 930
+        },
+        "gram5-present-participle": {
+          "accuracy": 0.7833,
+          "attempted": 992
+        },
+        "gram6-nationality-adjective": {
+          "accuracy": 0.9232,
+          "attempted": 1445
+        },
+        "gram7-past-tense": {
+          "accuracy": 0.6538,
+          "attempted": 1560
+        },
+        "gram8-plural": {
+          "accuracy": 0.8598,
+          "attempted": 1056
+        },
+        "gram9-plural-verbs": {
+          "accuracy": 0.6958,
+          "attempted": 756
+        }
+      }
+    }
+  }
+}

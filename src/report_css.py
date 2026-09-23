@@ -185,4 +185,8 @@ EXTRA_CSS = """
         border-top:1px dashed var(--line);padding-top:12px}
   .tcnb .chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .tclegend{font-size:.74rem;color:var(--faint);margin-top:-4px}
+  .subhead{font-family:var(--sans);font-size:.78rem;letter-spacing:.1em;
+           text-transform:uppercase;color:var(--faint);font-weight:600;margin-top:10px}
+  .qhead{font-family:var(--mono);font-size:.9rem;color:var(--accent);margin-top:16px}
+  .chip b{font-weight:500;color:var(--faint)}
 """

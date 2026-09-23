@@ -1,0 +1,244 @@
+{
+  "model_id": "A2",
+  "name": "gensim skip-gram + NS, D's schedule, random init",
+  "corpus": "sst2-phrases",
+  "machine": "m2-air",
+  "hyperparams": {
+    "sg": 1,
+    "hs": 0,
+    "negative": 10,
+    "vector_size": 300,
+    "window": 5,
+    "min_count": 2,
+    "epochs": 8,
+    "alpha": 0.005,
+    "sample": 0.001
+  },
+  "train": {
+    "wall_s": 22.3,
+    "words_per_sec": 227296,
+    "peak_rss_mb": 284.0,
+    "vocab_size": 14309,
+    "corpus_tokens": 633720
+  },
+  "extrinsic": {
+    "sst2_test_acc": 0.6645,
+    "sst2_test_f1": 0.707,
+    "oov_rate_train": 0.0008,
+    "oov_rate_test": 0.0661
+  },
+  "intrinsic": {
+    "neighbours": {
+      "plot": [
+        [
+          "body",
+          0.963
+        ],
+        [
+          "twists",
+          0.961
+        ],
+        [
+          "finding",
+          0.96
+        ],
+        [
+          "stars",
+          0.959
+        ],
+        [
+          "roles",
+          0.959
+        ],
+        [
+          "moves",
+          0.955
+        ],
+        [
+          "screenplay",
+          0.954
+        ],
+        [
+          "central",
+          0.953
+        ],
+        [
+          "storyline",
+          0.953
+        ],
+        [
+          "honesty",
+          0.952
+        ]
+      ],
+      "terrible": [
+        [
+          "damned",
+          0.983
+        ],
+        [
+          "retread",
+          0.982
+        ],
+        [
+          "elevate",
+          0.979
+        ],
+        [
+          "helps",
+          0.978
+        ],
+        [
+          "view",
+          0.977
+        ],
+        [
+          "inspired",
+          0.977
+        ],
+        [
+          "girl",
+          0.976
+        ],
+        [
+          "word",
+          0.976
+        ],
+        [
+          "queen",
+          0.975
+        ],
+        [
+          "earnest",
+          0.975
+        ]
+      ],
+      "star": [
+        [
+          "gifted",
+          0.978
+        ],
+        [
+          "race",
+          0.976
+        ],
+        [
+          "splendid",
+          0.975
+        ],
+        [
+          "fights",
+          0.975
+        ],
+        [
+          "artful",
+          0.974
+        ],
+        [
+          "daniel",
+          0.974
+        ],
+        [
+          "pantheon",
+          0.974
+        ],
+        [
+          "fight",
+          0.973
+        ],
+        [
+          "submarine",
+          0.973
+        ],
+        [
+          "shining",
+          0.973
+        ]
+      ],
+      "cinematography": [
+        [
+          "pathetic",
+          0.987
+        ],
+        [
+          "banal",
+          0.984
+        ],
+        [
+          "murky",
+          0.984
+        ],
+        [
+          "wry",
+          0.981
+        ],
+        [
+          "color",
+          0.98
+        ],
+        [
+          "clumsy",
+          0.98
+        ],
+        [
+          "soggy",
+          0.979
+        ],
+        [
+          "dubbed",
+          0.978
+        ],
+        [
+          "flashes",
+          0.977
+        ],
+        [
+          "delicious",
+          0.977
+        ]
+      ],
+      "the": [
+        [
+          "every",
+          0.849
+        ],
+        [
+          "war",
+          0.84
+        ],
+        [
+          "history",
+          0.84
+        ],
+        [
+          "worst",
+          0.837
+        ],
+        [
+          "three",
+          0.825
+        ],
+        [
+          "our",
+          0.825
+        ],
+        [
+          "another",
+          0.821
+        ],
+        [
+          "full",
+          0.821
+        ],
+        [
+          "ii",
+          0.82
+        ],
+        [
+          "years",
+          0.819
+        ]
+      ]
+    }
+  }
+}

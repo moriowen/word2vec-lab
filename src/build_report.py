@@ -78,22 +78,56 @@ def cards(recs):
 
 
 def neighbour_box(recs, ids):
-    rows = []
+    """One table per query, with top-1, top-5 and top-10 stated explicitly per model."""
+    out = []
     for q in QUERIES:
-        lines = []
+        rows = []
         for mid in ids:
             nb = recs[mid]["intrinsic"]["neighbours"].get(q)
             if not nb:
+                rows.append([mid, "<i>out of vocabulary</i>", "", ""])
                 continue
             base = {w for w, _ in recs["C"]["intrinsic"]["neighbours"].get(q, [])}
-            chips = "".join(
-                f'<span class="chip{" new" if mid == "D" and w not in base else ""}">{e(w)}</span>'
-                for w, _ in nb[:8])
-            lines.append(f'<div class="nline"><span class="nlabel">{mid}</span>'
-                         f'<span class="chips">{chips}</span></div>')
-        rows.append(f'<div class="nrow"><div class="nq">{e(q)}</div>'
-                    f'<div class="npair">{"".join(lines)}</div></div>')
-    return f'<div class="nbox">{"".join(rows)}</div>'
+            def chips(lo, hi):
+                return "".join(
+                    f'<span class="chip{" new" if mid == "D" and w not in base else ""}">'
+                    f'{e(w)} <b>{s:.2f}</b></span>' for w, s in nb[lo:hi])
+            rows.append([mid, chips(0, 1), chips(1, 5), chips(5, 10)])
+        out.append(f'<h3 class="qhead">{e(q)}</h3>')
+        out.append(table(["Model", "Top-1", "Top-2 to 5", "Top-6 to 10"], rows,
+                         ["m", "l", "l", "l"]))
+    return "".join(out)
+
+
+def pretrained_2a(ana):
+    """Deliverable 2a: reference, URL, corpus, test set and accuracy for the pretrained model."""
+    b = ana["C"]["benchmark"]
+    paper = ("Mikolov, Sutskever, Chen, Corrado and Dean (2013), <i>Distributed "
+             "Representations of Words and Phrases and their Compositionality</i>, NIPS. "
+             "<a href='https://arxiv.org/abs/1310.4546'>arxiv.org/abs/1310.4546</a>")
+    dist = ("<a href='https://code.google.com/archive/p/word2vec/'>"
+            "code.google.com/archive/p/word2vec</a>, fetched through gensim-data as "
+            "<code>word2vec-google-news-300</code>")
+    measured = (f"<b>{b['overall_accuracy']:.4f}</b> over {b['attempted']:,} attempted "
+                f"questions ({b['coverage']:.1%} coverage, candidate pool restricted to the "
+                f"top {b['restrict_vocab']:,} words)")
+    unpublished = ("Not quoted. The Google Code archive page is a JavaScript application and "
+                   "serves no figures to a fetch, and the linked papers report results for "
+                   "models trained in those papers rather than for this released file. Rather "
+                   "than cite a number that could not be verified, the measured figure above "
+                   "is given with its exact conditions.")
+    return table(["Field", "Value"], [
+        ["Model", "GoogleNews-vectors-negative300"],
+        ["Reference", paper],
+        ["Distribution URL", dist],
+        ["Training corpus", "Google News, roughly 100 billion tokens. The corpus is "
+         "proprietary and was never released, so it cannot be linked."],
+        ["Architecture", "Skip-gram with negative sampling, 300 dimensions, 3M words and phrases"],
+        ["Test set used here", "Google analogy set (<code>questions-words.txt</code>), 19,544 "
+         "questions, shipped in <code>data/eval/</code>"],
+        ["Accuracy, measured here", measured],
+        ["Accuracy, as published", unpublished],
+    ], ["m", "l"])
 
 
 def ex2b():
@@ -165,6 +199,8 @@ def build():
     mem = lambda m: r[m]["extrinsic"]["memory"]
     err = lambda m: r[m]["errors"]
 
+    ana = json.loads((ROOT / "results" / "analogies.json").read_text())
+    pretrained_table = pretrained_2a(ana)
     ft = D["finetune"]
     gap_ad = acc("D") - acc("A")
     gap_cd = acc("C") - acc("D")
@@ -198,7 +234,7 @@ def build():
     add('''<nav class="toc">
       <a href="#results">Results</a><a href="#testcases">Test examples</a><a href="#arch">Architectures</a><a href="#data">Data</a>
       <a href="#hyper">Hyperparameters</a><a href="#neighbours">Nearest neighbours</a>
-      <a href="#similarity">Lexical similarity</a><a href="#finetune">Fine-tuning</a>
+      <a href="#viz">Visualization</a><a href="#analogies">Analogies</a><a href="#similarity">Lexical similarity</a><a href="#finetune">Fine-tuning</a>
       <a href="#scratch">From scratch</a><a href="#systems">Systems</a>
       <a href="#errors">Errors</a><a href="#running">Running it</a><a href="#log">Build log</a></nav>''')
 
@@ -211,11 +247,16 @@ def build():
       sentences. The classifier never changes and is never tuned per model, so any gap between
       these numbers belongs to the embeddings and to nothing else.</p>
       {cards(r)}
-      <div class="note"><b>The comparison that isolates one variable is A against D.</b>
-      Same architecture, same loss, same corpus, same classifier. The only difference is where
-      the input matrix started: random for A, Google's published vectors for D. That is worth
-      {gap_ad:.3f} accuracy, {acc("A"):.3f} to {acc("D"):.3f}. D then lands {gap_cd:.3f} below C
-      while carrying {vocab_ratio:.0f} times less vocabulary.</div>''')
+      <div class="note"><b>Isolating the warm start needed a control run.</b> A against D is
+      the obvious comparison, but it is not clean: D also uses a lower learning rate
+      ({D["hyperparams"]["alpha"]} against {A["hyperparams"]["alpha"]}) and fewer epochs
+      ({D["hyperparams"]["epochs"]} against {A["hyperparams"]["epochs"]}), so that gap mixes
+      initialisation with the optimiser schedule. <b>A2</b> is A re-run with D's exact
+      schedule and random initialisation, which leaves the starting point as the only
+      difference. A2 scores {acc("A2"):.3f} against D's {acc("D"):.3f}, so the warm start is
+      worth <b>{acc("D")-acc("A2"):+.3f}</b>, not the {gap_ad:+.3f} the A-versus-D gap
+      suggests. The looser comparison understated it, because A's more aggressive schedule was
+      partly compensating for its random start.</div>''')
 
     add(table(
         ["Model", "Architecture", "Loss", "Trained on", "Accuracy", "F1", "OOV"],
@@ -225,8 +266,12 @@ def build():
           f'{r[mid]["train"]["corpus_tokens"]:,} tok',
           f'<span class="{"win" if acc(mid)==max(acc(m) for m in ORDER) else ""}">{acc(mid):.4f}</span>',
           f"{f1(mid):.4f}", f'{r[mid]["extrinsic"]["oov_rate_test"]:.3f}']
-         for mid in ORDER],
+         for mid in ORDER + ["A2"]],
         ["m", "l", "l", "n", "n", "n", "n"]))
+    add(f'''<p class="prose">A2 is not a sixth model so much as a control. It exists only to
+    make the A-versus-D claim above testable, and it is reported here rather than hidden
+    because its score ({acc("A2"):.3f}) is the lowest in the table and that is the
+    point.</p>''')
     add("</section>")
 
     # ---- deliverable 3, test examples
@@ -308,6 +353,7 @@ def build():
       words. GloVe was deliberately not used as the pretrained baseline: it factorises a
       co-occurrence matrix and is not a Word2Vec model, so it would answer a different
       question than the one asked.</p>
+      <h3 class="subhead">Pretrained model, as deliverable 2a asks</h3>{pretrained_table}
       <h3 style="margin-top:14px">Representative examples</h3>
       <p class="prose">Deliverable 2b asks for five training examples and four test examples,
       two positive and two negative. Selected by rule rather than by eye, with the selecting
@@ -320,14 +366,14 @@ def build():
       <p class="prose">A and B differ on two axes at once, architecture and loss, which is
       deliberate: it gives the comparison two things to say rather than one. Everything else is
       held constant between them.</p>''')
-    add(table(["", "A", "B", "C", "D", "E"],
-              [[k] + [str(r[m]["hyperparams"].get(lbl, "-")) for m in ORDER]
+    add(table(["", "A", "B", "C", "D", "E", "A2"],
+              [[k] + [str(r[m]["hyperparams"].get(lbl, "-")) for m in ORDER + ["A2"]]
                for k, lbl in [("Architecture (sg)", "sg"), ("Hierarchical softmax", "hs"),
                               ("Negatives", "negative"), ("Dimensions", "vector_size"),
                               ("Window", "window"), ("Min count", "min_count"),
                               ("Epochs", "epochs"), ("Initial LR", "alpha"),
                               ("Subsample threshold", "sample")]],
-              ["l", "n", "n", "n", "n", "n"]))
+              ["l", "n", "n", "n", "n", "n", "n"]))
     add("</section>")
 
     # ---- neighbours
@@ -347,6 +393,88 @@ def build():
       A, B and E return something close to noise for every query. At {tok:,} tokens there is
       not enough co-occurrence evidence to place a word, and the next section puts a number
       on exactly how little.</div></section>''')
+
+    # ---- visualization
+    viz = json.loads((ROOT / "results" / "visualization.json").read_text())
+    figs = []
+    for mid in ["D", "A"]:
+        for method, nm in [("pca", "PCA"), ("tsne", "t-SNE")]:
+            v = viz[mid][method]
+            detail = (f'explained variance {v["explained_variance"][0]:.1%} and '
+                      f'{v["explained_variance"][1]:.1%}' if method == "pca"
+                      else f'perplexity {v["perplexity"]}')
+            figs.append(f'''<div class="figure">{v["svg"]}
+              <p class="caption"><b>{nm}, Model {mid}.</b> {v["words_plotted"]} words from four
+              fixed semantic groups, {detail}. Silhouette of the two-dimensional layout against
+              the group labels: <b>{v["silhouette_2d"]}</b>.</p></div>''')
+    sil = lambda m, k: viz[m][k]["silhouette_2d"]
+    add(f'''<section id="viz">
+      <div class="sechead"><div class="eyebrow">Handout requirement</div>
+      <h2>The vector space in two dimensions</h2></div>
+      <p class="prose">The words plotted are fixed in advance and belong to four semantic
+      groups: positive sentiment, negative sentiment, film craft, and genre. Fixing them first
+      means the figure can be judged rather than admired. If the embedding carries semantic
+      structure, group members should land near each other after projection.</p>
+      <p class="prose">Judging by eye is unreliable, so each figure also reports the silhouette
+      score of the two-dimensional layout against the group labels. Around 0 means the groups
+      are indistinguishable; higher means they separate.</p>
+      <div class="figgrid">{"".join(figs)}</div>''')
+    add(table(["Model", "PCA silhouette", "t-SNE silhouette", "WordSim-353", "Analogy accuracy"],
+              [[mid, f"{sil(mid,'pca'):+.3f}", f"{sil(mid,'tsne'):+.3f}",
+                f'{sim(mid,"wordsim353"):+.3f}',
+                f'{ana[mid]["benchmark"]["overall_accuracy"]:.3f}'] for mid in ORDER],
+              ["m", "n", "n", "n", "n"]))
+    add(f'''<div class="note"><b>The projections agree with every other measurement.</b>
+      D and C separate the four groups ({sil("D","pca"):+.3f} and {sil("C","pca"):+.3f} under
+      PCA); A, B and E do not ({sil("A","pca"):+.3f}, {sil("B","pca"):+.3f},
+      {sil("E","pca"):+.3f}). The same ordering appears in WordSim-353 and in analogy accuracy,
+      which is worth stating because a scatter plot on its own is the easiest figure in this
+      report to over-read. Note also how little variance the first two PCA components capture,
+      under 20% for every model, so the picture is a thin slice of a 300-dimensional
+      space.</div></section>''')
+
+    # ---- analogies
+    ar = lambda m: {x["query"]: x for x in ana[m]["arithmetic"]}
+    add(f'''<section id="analogies">
+      <div class="sechead"><div class="eyebrow">Handout requirement</div>
+      <h2>Vector arithmetic and analogies</h2></div>
+      <p class="prose">The handout names <code>king - man + woman = queen</code> specifically.
+      Below is that query and six others, each showing the ranked answers the model returns,
+      followed by the standard Google analogy benchmark scored per section.</p>''')
+    rows = []
+    for mid in ORDER:
+        a = ar(mid)
+        for label in ["king - man + woman", "paris - france + italy", "worst - bad + good"]:
+            x = a[label]
+            ans = ("".join(f'<span class="chip{" new" if i == 0 else ""}">{e(w)} <b>{s:.2f}</b></span>'
+                           for i, (w, s) in enumerate(x["answers"][:4]))
+                   if x["status"] == "ok" else f'<i>{x["status"]}: {", ".join(x["missing"])}</i>')
+            rows.append([mid, f"<code>{e(label)}</code>", ans])
+    add(table(["Model", "Query", "Ranked answers"], rows, ["m", "m", "l"]))
+    add(f'''<div class="note"><b>Only C and D solve the canonical analogy.</b> Both return
+      <code>queen</code> at rank 1 for <code>king - man + woman</code>. A, B and E return
+      unrelated words, which is the same conclusion the similarity benchmarks and the
+      projections reach: {tok:,} tokens of film review does not build a space where vector
+      arithmetic means anything.</div>''')
+    add(table(["Model", "Analogy accuracy", "Questions attempted", "Coverage", "Candidate pool"],
+              [[mid, f'{ana[mid]["benchmark"]["overall_accuracy"]:.4f}',
+                f'{ana[mid]["benchmark"]["attempted"]:,} of {ana[mid]["benchmark"]["questions_in_set"]:,}',
+                f'{ana[mid]["benchmark"]["coverage"]:.1%}',
+                f'top {ana[mid]["benchmark"]["restrict_vocab"]:,}'] for mid in ORDER],
+              ["m", "n", "n", "n", "n"]))
+    add(f'''<p class="prose">Coverage matters more than accuracy here. gensim drops any
+      question containing an out-of-vocabulary word, so the SST-trained models are scored on
+      {ana["A"]["benchmark"]["coverage"]:.1%} of the set against C's
+      {ana["C"]["benchmark"]["coverage"]:.1%}. D scores
+      {ana["D"]["benchmark"]["overall_accuracy"]:.3f} on its {ana["D"]["benchmark"]["coverage"]:.1%},
+      which is structure inherited from the warm start rather than learned from SST: A2, which
+      shares D's schedule but starts random, scores
+      {ana["A2"]["benchmark"]["overall_accuracy"]:.4f} if it was measured.</p></section>'''
+      if "A2" in ana else f'''<p class="prose">Coverage matters more than accuracy here.
+      gensim drops any question containing an out-of-vocabulary word, so the SST-trained models
+      are scored on {ana["A"]["benchmark"]["coverage"]:.1%} of the set against C's
+      {ana["C"]["benchmark"]["coverage"]:.1%}. D's {ana["D"]["benchmark"]["overall_accuracy"]:.3f}
+      is structure inherited from the warm start, not learned from SST.</p></section>''')
 
     # ---- similarity
     add(f'''<section id="similarity">
@@ -513,6 +641,20 @@ def build():
       against roughly 20% of the test set overall.</b> That holds for GoogleNews too, which
       means it is not an embedding-quality problem. It is the pooling step: averaging discards
       word order, so no amount of embedding quality recovers a scope-of-negation judgement.</div>''')
+    d2c = json.loads((ROOT / "results" / "examples_2c.json").read_text())
+    add(f'''<h3 class="subhead">Deliverable 2c, stated explicitly for Model D</h3>
+      <p class="prose">The handout asks for at least two test examples the model classifies
+      correctly and at least two it gets wrong, for a named model. Model D, the fine-tuned one,
+      is used here. All four are drawn from the same 1,821-sentence test split and are the
+      highest-confidence cases in each category.</p>''')
+    add(table(["Outcome", "Gold", "Predicted", "Confidence", "Sentence"],
+              [[f'<span class="{"win" if x["correct"] else "lose"}">'
+                f'{"correct" if x["correct"] else "incorrect"}</span>',
+                "positive" if x["gold"] else "negative",
+                "positive" if x["pred"] else "negative",
+                f'{x["confidence"]:.3f}', f'<code>{e(x["sentence"][:86])}</code>']
+               for x in d2c["model_D"]], ["n", "n", "n", "n", "l"]))
+    add('''<h3 class="subhead">Confident failures across models</h3>''')
     rows = []
     for mid in ["A", "D"]:
         for x in err(mid)["confident_errors"][:3]:

@@ -1,0 +1,32 @@
+{
+  "model_D": [
+    {
+      "sentence": "an intelligent , moving and invigorating film .",
+      "gold": 1,
+      "pred": 1,
+      "confidence": 0.999,
+      "correct": true
+    },
+    {
+      "sentence": "a smart , sweet and playful romantic comedy .",
+      "gold": 1,
+      "pred": 1,
+      "confidence": 0.998,
+      "correct": true
+    },
+    {
+      "sentence": "it 's a great deal of sizzle and very little steak .",
+      "gold": 0,
+      "pred": 1,
+      "confidence": 0.952,
+      "correct": false
+    },
+    {
+      "sentence": "a well acted and well intentioned snoozer .",
+      "gold": 0,
+      "pred": 1,
+      "confidence": 0.938,
+      "correct": false
+    }
+  ]
+}

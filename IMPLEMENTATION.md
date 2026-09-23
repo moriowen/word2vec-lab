@@ -816,3 +816,75 @@ zip is gitignored, being a build artefact.
 
 Still open: the repo has no remote, so every commit is local. Model C's memory discrepancy
 is unexplained and needs one run on a Linux node. Phases 11 to 13 are untouched.
+
+### Sep 23, addressing an external review
+
+An independent review flagged six items. All six are now closed. Five were genuine coverage
+gaps; one was an analytical error, and fixing it changed a headline number.
+
+**The analytical error is the one worth reading.** The report claimed A versus D isolates
+initialisation, since both are skip-gram with negative sampling on the same corpus with the
+same classifier. It does not. D also runs at `alpha=0.005` for 8 epochs against A's `0.025`
+for 10, so the comparison mixed the warm start with the optimiser schedule.
+
+`A2` is the missing control: A re-run with D's exact schedule and random initialisation, so
+the starting point is the only difference. It scores **0.6645** against D's **0.7919**.
+
+The warm start is therefore worth **+0.127**, not the +0.031 that A versus D suggested. The
+looser comparison understated the effect by a factor of four, because A's more aggressive
+schedule was partly compensating for its random start. The review was right that the claim
+was unsound, and the corrected claim is stronger than the one it replaces. A2 is reported in
+the results table even though it is the lowest score there, since hiding a control defeats
+its purpose.
+
+**Embedding visualization** (`src/visualize.py`). PCA and t-SNE projections rendered as
+inline SVG so they inherit the page theme. The plotted words are fixed in advance and belong
+to four semantic groups, which lets the figure be judged rather than admired, and each
+carries the silhouette score of the 2-D layout against those group labels:
+
+| | PCA silhouette | t-SNE silhouette |
+|---|---|---|
+| D | +0.164 | +0.187 |
+| C | +0.120 | +0.121 |
+| A | +0.036 | +0.051 |
+| B | +0.035 | -0.033 |
+| E | -0.004 | +0.110 |
+
+The ordering matches WordSim-353 and analogy accuracy exactly. Worth noting in the report
+because the first two PCA components capture under 20% of variance for every model, so the
+scatter is a thin slice and is the easiest figure here to over-read.
+
+**Vector arithmetic and analogies** (`src/analogies.py`). Seven arithmetic queries with full
+ranked answers, plus the Google analogy set scored per section with `restrict_vocab=50000`.
+
+| | Analogy accuracy | Coverage | `king - man + woman` |
+|---|---|---|---|
+| C | 0.7561 | 79.0% | queen, monarch, princess |
+| D | 0.6750 | 18.2% | queen, princess, prince |
+| E | 0.0022 | 18.2% | middle-aged, lion, creek |
+| B | 0.0020 | 18.2% | sugar, abbott, ernest |
+| A | 0.0006 | 18.2% | scorpion, lion, lear |
+
+Only C and D solve the canonical analogy, and both put `queen` at rank 1. Coverage matters
+more than accuracy: gensim drops any question with an out-of-vocabulary term, so the
+SST-trained models are scored on 18.2% of the set against C's 79.0%.
+
+**Top-1, top-5 and top-10 stated explicitly.** The neighbour section showed eight chips per
+query while the JSON held ten. It is now one table per query, with the three ranks in
+separate columns and cosine printed on every chip.
+
+**Deliverable 2a completed.** A field table giving the model, the NIPS reference with arXiv
+link, the distribution URL, the training corpus, the test set, and accuracy. On the published
+figure: the Google Code archive page is a JavaScript application that serves nothing to a
+fetch, and the linked papers report results for models trained in those papers rather than
+for this released file. Rather than cite a number that could not be verified, the table
+reports our measured 0.7561 with its exact conditions and says plainly why no published
+figure is quoted.
+
+**Deliverable 2c stated explicitly.** Two correct and two incorrect test cases for one named
+model, Model D, highest-confidence in each category, rather than left implicit in the error
+tables.
+
+The review also noted that the SST-2 classifier is a defensible response to an ambiguous
+section but not a substitute for the visualization and analogy requirements. That is correct,
+and both are now present as their own sections rather than folded into the sentiment work.

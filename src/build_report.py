@@ -89,9 +89,10 @@ def neighbour_box(recs, ids):
                 continue
             base = {w for w, _ in recs["C"]["intrinsic"]["neighbours"].get(q, [])}
             def chips(lo, hi):
-                return "".join(
-                    f'<span class="chip{" new" if mid == "D" and w not in base else ""}">'
+                inner = "".join(
+                    f'<span class="chip{" only-d" if mid == "D" and w not in base else ""}">'
                     f'{e(w)} <b>{s:.2f}</b></span>' for w, s in nb[lo:hi])
+                return f'<span class="chips">{inner}</span>' 
             rows.append([mid, chips(0, 1), chips(1, 5), chips(5, 10)])
         out.append(f'<h3 class="qhead">{e(q)}</h3>')
         out.append(table(["Model", "Top-1", "Top-2 to 5", "Top-6 to 10"], rows,
@@ -157,7 +158,7 @@ def testcase_section():
             rows.append([mid, f'{lab} {prob:.3f}', f'{second[0]} {second[1]:.3f}', mark,
                          f'{c["neighbour_label_agreement"]:.1f}'])
         nb = tc["models"]["D"]["cases"][k]["neighbours"][:3]
-        chips = "".join(f'<span class="chip{" new" if n["label"]==s["gold"] else ""}">'
+        chips = "".join(f'<span class="chip{" agree" if n["label"]==s["gold"] else ""}">'
                         f'{e(n["text"])} &middot; {n["cos"]:.2f}</span>' for n in nb)
         blocks.append(f'''<div class="tcase">
           <div class="tchead"><span class="eyebrow">Example {k+1} &middot; {e(s["selected_for"])}</span>
@@ -168,8 +169,9 @@ def testcase_section():
           <div class="tcnb"><span class="nlabel">D retrieves</span>
             <span class="chips">{chips}</span></div>
           <p class="tclegend">Retrieved training sentences, nearest first, with cosine.
-          Highlighted where the training sentence's own label matches this test sentence's
-          gold label.</p></div>''')
+          <b>Green-tinted</b> where the training sentence's own label matches this test
+          sentence's gold label &mdash; a different mark from the gold tint used in the
+          neighbours tables.</p></div>''')
     return "".join(blocks)
 
 
@@ -382,9 +384,11 @@ def build():
       <h2>Top-ranked neighbours for five queries</h2></div>
       <p class="prose">Five words chosen to separate the models rather than flatter them:
       a polysemous noun, a sentiment adjective, a word whose sense depends on domain, a rare
-      domain term, and the most frequent word in English. Highlighted chips on row D are
-      neighbours that are not in C's list for the same query, so they are what fine-tuning
-      introduced.</p>
+      domain term, and the most frequent word in English.</p>
+      <div class="legend"><span class="li"><span class="chip only-d">word <b>0.00</b></span>
+      <span><b>gold-tinted chip</b> &mdash; appears only on row D: a neighbour that C does
+      <i>not</i> return for the same query, so fine-tuning on SST introduced it. Every other
+      chip, on any row, is plain grey.</span></span></div>
       {neighbour_box(r, ORDER)}
       <div class="note"><b>Read the C and D rows against A, B and E.</b> C returns clean
       synonyms and inflections. D keeps them and adds film-specific associations:
@@ -446,8 +450,9 @@ def build():
         a = ar(mid)
         for label in ["king - man + woman", "paris - france + italy", "worst - bad + good"]:
             x = a[label]
-            ans = ("".join(f'<span class="chip{" new" if i == 0 else ""}">{e(w)} <b>{s:.2f}</b></span>'
-                           for i, (w, s) in enumerate(x["answers"][:4]))
+            ans = ('<span class="chips">'
+                   + "".join(f'<span class="chip">{e(w)} <b>{s:.2f}</b></span>'
+                             for w, s in x["answers"][:4]) + "</span>"
                    if x["status"] == "ok" else f'<i>{x["status"]}: {", ".join(x["missing"])}</i>')
             rows.append([mid, f"<code>{e(label)}</code>", ans])
     add(table(["Model", "Query", "Ranked answers"], rows, ["m", "m", "l"]))

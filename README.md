@@ -24,7 +24,7 @@ shared `LogisticRegression`) → `src/schema.py` (validate + write `results/<id>
 ## Layout
 
 ```
-src/           pipeline code (see CLAUDE.md for the module-by-module architecture notes)
+src/           pipeline code (see AGENTS.md for the module-by-module architecture notes)
 data/          SST-2 splits, phrase-level training corpus, WordSim/SimLex/MEN eval sets
 models/        trained model artifacts (gitignored, reproducible from src/ + data/)
 results/       one JSON per model, the only source for report numbers/figures
@@ -48,7 +48,7 @@ python -m src.run_eval               # phases 6-8: intrinsic benchmarks, latency
 There is no test suite. Correctness is judged by the acceptance checks in
 `IMPLEMENTATION.md` — e.g. `most_similar("good")` returns sensible neighbours, SST-2 accuracy
 lands in a known range, fine-tune mean cosine between warm-start and final vectors stays above ~0.6 — never by the training loss
-curve alone (see the repo-specific gotchas in `CLAUDE.md`).
+curve alone (see the gotchas in `AGENTS.md`).
 
 ## Headline results (phrase-level corpus, 67k rows)
 

@@ -49,14 +49,35 @@ CSS = """
   .runmeta{display:flex;flex-wrap:wrap;gap:8px 22px;font-family:var(--mono);
            font-size:.74rem;color:var(--faint)}
   .runmeta b{color:var(--muted);font-weight:500}
-  section{padding-top:60px;display:flex;flex-direction:column;gap:22px}
+  section{padding-top:60px;display:flex;flex-direction:column;gap:22px;
+          scroll-margin-top:64px}
+  html{scroll-behavior:smooth}
+  @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   .sechead{display:flex;flex-direction:column;gap:8px}
-  nav.toc{display:flex;flex-wrap:wrap;gap:6px 10px;font-family:var(--mono);font-size:.74rem;
-          padding:16px 0;border-bottom:1px solid var(--line)}
-  nav.toc a{color:var(--muted);text-decoration:none;border-bottom:1px solid transparent}
-  nav.toc a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+  .shell{display:grid;grid-template-columns:238px minmax(0,1fr);gap:32px;
+         max-width:1340px;margin:0 auto}
+  nav.toc{position:sticky;top:0;align-self:start;max-height:100vh;overflow-y:auto;
+          padding:30px 0 48px 24px;font-size:.8rem;display:flex;flex-direction:column;gap:1px}
+  nav.toc .tg{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;
+              text-transform:uppercase;color:var(--faint);margin:20px 0 6px 10px}
+  nav.toc .tg:first-child{margin-top:0}
+  nav.toc a{color:var(--muted);text-decoration:none;padding:4px 10px;border-radius:4px;
+            border-left:2px solid transparent;line-height:1.3}
+  nav.toc a:hover{color:var(--ink);background:var(--raised)}
+  nav.toc a.on{color:var(--accent);background:var(--raised);border-left-color:var(--accent)}
+  @media(max-width:1080px){
+    .shell{display:block;max-width:none}
+    nav.toc{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;gap:2px;max-height:none;
+            z-index:30;padding:8px 20px;background:var(--paper);
+            border-bottom:1px solid var(--line);font-size:.74rem;font-family:var(--mono);
+            scrollbar-width:none}
+    nav.toc::-webkit-scrollbar{display:none}
+    nav.toc a{white-space:nowrap}
+    nav.toc .tg{display:none}
+    nav.toc a{border-left:0;padding:2px 7px}
+  }
 
-  .models{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));gap:14px}
+  .models{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:14px}
   .mcard{background:var(--surface);border:1px solid var(--line);border-radius:6px;
          padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px}
   .mcard.is-focus{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
@@ -159,22 +180,20 @@ CSS = """
 """
 
 EXTRA_CSS = """
-  .cover{display:none}
   @media print{
     :root{--paper:#fff;--surface:#fff;--raised:#f4f6f8;--ink:#111;--muted:#444;
           --faint:#666;--line:#ccc;--line-2:#aaa;--accent:#0D6E86;--accent-soft:#e8f2f5;
           --warm:#A8500C;--warm-soft:#f6e9dc;--good:#196B3C;--bad:#9B2C2C;--good-soft:#e6f2ea}
     @page{margin:14mm}
     body{font-size:10.5pt}
+    .shell{display:block;max-width:none}
     .wrap{max-width:none;padding:0}
     nav.toc{display:none}
-    .cover{display:flex;flex-direction:column;gap:6px;padding-bottom:18px;
-           border-bottom:2px solid var(--line-2);margin-bottom:8px}
-    .cover .f{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
     header.masthead{padding-top:18px;break-after:avoid}
     section{padding-top:26px;break-inside:auto}
     h2,h3{break-after:avoid}
     .mcard,.tcase,.figure,.note,.tablewrap,.models,.driftgrid{break-inside:avoid}
+    .legend{break-inside:avoid}
     .stats,ol.steps>li,.nrow,.lrow{break-inside:avoid}
     table{min-width:0}
     .figure svg{min-width:0}

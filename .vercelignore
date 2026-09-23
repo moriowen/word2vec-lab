@@ -12,3 +12,6 @@
 /*.pdf
 /*.zip
 /requirements.txt
+
+# the coursework variant of the write-up; only public/ is deployed
+/report

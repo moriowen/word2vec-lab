@@ -1,4 +1,9 @@
-"""Build docs/index.html from results/*.json.
+"""Build the write-up from results/*.json, in two variants.
+
+`build("web")` writes public/index.html: the experiment presented on its own terms,
+findings first, with no reference to the course it was set for. `build("submission")`
+writes report/report.html, which is the same measurements carried by the coursework
+framing the handout asks for and is what the PDF is rendered from.
 
 Every number on the page is read out of the result records at build time. Nothing is typed
 into the prose, so re-running a model and rebuilding cannot leave a stale figure behind.
@@ -13,6 +18,61 @@ from .report_css import CSS, EXTRA_CSS
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "public" / "index.html"
+REPORT_OUT = ROOT / "report" / "report.html"
+
+TITLES = {
+    "results": "Headline results", "testcases": "Worked test examples",
+    "neighbours": "Nearest neighbours", "analogies": "Vector arithmetic",
+    "viz": "The space in 2D", "similarity": "Lexical similarity",
+    "errors": "Where they fail", "arch": "The two architectures",
+    "data": "Corpus and splits", "hyper": "Hyperparameters",
+    "finetune": "Fine-tuning D", "scratch": "Writing E from scratch",
+    "systems": "Cost to run", "running": "Reproducing it", "log": "Provenance",
+}
+
+# The web write-up leads with what was measured; method and machinery follow.
+WEB_GROUPS = [
+    ("Findings", ["results", "testcases", "neighbours", "analogies", "viz",
+                  "similarity", "errors"]),
+    ("How the models were built", ["arch", "data", "hyper", "finetune", "scratch"]),
+    ("Cost and reproduction", ["systems", "running", "log"]),
+]
+# The submission keeps the order the deliverables are numbered in.
+SUB_GROUPS = [
+    ("Contents", ["results", "testcases", "arch", "data", "hyper", "neighbours", "viz",
+                  "analogies", "similarity", "finetune", "scratch", "systems", "errors",
+                  "running", "log"]),
+]
+assert {i for _, ids in WEB_GROUPS for i in ids} == set(TITLES) == {
+    i for _, ids in SUB_GROUPS for i in ids}
+
+TOC_JS = """<script>
+(function(){
+  var links = [].slice.call(document.querySelectorAll('nav.toc a'));
+  var byId = {};
+  links.forEach(function(a){ byId[a.hash.slice(1)] = a; });
+  var seen = {};
+  function paint(){
+    var best = null;
+    Object.keys(seen).forEach(function(id){
+      if (seen[id] && (!best || seen[id].top < seen[best].top)) best = id;
+    });
+    if (!best) return;
+    links.forEach(function(a){ a.classList.remove('on'); });
+    byId[best].classList.add('on');
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      seen[en.target.id] = en.isIntersecting ? en.boundingClientRect : null;
+    });
+    paint();
+  }, {rootMargin: '0px 0px -70% 0px'});
+  Object.keys(byId).forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) io.observe(el);
+  });
+})();
+</script>"""
 K_TC = 5
 QUERIES = ["plot", "terrible", "star", "cinematography", "the"]
 ORDER = ["A", "B", "C", "D", "E"]
@@ -101,7 +161,7 @@ def neighbour_box(recs, ids):
 
 
 def pretrained_2a(ana):
-    """Deliverable 2a: reference, URL, corpus, test set and accuracy for the pretrained model."""
+    """Reference, URL, corpus, test set and accuracy for the pretrained model (deliverable 2a)."""
     b = ana["C"]["benchmark"]
     paper = ("Mikolov, Sutskever, Chen, Corrado and Dean (2013), <i>Distributed "
              "Representations of Words and Phrases and their Compositionality</i>, NIPS. "
@@ -187,7 +247,11 @@ def drift_col(pairs, klass, title, invert=False):
 
 # ---------------------------------------------------------------- page
 
-def build():
+def build(mode="web"):
+    """mode="web": an independent write-up of the experiment, reordered findings-first.
+    mode="submission": the same measurements with the coursework framing the handout asks
+    for — cover page, deliverable labels, course footer, deliverable order."""
+    SUB = mode == "submission"
     r = load()
     A, B, C, D, E = (r[k] for k in ORDER)
     tok = A["train"]["corpus_tokens"]
@@ -209,16 +273,34 @@ def build():
     lat_ratio = lat("C")["p50_ms"] / lat("A")["p50_ms"]
     vocab_ratio = lat("C")["vocab_size"] / lat("A")["vocab_size"]
 
-    S = []
-    add = S.append
+    buckets, cur = {}, []
 
-    add('''<div class="cover">
-      <div class="f">Student Name: Atharva Mohite</div>
-      <div class="f">Student Session: cs6220</div>
-      <div class="f">CS 6220 Big Data Systems, Fall 2026 &middot; Homework 2, programming option</div>
-    </div>''')
+    def sec(name):
+        nonlocal cur
+        cur = buckets.setdefault(name, [])
+
+    def add(x):
+        cur.append(x)
+
+    def eb(sub, web):
+        """Section eyebrow: the deliverable label for the PDF, a plain one for the web."""
+        return f'<div class="eyebrow">{sub if SUB else web}</div>'
+
+    def hw(sub, web=""):
+        """Prose that only exists because this was set as coursework."""
+        return sub if SUB else web
+
+
+    sec("head")
+    if SUB:
+        add('''<div class="cover">
+          <div class="f">Student Name: Atharva Mohite</div>
+          <div class="f">Student Session: cs6220</div>
+          <div class="f">CS 6220 Big Data Systems, Fall 2026 &middot; Homework 2, programming option</div>
+        </div>''')
     add(f'''<header class="masthead">
-      <div class="eyebrow">CS 6220 Big Data Systems &middot; Homework 2 &middot; programming option</div>
+      {eb("CS 6220 Big Data Systems &middot; Homework 2 &middot; programming option",
+          "An experiment in word embeddings")}
       <h1>Five Word2Vec Models, One Classifier</h1>
       <p class="lede">Two models trained from scratch on movie reviews, one downloaded,
       one fine-tuned from the downloaded weights, and one where the training algorithm itself
@@ -233,14 +315,16 @@ def build():
       </div>
     </header>''')
 
-    add('''<nav class="toc">
-      <a href="#results">Results</a><a href="#testcases">Test examples</a><a href="#arch">Architectures</a><a href="#data">Data</a>
-      <a href="#hyper">Hyperparameters</a><a href="#neighbours">Nearest neighbours</a>
-      <a href="#viz">Visualization</a><a href="#analogies">Analogies</a><a href="#similarity">Lexical similarity</a><a href="#finetune">Fine-tuning</a>
-      <a href="#scratch">From scratch</a><a href="#systems">Systems</a>
-      <a href="#errors">Errors</a><a href="#running">Running it</a><a href="#log">Build log</a></nav>''')
+    groups = SUB_GROUPS if SUB else WEB_GROUPS
+    toc = []
+    for heading, ids in groups:
+        toc.append(f'<div class="tg">{heading}</div>')
+        toc += [f'<a href="#{i}">{TITLES[i]}</a>' for i in ids]
+    sec("nav")
+    add(f'''<nav class="toc" aria-label="Sections">{"".join(toc)}</nav>''')
 
     # ---- results
+    sec("results")
     add(f'''<section id="results">
       <div class="sechead"><div class="eyebrow">Where things stand</div>
       <h2>Five models, one classifier</h2></div>
@@ -278,8 +362,9 @@ def build():
 
     # ---- deliverable 3, test examples
     tcm = json.loads((ROOT / "results" / "testcases.json").read_text())["models"]
+    sec("testcases")
     add(f'''<section id="testcases">
-      <div class="sechead"><div class="eyebrow">Deliverable 3</div>
+      <div class="sechead">{eb("Deliverable 3", "Held-out sentiment, example by example")}
       <h2>Five test examples, ranked by every model</h2></div>
       <p class="prose">The sentiment task on held-out test data, which is what the SST corpus
       is here for. Each example carries two ranked outputs per model: the classifier's ranked
@@ -303,8 +388,9 @@ def build():
       happens to point the right way here.</div></section>''')
 
     # ---- architectures
+    sec("arch")
     add(f'''<section id="arch">
-      <div class="sechead"><div class="eyebrow">Deliverable 1</div>
+      <div class="sechead">{eb("Deliverable 1", "Mechanism")}
       <h2>What the two architectures actually are</h2></div>
       <p class="prose">A word2vec model is two matrices and a dot product. There is no hidden
       layer and no nonlinearity. <code>W_in</code> holds one row per word and is the thing you
@@ -321,8 +407,9 @@ def build():
           averaged into a single vector that predicts the centre word. The output is a binary
           tree over the vocabulary, so one prediction costs log2(V) decisions rather than V.</p></div>
       </div>
-      <div class="note warm"><b>On the handout's encoder / code / decoder framing.</b>
-      It is borrowed from autoencoders and fits word2vec only loosely. An autoencoder
+      <div class="note warm"><b>On the encoder / code / decoder framing.</b>
+      Word2vec is often described in those terms. It is borrowed from autoencoders and fits
+      only loosely. An autoencoder
       reconstructs its own input; word2vec reconstructs a <i>neighbouring</i> word, and it
       throws the decoder away. The mapping used above is the honest one: the one-hot input is
       the input layer, <code>W_in</code> is the encoder, the {dim}-dimensional row is the code,
@@ -330,8 +417,9 @@ def build():
     </section>''')
 
     # ---- data
+    sec("data")
     add(f'''<section id="data">
-      <div class="sechead"><div class="eyebrow">Deliverable 2</div>
+      <div class="sechead">{eb("Deliverable 2", "Corpus")}
       <h2>Training and test data</h2></div>
       <p class="prose">Sentiment data is SST-2. Two releases exist and the choice matters. The
       GLUE copy sets every test label to -1 because that split is held out for the leaderboard,
@@ -355,15 +443,17 @@ def build():
       words. GloVe was deliberately not used as the pretrained baseline: it factorises a
       co-occurrence matrix and is not a Word2Vec model, so it would answer a different
       question than the one asked.</p>
-      <h3 class="subhead">Pretrained model, as deliverable 2a asks</h3>{pretrained_table}
+      <h3 class="subhead">{hw("Pretrained model, as deliverable 2a asks", "The pretrained model")}</h3>{pretrained_table}
       <h3 style="margin-top:14px">Representative examples</h3>
-      <p class="prose">Deliverable 2b asks for five training examples and four test examples,
-      two positive and two negative. Selected by rule rather than by eye, with the selecting
-      rule named beside each.</p>{ex2b()}</section>''')
+      <p class="prose">{hw("Deliverable 2b asks for five training examples and four test "
+      "examples, two positive and two negative.", "Five training examples and four test "
+      "examples, two positive and two negative.")} Selected by rule rather than by eye, with
+      the selecting rule named beside each.</p>{ex2b()}</section>''')
 
     # ---- hyperparameters
+    sec("hyper")
     add(f'''<section id="hyper">
-      <div class="sechead"><div class="eyebrow">Deliverable 5</div>
+      <div class="sechead">{eb("Deliverable 5", "Configuration")}
       <h2>Hyperparameters</h2></div>
       <p class="prose">A and B differ on two axes at once, architecture and loss, which is
       deliberate: it gives the comparison two things to say rather than one. Everything else is
@@ -379,8 +469,9 @@ def build():
     add("</section>")
 
     # ---- neighbours
+    sec("neighbours")
     add(f'''<section id="neighbours">
-      <div class="sechead"><div class="eyebrow">Deliverables 3 and 5</div>
+      <div class="sechead">{eb("Deliverables 3 and 5", "Intrinsic evaluation")}
       <h2>Top-ranked neighbours for five queries</h2></div>
       <p class="prose">Five words chosen to separate the models rather than flatter them:
       a polysemous noun, a sentiment adjective, a word whose sense depends on domain, a rare
@@ -395,8 +486,8 @@ def build():
       <code>visuals</code>, <code>screenplay</code> and <code>photography</code> enter
       <code>cinematography</code>, and <code>storyline</code> enters <code>plot</code>.
       A, B and E return something close to noise for every query. At {tok:,} tokens there is
-      not enough co-occurrence evidence to place a word, and the next section puts a number
-      on exactly how little.</div></section>''')
+      not enough co-occurrence evidence to place a word, and the
+      <a href="#similarity">similarity benchmarks</a> put a number on exactly how little.</div></section>''')
 
     # ---- visualization
     viz = json.loads((ROOT / "results" / "visualization.json").read_text())
@@ -412,8 +503,9 @@ def build():
               fixed semantic groups, {detail}. Silhouette of the two-dimensional layout against
               the group labels: <b>{v["silhouette_2d"]}</b>.</p></div>''')
     sil = lambda m, k: viz[m][k]["silhouette_2d"]
+    sec("viz")
     add(f'''<section id="viz">
-      <div class="sechead"><div class="eyebrow">Handout requirement</div>
+      <div class="sechead">{eb("Handout requirement", "Qualitative check")}
       <h2>The vector space in two dimensions</h2></div>
       <p class="prose">The words plotted are fixed in advance and belong to four semantic
       groups: positive sentiment, negative sentiment, film craft, and genre. Fixing them first
@@ -439,10 +531,13 @@ def build():
 
     # ---- analogies
     ar = lambda m: {x["query"]: x for x in ana[m]["arithmetic"]}
+    sec("analogies")
     add(f'''<section id="analogies">
-      <div class="sechead"><div class="eyebrow">Handout requirement</div>
+      <div class="sechead">{eb("Handout requirement", "Compositionality")}
       <h2>Vector arithmetic and analogies</h2></div>
-      <p class="prose">The handout names <code>king - man + woman = queen</code> specifically.
+      <p class="prose">{hw("The handout names <code>king - man + woman = queen</code> "
+      "specifically.", "<code>king - man + woman = queen</code> is the canonical test of "
+      "whether an embedding space supports arithmetic at all.")}
       Below is that query and six others, each showing the ranked answers the model returns,
       followed by the standard Google analogy benchmark scored per section.</p>''')
     rows = []
@@ -482,12 +577,13 @@ def build():
       is structure inherited from the warm start, not learned from SST.</p></section>''')
 
     # ---- similarity
+    sec("similarity")
     add(f'''<section id="similarity">
-      <div class="sechead"><div class="eyebrow">Supporting analysis, beyond the requirement</div>
+      <div class="sechead">{eb("Supporting analysis, beyond the requirement", "Where the sentiment score misleads")}
       <h2>Good at sentiment, useless at similarity</h2></div>
-      <p class="prose">The sections above are the required sentiment task. This one is extra,
-      and it exists because the sentiment numbers alone give a misleading picture of what these
-      embeddings know.</p>
+      <p class="prose">{hw("The sections above are the required sentiment task. This one "
+      "is extra, and it exists", "This section exists")} because the sentiment numbers alone
+      give a misleading picture of what these embeddings know.</p>
       <p class="prose">Spearman correlation between human similarity ratings and cosine
       similarity, on three standard benchmarks. Coverage is the share of pairs where both words
       were in vocabulary, and it is part of the result rather than a footnote: the SST-trained
@@ -515,6 +611,7 @@ def build():
       structure in Model D.</p></section>''')
 
     # ---- finetune
+    sec("finetune")
     add(f'''<section id="finetune">
       <div class="sechead"><div class="eyebrow">Model D</div>
       <h2>What fine-tuning means for word2vec</h2></div>
@@ -560,11 +657,13 @@ def build():
 
     # ---- scratch
     lc = E["train"]["loss_curve"]
+    sec("scratch")
     add(f'''<section id="scratch">
-      <div class="sechead"><div class="eyebrow">Model E, beyond the requirement</div>
+      <div class="sechead">{eb("Model E, beyond the requirement", "Model E")}
       <h2>Writing skip-gram with negative sampling</h2></div>
-      <p class="prose">The handout suggests taking a superficial look at the code. Writing it
-      instead is the difference between having used word2vec and understanding it.
+      <p class="prose">{hw("The handout suggests taking a superficial look at the code. "
+      "Writing it instead is", "Reading the reference implementation is one thing; writing "
+      "one is")} the difference between having used word2vec and understanding it.
       <code>src/sgns.py</code> implements the vocabulary and counts, subsampling of frequent
       words, the unigram^0.75 noise table, a dynamic window, the two embedding matrices, and
       linear learning rate decay. <code>to_keyedvectors</code> then wraps <code>W_in</code> in
@@ -591,8 +690,9 @@ def build():
       2e-5. Both are the 0.75 exponent behaving correctly.</p></section>''')
 
     # ---- systems
+    sec("systems")
     add(f'''<section id="systems">
-      <div class="sechead"><div class="eyebrow">Deliverable 4</div>
+      <div class="sechead">{eb("Deliverable 4", "Systems measurements")}
       <h2>What these models cost to run</h2></div>
       <p class="prose">Query latency is brute-force <code>most_similar</code>, a dense
       matrix-vector product over the whole vocabulary, measured over
@@ -632,8 +732,9 @@ def build():
       corpus, which is the measurement text8 exists to take.</p></section>''')
 
     # ---- errors
+    sec("errors")
     add(f'''<section id="errors">
-      <div class="sechead"><div class="eyebrow">Deliverable 2c</div>
+      <div class="sechead">{eb("Deliverable 2c", "Error analysis")}
       <h2>Where every model fails, and why it is the same place</h2></div>''')
     add(table(["Model", "Errors / 1,821", "Negation", "Contrast", "Other"],
               [[mid, f'{err(mid)["n_errors"]:,}',
@@ -647,10 +748,12 @@ def build():
       means it is not an embedding-quality problem. It is the pooling step: averaging discards
       word order, so no amount of embedding quality recovers a scope-of-negation judgement.</div>''')
     d2c = json.loads((ROOT / "results" / "examples_2c.json").read_text())
-    add(f'''<h3 class="subhead">Deliverable 2c, stated explicitly for Model D</h3>
-      <p class="prose">The handout asks for at least two test examples the model classifies
-      correctly and at least two it gets wrong, for a named model. Model D, the fine-tuned one,
-      is used here. All four are drawn from the same 1,821-sentence test split and are the
+    add(f'''<h3 class="subhead">{hw("Deliverable 2c, stated explicitly for Model D",
+      "Model D, confidently right and confidently wrong")}</h3>
+      <p class="prose">{hw("The handout asks for at least two test examples the model "
+      "classifies correctly and at least two it gets wrong, for a named model. Model D, the "
+      "fine-tuned one, is used here.", "Two test examples Model D, the fine-tuned one, gets "
+      "right and two it gets wrong.")} All four are drawn from the same 1,821-sentence test split and are the
       highest-confidence cases in each category.</p>''')
     add(table(["Outcome", "Gold", "Predicted", "Confidence", "Sentence"],
               [[f'<span class="{"win" if x["correct"] else "lose"}">'
@@ -668,22 +771,23 @@ def build():
                          f'{x["confidence"]:.3f}', x["category"]])
     add(table(["Model", "Sentence", "Gold", "Predicted", "Confidence", "Category"], rows,
               ["m", "l", "n", "n", "n", "m"]))
-    add('''<p class="prose">Each has a mechanical explanation.
+    add(f'''<p class="prose">Each has a mechanical explanation.
       <code>not a bad journey at all</code> averages <code>not</code> and <code>bad</code> into
       negative territory. <code>there is n't a weak or careless performance amongst them</code>
       pools two strongly negative adjectives that the negation was supposed to invert.
       <code>a great deal of sizzle and very little steak</code> is an idiom whose negative
-      reading lives entirely in the contrast between its clauses. The handout warns that a test
-      set producing no failures must be made harder. That did not arise, since SST supplies
-      these unaided.</p></section>''')
+      reading lives entirely in the contrast between its clauses.{hw(" The handout warns "
+      "that a test set producing no failures must be made harder. That did not arise, since "
+      "SST supplies these unaided.")}</p></section>''')
 
     # ---- deliverable 6
+    sec("running")
     add(f'''<section id="running">
-      <div class="sechead"><div class="eyebrow">Deliverable 6</div>
+      <div class="sechead">{eb("Deliverable 6", "Reproduction")}
       <h2>Installation, running and measurement</h2></div>
       <p class="prose">Four things cost real time, and each reported something other than its
-      actual cause. They are recorded here because the handout asks for the experience, and
-      because each has a specific tell.</p>
+      actual cause. They are recorded here because each has a specific tell{hw(", and because "
+      "the handout asks for the experience")}.</p>
       <ol class="steps">
         <li><div class="step-b"><b>gensim has no wheels for Python 3.14</b>
           <span class="why">The machine's default interpreter is 3.14. Installing gensim there
@@ -717,7 +821,7 @@ def build():
     rows = "".join(
         f'<div class="lrow"><span class="lhash">{h}</span>'
         f'<span><b>{e(msg.split(":")[0])}</b><div class="lnote">{e(msg.split(": ",1)[-1])}</div></span>'
-        f'<span class="lstate">done</span></div>' for h, msg in commits())
+        f'<span class="lstate">done</span></div>' for h, msg in commits()) if SUB else ""
     rows += ''.join(
         f'<div class="lrow"><span class="lhash">&mdash;</span>'
         f'<span><b>{t}</b><div class="lnote">{d}</div></span>'
@@ -725,25 +829,37 @@ def build():
         for t, d in [("text8", "Train A, B and E on 17M tokens; retest the MPS and sparse crossovers"),
                      ("Hogwild scaling", "words/sec against worker count on a multi-core node"),
                      ("Hyperparameter sweep", "training cost against accuracy for window, dimension and negatives")])
+    sec("log")
     add(f'''<section id="log">
-      <div class="sechead"><div class="eyebrow">Provenance</div><h2>Build log</h2></div>
+      <div class="sechead"><div class="eyebrow">Provenance</div>
+      <h2>{hw("Build log", "Provenance and what is still open")}</h2></div>
       <div class="log">{rows}</div>
       <p class="prose">Every figure on this page is read from <code>results/*.json</code> at
       build time by <code>src/build_report.py</code>. Nothing is typed into the prose, so
       re-running a model and rebuilding cannot leave a stale number behind.</p></section>''')
 
-    add(f'''<footer>CS 6220 Big Data Systems, Fall 2026. Report generated from
+    sec("foot")
+    add(f'''<footer>{hw("CS 6220 Big Data Systems, Fall 2026. ")}Generated from
       {len(r)} result records.</footer>''')
 
+    order = [i for _, ids in groups for i in ids]
+    stranded = set(buckets) - set(order) - {"head", "nav", "foot"}
+    assert not stranded, f"sections built but never placed: {sorted(stranded)}"
+    body = ("".join(buckets["head"])
+            + "".join("".join(buckets[i]) for i in order)
+            + "".join(buckets["foot"]))
     page = (f'<!doctype html><html lang="en"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>Five Word2Vec Models, One Classifier</title>'
-            f'<style>{CSS}{EXTRA_CSS}</style></head><body><div class="wrap">'
-            f'{"".join(S)}</div></body></html>')
-    OUT.parent.mkdir(exist_ok=True)
-    OUT.write_text(page)
-    print(f"wrote {OUT.relative_to(ROOT)}  {len(page)/1024:.1f} KB")
+            f'<style>{CSS}{EXTRA_CSS}</style></head><body><div class="shell">'
+            f'{"".join(buckets["nav"])}<div class="wrap">{body}</div></div>'
+            f'{TOC_JS}</body></html>')
+    out = REPORT_OUT if SUB else OUT
+    out.parent.mkdir(exist_ok=True)
+    out.write_text(page)
+    print(f"wrote {out.relative_to(ROOT)}  {len(page)/1024:.1f} KB")
 
 
 if __name__ == "__main__":
-    build()
+    build("web")
+    build("submission")

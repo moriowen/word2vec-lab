@@ -58,7 +58,15 @@ Hyperparameters in each result record are read back off the trained model object
 with what actually ran — follow that pattern for any new model.
 
 **Reports and figures are generated from `results/*.json`, never hand-typed** (same
-invariant as HW1). Committed model artifacts (`models/*.model`) and data are separated: SST-2
+invariant as HW1). `src/build_report.py` emits two variants of the same measurements:
+`build("web")` writes `public/index.html` (the deployed page, findings-first order, no
+mention of the course, deliverable or handout) and `build("submission")` writes
+`report/report.html` (cover page, deliverable labels and order, course footer — this is
+what the PDF renders from). Anything course-specific goes through the `hw()`/`eb()`
+helpers so it can only reach the submission variant; `python -m src.build_report` builds
+both. Git commit subjects name deliverables, so the web build omits the commit list.
+
+Committed model artifacts (`models/*.model`) and data are separated: SST-2
 JSON/parquet under `data/sst2/` ships with the submission (`.gitignore` does not exclude it);
 `models/`, `data/text8/`, and downloaded vectors are excluded and treated as reproducible from
 source/config, not from git history.

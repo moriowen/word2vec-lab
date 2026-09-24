@@ -342,11 +342,13 @@ def build(mode="web"):
     add(f'''<header class="masthead">
       {eb("CS 6220 Big Data Systems &middot; Homework 2 &middot; programming option",
           "An experiment in word embeddings")}
-      <h1>Five Word2Vec Models, One Classifier</h1>
+      <h1>Five Word2Vec Models, Two Corpora, One Classifier</h1>
       <p class="lede">This experiment compares five routes to a Word2Vec model: two trained
       with gensim on movie reviews, a frozen pretrained model, a fine-tuned version of those
-      pretrained weights, and a skip-gram implementation written from scratch. The same
-      pipeline measures sentiment accuracy, lexical structure, and runtime cost.</p>
+      pretrained weights, and a skip-gram implementation written from scratch. The three
+      models trained from scratch are then retrained on text8, 17 million words of Wikipedia,
+      to see how much the training text matters. The same pipeline measures sentiment
+      accuracy, lexical structure, and runtime cost.</p>
       <div class="runmeta">
         <span><b>Corpora</b> SST-2 phrases, {tok:,} tokens; text8, {r["A-text8"]["train"]["corpus_tokens"]:,}</span>
         <span><b>Vocabulary</b> {V:,} (SST), {r["A-text8"]["train"]["vocab_size"]:,} (text8)</span>
@@ -368,7 +370,7 @@ def build(mode="web"):
     sec("results")
     add(f'''<section id="results">
       <div class="sechead"><div class="eyebrow">Where things stand</div>
-      <h2>Five models, one classifier</h2></div>
+      <h2>Eight embeddings, one classifier</h2></div>
       <p class="prose">A, B and C appear twice, once trained on SST and once retrained on text8.
       Every model goes through the same evaluation. I look up each word
       vector, average the vectors into one sentence representation, fit logistic regression,

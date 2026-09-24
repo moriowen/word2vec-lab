@@ -231,11 +231,13 @@
   .chip b{font-weight:500;color:var(--faint)}
 </style></head><body><div class="shell"><nav class="toc" aria-label="Sections"><div class="tg">Findings</div><a href="#results">Headline results</a><a href="#testcases">Worked test examples</a><a href="#neighbours">Nearest neighbours</a><a href="#analogies">Vector arithmetic</a><a href="#viz">The space in 2D</a><a href="#similarity">Lexical similarity</a><a href="#text8">More training text</a><a href="#errors">Where they fail</a><div class="tg">How the models were built</div><a href="#arch">The two architectures</a><a href="#data">Corpus and splits</a><a href="#hyper">Hyperparameters</a><a href="#finetune">Fine-tuning G-ft</a><a href="#scratch">Writing C from scratch</a><div class="tg">Cost and reproduction</div><a href="#systems">Cost to run</a><a href="#running">Reproducing it</a><a href="#log">Provenance</a></nav><div class="wrap"><header class="masthead">
       <div class="eyebrow">An experiment in word embeddings</div>
-      <h1>Five Word2Vec Models, One Classifier</h1>
+      <h1>Five Word2Vec Models, Two Corpora, One Classifier</h1>
       <p class="lede">This experiment compares five routes to a Word2Vec model: two trained
       with gensim on movie reviews, a frozen pretrained model, a fine-tuned version of those
-      pretrained weights, and a skip-gram implementation written from scratch. The same
-      pipeline measures sentiment accuracy, lexical structure, and runtime cost.</p>
+      pretrained weights, and a skip-gram implementation written from scratch. The three
+      models trained from scratch are then retrained on text8, 17 million words of Wikipedia,
+      to see how much the training text matters. The same pipeline measures sentiment
+      accuracy, lexical structure, and runtime cost.</p>
       <div class="runmeta">
         <span><b>Corpora</b> SST-2 phrases, 633,720 tokens; text8, 17,005,207</span>
         <span><b>Vocabulary</b> 14,309 (SST), 135,335 (text8)</span>
@@ -245,7 +247,7 @@
       </div>
     </header><section id="results">
       <div class="sechead"><div class="eyebrow">Where things stand</div>
-      <h2>Five models, one classifier</h2></div>
+      <h2>Eight embeddings, one classifier</h2></div>
       <p class="prose">A, B and C appear twice, once trained on SST and once retrained on text8.
       Every model goes through the same evaluation. I look up each word
       vector, average the vectors into one sentence representation, fit logistic regression,

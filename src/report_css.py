@@ -82,14 +82,23 @@ CSS = """
          padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px}
   .mcard.is-focus{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
   .mcard .tag{display:flex;align-items:baseline;gap:8px}
-  .mcard .id{font-family:var(--mono);font-size:1.5rem;line-height:1;color:var(--accent)}
+  .mcard .id{font-family:var(--mono);font-size:1.5rem;line-height:1;color:var(--accent);
+            white-space:nowrap}
   .mcard .nm{font-size:.82rem;color:var(--muted);line-height:1.35}
+  .mcard .corp{font-size:.76rem;color:var(--muted);line-height:1.35}
+  .mcard .corp b{color:var(--ink);font-weight:600}
+  .mcard .metric{display:flex;flex-direction:column;gap:5px}
+  .mcard .ml{font-size:.7rem;color:var(--faint);letter-spacing:.02em}
+  .mcard .ml b{font-family:var(--mono);font-size:.82rem;color:var(--ink);font-weight:500;
+               margin-left:4px}
+  .bar.thin{height:3px}
+  .mkey{font-size:.78rem;color:var(--faint);margin-top:10px;max-width:80ch}
   .acc{font-family:var(--mono);font-size:1.85rem;line-height:1;font-variant-numeric:tabular-nums}
   .bar{height:5px;background:var(--raised);border-radius:3px;overflow:hidden}
   .bar>i{display:block;height:100%;background:var(--accent)}
   .mcard.is-focus .bar>i{background:var(--warm)}
-  .mmeta{font-family:var(--mono);font-size:.7rem;color:var(--faint);
-         display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
+  .mmeta{font-family:var(--mono);font-size:.7rem;color:var(--faint);margin-top:auto;
+         font-variant-numeric:tabular-nums}
 
   .figure{background:var(--surface);border:1px solid var(--line);border-radius:6px;
           padding:22px;overflow-x:auto}
@@ -137,6 +146,15 @@ CSS = """
         color:var(--muted);white-space:nowrap}
   .chip.only-d{background:var(--warm-soft);border-color:var(--warm);color:var(--ink)}
   .chip.agree{background:var(--good-soft);border-color:var(--good);color:var(--ink)}
+  .chip.top{background:var(--accent-soft);border-color:var(--accent);color:var(--ink);
+            font-weight:600}
+  .qexp{font-family:var(--sans);font-size:.74rem;color:var(--faint);margin-left:10px}
+  .qexp code{color:var(--ink)}
+  td .sd{color:var(--faint);font-size:.74rem}
+  .t8tab td:first-child,.t8tab td:last-child{white-space:nowrap}
+  .anatab table{table-layout:fixed}
+  .anatab th:first-child{width:80px}
+  .anatab th:nth-child(2){width:200px}
   .legend{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;font-size:.82rem;
           color:var(--muted);background:var(--raised);border:1px solid var(--line);
           border-radius:6px;padding:10px 14px}

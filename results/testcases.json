@@ -101,27 +101,27 @@
           "correct": false,
           "neighbours": [
             {
-              "text": "big fat liar is little more than home alone raised to a new , self-deprecating l",
+              "text": "big fat liar is little more than home alone raised to a new , self-deprecating level .",
               "label": 0,
               "cos": 0.857
             },
             {
-              "text": "add up to little more than a screenful of gamesmanship that 's low on both suspe",
+              "text": "add up to little more than a screenful of gamesmanship that 's low on both suspense and payoff .",
               "label": 0,
               "cos": 0.847
             },
             {
-              "text": "to little more than a screenful of gamesmanship that 's low on both suspense and",
+              "text": "to little more than a screenful of gamesmanship that 's low on both suspense and payoff",
               "label": 0,
               "cos": 0.842
             },
             {
-              "text": "the director 's many dodges and turns add up to little more than a screenful of ",
+              "text": "the director 's many dodges and turns add up to little more than a screenful of gamesmanship that 's low on both suspense and payoff .",
               "label": 0,
               "cos": 0.841
             },
             {
-              "text": "add up to little more than a screenful of gamesmanship that 's low on both suspe",
+              "text": "add up to little more than a screenful of gamesmanship that 's low on both suspense and payoff",
               "label": 0,
               "cos": 0.841
             }
@@ -144,27 +144,27 @@
           "correct": false,
           "neighbours": [
             {
-              "text": "a deliberative account of a lifestyle characterized by its surface-obsession -- ",
+              "text": "a deliberative account of a lifestyle characterized by its surface-obsession -- one that typifies the delirium of post , pre , and extant stardom .",
               "label": 1,
               "cos": 0.873
             },
             {
-              "text": ", it 's a real shame that so much of the movie -- again , as in the animal -- is",
+              "text": ", it 's a real shame that so much of the movie -- again , as in the animal -- is a slapdash mess .",
               "label": 0,
               "cos": 0.872
             },
             {
-              "text": "neither quite a comedy nor a romance , more of an impish divertissement of theme",
+              "text": "neither quite a comedy nor a romance , more of an impish divertissement of themes that interest attal and gainsbourg -- they live together -- the film has a lot of charm .",
               "label": 1,
               "cos": 0.866
             },
             {
-              "text": "'s a real shame that so much of the movie -- again , as in the animal -- is a sl",
+              "text": "'s a real shame that so much of the movie -- again , as in the animal -- is a slapdash mess .",
               "label": 0,
               "cos": 0.863
             },
             {
-              "text": "it 's a real shame that so much of the movie -- again , as in the animal -- is a",
+              "text": "it 's a real shame that so much of the movie -- again , as in the animal -- is a slapdash mess .",
               "label": 0,
               "cos": 0.863
             }
@@ -187,27 +187,27 @@
           "correct": true,
           "neighbours": [
             {
-              "text": "the film does n't show enough of the creative process or even of what was create",
+              "text": "the film does n't show enough of the creative process or even of what was created for the non-fan to figure out what makes wilco a big deal .",
               "label": 0,
               "cos": 0.865
             },
             {
-              "text": "does n't show enough of the creative process or even of what was created for the",
+              "text": "does n't show enough of the creative process or even of what was created for the non-fan to figure out what makes wilco a big deal .",
               "label": 0,
               "cos": 0.864
             },
             {
-              "text": "they kept much of the plot but jettisoned the stuff that would make this a movin",
+              "text": "they kept much of the plot but jettisoned the stuff that would make this a moving experience for people who have n't read the book .",
               "label": 0,
               "cos": 0.859
             },
             {
-              "text": "what might have been acceptable on the printed page of iles ' book does not tran",
+              "text": "what might have been acceptable on the printed page of iles ' book does not translate well to the screen .",
               "label": 0,
               "cos": 0.853
             },
             {
-              "text": "kept much of the plot but jettisoned the stuff that would make this a moving exp",
+              "text": "kept much of the plot but jettisoned the stuff that would make this a moving experience for people who have n't read the book",
               "label": 0,
               "cos": 0.853
             }
@@ -337,12 +337,12 @@
               "cos": 0.548
             },
             {
-              "text": "of the whole dead-undead genre , who deserve more from a vampire pic than a few ",
+              "text": "of the whole dead-undead genre , who deserve more from a vampire pic than a few shrieky special effects",
               "label": 0,
               "cos": 0.545
             },
             {
-              "text": "add up to little more than a screenful of gamesmanship that 's low on both suspe",
+              "text": "add up to little more than a screenful of gamesmanship that 's low on both suspense and payoff .",
               "label": 0,
               "cos": 0.543
             }
@@ -365,12 +365,12 @@
           "correct": false,
           "neighbours": [
             {
-              "text": "just a collection of this and that -- whatever fills time -- with no unified who",
+              "text": "just a collection of this and that -- whatever fills time -- with no unified whole .",
               "label": 0,
               "cos": 0.608
             },
             {
-              "text": "just a collection of this and that -- whatever fills time -- with no unified who",
+              "text": "just a collection of this and that -- whatever fills time -- with no unified whole",
               "label": 0,
               "cos": 0.601
             },
@@ -385,7 +385,7 @@
               "cos": 0.599
             },
             {
-              "text": "is a fudged opportunity of gigantic proportions -- a lunar mission with no signs",
+              "text": "is a fudged opportunity of gigantic proportions -- a lunar mission with no signs of life .",
               "label": 0,
               "cos": 0.598
             }
@@ -408,7 +408,7 @@
           "correct": false,
           "neighbours": [
             {
-              "text": "if swimfan does catch on , it may be because teens are looking for something to ",
+              "text": "if swimfan does catch on , it may be because teens are looking for something to make them laugh .",
               "label": 0,
               "cos": 0.592
             },
@@ -428,7 +428,7 @@
               "cos": 0.581
             },
             {
-              "text": "even if you do n't understand what on earth is going on , this is a movie that w",
+              "text": "even if you do n't understand what on earth is going on , this is a movie that will stimulate hours of post viewing discussion , if only to be reminded of who did what to whom and why .",
               "label": 1,
               "cos": 0.57
             }
@@ -543,7 +543,7 @@
           "correct": false,
           "neighbours": [
             {
-              "text": "big fat liar is little more than home alone raised to a new , self-deprecating l",
+              "text": "big fat liar is little more than home alone raised to a new , self-deprecating level .",
               "label": 0,
               "cos": 0.928
             },
@@ -586,27 +586,27 @@
           "correct": false,
           "neighbours": [
             {
-              "text": "neither quite a comedy nor a romance , more of an impish divertissement of theme",
+              "text": "neither quite a comedy nor a romance , more of an impish divertissement of themes that interest attal and gainsbourg -- they live together -- the film has a lot of charm .",
               "label": 1,
               "cos": 0.95
             },
             {
-              "text": "singer/composer bryan adams contributes a slew of songs -- a few potential hits ",
+              "text": "singer/composer bryan adams contributes a slew of songs -- a few potential hits , a few more simply intrusive to the story -- but the whole package certainly captures the intended , er , spirit of the piece .",
               "label": 1,
               "cos": 0.944
             },
             {
-              "text": "singer/composer bryan adams contributes a slew of songs -- a few potential hits ",
+              "text": "singer/composer bryan adams contributes a slew of songs -- a few potential hits , a few more simply intrusive to the story -- but the whole package certainly captures the intended , er , spirit of the piece",
               "label": 1,
               "cos": 0.942
             },
             {
-              "text": ", more of an impish divertissement of themes that interest attal and gainsbourg ",
+              "text": ", more of an impish divertissement of themes that interest attal and gainsbourg -- they live together -- the film has a lot of charm .",
               "label": 1,
               "cos": 0.94
             },
             {
-              "text": "'s a real shame that so much of the movie -- again , as in the animal -- is a sl",
+              "text": "'s a real shame that so much of the movie -- again , as in the animal -- is a slapdash mess .",
               "label": 0,
               "cos": 0.935
             }
@@ -629,27 +629,27 @@
           "correct": true,
           "neighbours": [
             {
-              "text": "does n't show enough of the creative process or even of what was created for the",
+              "text": "does n't show enough of the creative process or even of what was created for the non-fan to figure out what makes wilco a big deal .",
               "label": 0,
               "cos": 0.923
             },
             {
-              "text": "if swimfan does catch on , it may be because teens are looking for something to ",
+              "text": "if swimfan does catch on , it may be because teens are looking for something to make them laugh .",
               "label": 0,
               "cos": 0.923
             },
             {
-              "text": "what might have been acceptable on the printed page of iles ' book does not tran",
+              "text": "what might have been acceptable on the printed page of iles ' book does not translate well to the screen .",
               "label": 0,
               "cos": 0.921
             },
             {
-              "text": "the film does n't show enough of the creative process or even of what was create",
+              "text": "the film does n't show enough of the creative process or even of what was created for the non-fan to figure out what makes wilco a big deal .",
               "label": 0,
               "cos": 0.919
             },
             {
-              "text": "even if you do n't understand what on earth is going on , this is a movie that w",
+              "text": "even if you do n't understand what on earth is going on , this is a movie that will stimulate hours of post viewing discussion , if only to be reminded of who did what to whom and why .",
               "label": 1,
               "cos": 0.917
             }
@@ -764,12 +764,12 @@
           "correct": true,
           "neighbours": [
             {
-              "text": "advised to take the warning literally , and log on to something more user-friend",
+              "text": "advised to take the warning literally , and log on to something more user-friendly",
               "label": 0,
               "cos": 0.963
             },
             {
-              "text": "is advised to take the warning literally , and log on to something more user-fri",
+              "text": "is advised to take the warning literally , and log on to something more user-friendly .",
               "label": 0,
               "cos": 0.963
             },
@@ -779,12 +779,12 @@
               "cos": 0.962
             },
             {
-              "text": "is advised to take the warning literally , and log on to something more user-fri",
+              "text": "is advised to take the warning literally , and log on to something more user-friendly",
               "label": 0,
               "cos": 0.962
             },
             {
-              "text": "harks back to a time when movies had more to do with imagination than market res",
+              "text": "harks back to a time when movies had more to do with imagination than market research .",
               "label": 1,
               "cos": 0.962
             }
@@ -807,27 +807,27 @@
           "correct": false,
           "neighbours": [
             {
-              "text": "'s not a spark of new inspiration in it , just more of the same , done with noti",
+              "text": "'s not a spark of new inspiration in it , just more of the same , done with noticeably less energy and imagination .",
               "label": 0,
               "cos": 0.982
             },
             {
-              "text": ", more of an impish divertissement of themes that interest attal and gainsbourg ",
+              "text": ", more of an impish divertissement of themes that interest attal and gainsbourg -- they live together -- the film has a lot of charm .",
               "label": 1,
               "cos": 0.982
             },
             {
-              "text": "though its rather routine script is loaded with familiar situations , the movie ",
+              "text": "though its rather routine script is loaded with familiar situations , the movie has a cinematic fluidity and sense of intelligence that makes it work more than it probably should .",
               "label": 1,
               "cos": 0.981
             },
             {
-              "text": "'s not a spark of new inspiration in it , just more of the same , done with noti",
+              "text": "'s not a spark of new inspiration in it , just more of the same , done with noticeably less energy and imagination",
               "label": 0,
               "cos": 0.981
             },
             {
-              "text": "there 's not a spark of new inspiration in it , just more of the same , done wit",
+              "text": "there 's not a spark of new inspiration in it , just more of the same , done with noticeably less energy and imagination .",
               "label": 0,
               "cos": 0.98
             }
@@ -850,12 +850,12 @@
           "correct": false,
           "neighbours": [
             {
-              "text": "a determined , ennui-hobbled slog that really does n't have much to say beyond t",
+              "text": "a determined , ennui-hobbled slog that really does n't have much to say beyond the news flash that loneliness can make people act weird .",
               "label": 0,
               "cos": 0.977
             },
             {
-              "text": "just because a walk to remember is shrewd enough to activate girlish tear ducts ",
+              "text": "just because a walk to remember is shrewd enough to activate girlish tear ducts does n't mean it 's good enough for our girls .",
               "label": 0,
               "cos": 0.977
             },
@@ -870,7 +870,7 @@
               "cos": 0.976
             },
             {
-              "text": "you do n't need to be a hip-hop fan to appreciate scratch , and that 's the mark",
+              "text": "you do n't need to be a hip-hop fan to appreciate scratch , and that 's the mark of a documentary that works",
               "label": 1,
               "cos": 0.976
             }
@@ -898,7 +898,7 @@
               "cos": 0.974
             },
             {
-              "text": "no cute factor here ... not that i mind ugly ; the problem is he has no characte",
+              "text": "no cute factor here ... not that i mind ugly ; the problem is he has no character , loveable or otherwise .",
               "label": 0,
               "cos": 0.967
             },
@@ -908,12 +908,12 @@
               "cos": 0.966
             },
             {
-              "text": "there 's much tongue in cheek in the film and there 's no doubt the filmmaker is",
+              "text": "there 's much tongue in cheek in the film and there 's no doubt the filmmaker is having fun with it all .",
               "label": 1,
               "cos": 0.965
             },
             {
-              "text": "there 's much tongue in cheek in the film and there 's no doubt the filmmaker is",
+              "text": "there 's much tongue in cheek in the film and there 's no doubt the filmmaker is having fun with it all",
               "label": 1,
               "cos": 0.964
             }
@@ -985,27 +985,27 @@
           "correct": true,
           "neighbours": [
             {
-              "text": "at just over an hour , home movie will leave you wanting more , not to mention l",
+              "text": "at just over an hour , home movie will leave you wanting more , not to mention leaving you with some laughs and a smile on your face .",
               "label": 1,
               "cos": 0.78
             },
             {
-              "text": "along the way -- myriad signs , if you will -- that beneath the familiar , funny",
+              "text": "along the way -- myriad signs , if you will -- that beneath the familiar , funny surface is a far bigger , far more meaningful story than one in which little green men come to earth for harvesting purposes",
               "label": 1,
               "cos": 0.769
             },
             {
-              "text": "offers copious hints along the way -- myriad signs , if you will -- that beneath",
+              "text": "offers copious hints along the way -- myriad signs , if you will -- that beneath the familiar , funny surface is a far bigger , far more meaningful story than one in which little green men come to earth for harvesting purposes .",
               "label": 1,
               "cos": 0.767
             },
             {
-              "text": "offers copious hints along the way -- myriad signs , if you will -- that beneath",
+              "text": "offers copious hints along the way -- myriad signs , if you will -- that beneath the familiar , funny surface is a far bigger , far more meaningful story than one in which little green men come to earth for harvesting purposes",
               "label": 1,
               "cos": 0.767
             },
             {
-              "text": "shyamalan offers copious hints along the way -- myriad signs , if you will -- th",
+              "text": "shyamalan offers copious hints along the way -- myriad signs , if you will -- that beneath the familiar , funny surface is a far bigger , far more meaningful story than one in which little green men come to earth for harvesting purposes .",
               "label": 1,
               "cos": 0.767
             }
@@ -1028,27 +1028,27 @@
           "correct": true,
           "neighbours": [
             {
-              "text": "two signs that m. night shyamalan 's debut feature sucked up all he has to give ",
+              "text": "two signs that m. night shyamalan 's debut feature sucked up all he has to give to the mystic genres of cinema",
               "label": 0,
               "cos": 0.772
             },
             {
-              "text": "a first-class , thoroughly involving b movie that effectively combines two suref",
+              "text": "a first-class , thoroughly involving b movie that effectively combines two surefire , beloved genres -- the prison flick and the fight film",
               "label": 1,
               "cos": 0.77
             },
             {
-              "text": "a first-class , thoroughly involving b movie that effectively combines two suref",
+              "text": "a first-class , thoroughly involving b movie that effectively combines two surefire , beloved genres -- the prison flick and the fight film .",
               "label": 1,
               "cos": 0.77
             },
             {
-              "text": "m. night shyamalan 's debut feature sucked up all he has to give to the mystic g",
+              "text": "m. night shyamalan 's debut feature sucked up all he has to give to the mystic genres of cinema",
               "label": 0,
               "cos": 0.765
             },
             {
-              "text": "the movie attempts to mine laughs from a genre -- the gangster/crime comedy -- t",
+              "text": "the movie attempts to mine laughs from a genre -- the gangster/crime comedy -- that wore out its welcome with audiences several years ago , and its cutesy reliance on movie-specific cliches is n't exactly endearing",
               "label": 0,
               "cos": 0.76
             }
@@ -1071,12 +1071,12 @@
           "correct": false,
           "neighbours": [
             {
-              "text": "even if you do n't understand what on earth is going on , this is a movie that w",
+              "text": "even if you do n't understand what on earth is going on , this is a movie that will stimulate hours of post viewing discussion , if only to be reminded of who did what to whom and why .",
               "label": 1,
               "cos": 0.801
             },
             {
-              "text": "if swimfan does catch on , it may be because teens are looking for something to ",
+              "text": "if swimfan does catch on , it may be because teens are looking for something to make them laugh .",
               "label": 0,
               "cos": 0.79
             },
@@ -1091,7 +1091,7 @@
               "cos": 0.784
             },
             {
-              "text": "does n't show enough of the creative process or even of what was created for the",
+              "text": "does n't show enough of the creative process or even of what was created for the non-fan to figure out what makes wilco a big deal .",
               "label": 0,
               "cos": 0.783
             }

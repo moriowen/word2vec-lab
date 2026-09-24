@@ -24,13 +24,16 @@ source .venv/bin/activate   # Python 3.11 (Homebrew) — gensim 4.3.3 has no 3.1
 python -m src.data          # corpus stats for both training-corpus variants
 python -m src.main          # train A, B; score G; write results/*.json
 python -m src.run_e         # train C, the from-scratch PyTorch implementation
-python -m src.finetune      # train G-ft, warm-started from GoogleNews
+python -m src.finetune      # train G-ft, warm-started from GoogleNews, and the A2 control
 python -m src.run_eval      # intrinsic benchmarks, latency and memory, error mining
+python -m src.run_eval --latency  # re-time queries only; touches no other field
 python -m src.run_analogies # vector arithmetic and the Google analogy benchmark
 python -m src.testcases     # five worked test examples across all models
+python -m src.examples      # deliverable 2b/2c example tables
 python -m src.visualize     # PCA and t-SNE projections, emitted as inline SVG
 python -m src.measure_mem   # per-model RSS, one subprocess per model
 python -m src.build_report  # both report variants, from results/*.json
+STUDENT_ID=... python -m src.package  # PDF + submission ZIP (gitignored)
 ```
 
 Order matters. The `run_*` scripts augment records that `main`, `run_e` and `finetune`
@@ -130,8 +133,9 @@ invariant as HW1. If a number appears in the prose, it came from a record at bui
 
 Artifacts and data are separated deliberately. The SST-2 JSON and parquet under
 `data/sst2/` ship with the submission, and `.gitignore` does not exclude them. `models/`,
-`data/text8/` and the downloaded vectors are excluded and treated as reproducible from
-source and config rather than from git history.
+`data/text8/` and the downloaded vectors are excluded from git and treated as reproducible
+from source and config rather than from git history. text8 is still packed into the
+submission ZIP by `src/package.py`, because the handout asks for the training data itself.
 
 ## Gotchas worth knowing before editing
 

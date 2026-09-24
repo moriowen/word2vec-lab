@@ -23,8 +23,9 @@ All three splits are balanced, so accuracy is interpretable against a 50% baseli
 
 ## Phrase-level training corpus
 
-Source: the GLUE copy `stanfordnlp/sst2`, file `data/train-00000-of-00001.parquet`,
-67,349 rows. Saved as `data/sst2/train_phrases.parquet`.
+Source: the GLUE copy `stanfordnlp/sst2`,
+`https://huggingface.co/datasets/stanfordnlp/sst2`, file
+`data/train-00000-of-00001.parquet`, 67,349 rows. Saved as `data/sst2/train_phrases.parquet`.
 
 These are the labelled subtrees of the same treebank sentences, so they are train-split only
 and carry real labels. They are used for both embedding training and classifier training,
@@ -57,7 +58,8 @@ already separated, so anything more elaborate would need justifying rather than 
 
 Source: `http://mattmahoney.net/dc/text8.zip`, the first 100 MB of an English Wikipedia
 dump cleaned by Matt Mahoney. Downloaded to `data/text8/text8` by `src/run_text8.py` on
-Sep 23 2026, excluded from git via `.gitignore`, and reproducible from the URL.
+Sep 23 2026. Excluded from git via `.gitignore`, but included in the submission ZIP
+(`src/package.py`), since the handout asks for the training data itself.
 
 | Tokens | Vocabulary at `min_count=2` | Characters |
 |---|---|---|

@@ -202,10 +202,14 @@ EXTRA_CSS = """
     header.masthead{padding-top:18px;break-after:avoid}
     section{padding-top:26px;break-inside:auto}
     h2,h3{break-after:avoid}
-    .mcard,.tcase,.figure,.note,.tablewrap,.models,.driftgrid{break-inside:avoid}
+    .mcard,.figure,.note,.models,.driftgrid{break-inside:avoid}
     .legend{break-inside:avoid}
     .stats,ol.steps>li,.nrow{break-inside:avoid}
     table{min-width:0}
+    /* kept whole, a long table or card jumps a page and leaves the one before near empty */
+    .tablewrap,.tcase{overflow:visible;break-inside:auto}
+    thead{display:table-header-group}
+    tr{break-inside:avoid}
     .figure svg{min-width:0}
     a{text-decoration:none}
   }

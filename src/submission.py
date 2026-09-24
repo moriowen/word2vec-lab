@@ -423,6 +423,10 @@ def records(c):
             ("A wrong sentence in the report", "Check for any more lines like this",
              "A README command that did nothing, a claim that four commands reproduce "
              "everything, and missing packages in <code>requirements.txt</code>, all fixed."),
+            ("Last check before submitting", "Fix the submission blockers, mean latency, "
+             "direct dataset link, and reproducibility commands", "Commands for G-ft, A2 and "
+             "the example files, mean latency next to p50 and p95, a GLUE link, and a script "
+             "that packages the ZIP."),
         ],
         strategy='''<p>For this question I relied on HW1 as a template: the same repository
           layout, the same deployment and the same cluster. Pointing the assistant at a
@@ -438,8 +442,8 @@ def records(c):
           command that ran nothing, the report said four commands reproduce every result when
           several results have no command at all, and <code>requirements.txt</code> left out
           PyTorch and pyarrow. None of these break the results, but each would have cost a
-          grader time. The reproduction section now says plainly which results have no
-          command.</p>'''),
+          grader time. G-ft, A2 and the 2b and 2c example files now have commands too, so
+          the reproduction list covers every stored result.</p>'''),
     "q7": dict(
         asked="Cover the handout's query, analogy and visualization steps, and make each "
               "one readable.",
@@ -533,8 +537,11 @@ REFS = [
     "<a href='http://mattmahoney.net/dc/textdata.html'>mattmahoney.net/dc/textdata.html</a>",
     "Google. word2vec, original C implementation and GoogleNews-vectors-negative300. "
     "<a href='https://code.google.com/archive/p/word2vec/'>code.google.com/archive/p/word2vec</a>",
-    "SetFit/sst2 on the Hugging Face Hub. "
+    "SetFit/sst2 on the Hugging Face Hub, the sentence-level dev and test splits. "
     "<a href='https://huggingface.co/datasets/SetFit/sst2'>huggingface.co/datasets/SetFit/sst2</a>",
+    "stanfordnlp/sst2 on the Hugging Face Hub, the GLUE copy whose train split supplies the "
+    "67,349 labelled phrases. "
+    "<a href='https://huggingface.co/datasets/stanfordnlp/sst2'>huggingface.co/datasets/stanfordnlp/sst2</a>",
     "Andras7/word2vec-pytorch, the PyTorch reference linked in the handout. "
     "<a href='https://github.com/Andras7/word2vec-pytorch'>github.com/Andras7/word2vec-pytorch</a>",
     "CS 6220 Fall 2026, Homework Assignment 2 (programming), and the course's template for "

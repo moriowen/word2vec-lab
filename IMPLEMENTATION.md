@@ -890,3 +890,40 @@ tables.
 The review also noted that the SST-2 classifier is a defensible response to an ambiguous
 section but not a substitute for the visualization and analogy requirements. That is correct,
 and both are now present as their own sections rather than folded into the sentiment work.
+
+### Sep 24, submission blockers
+
+**Mean query latency.** Deliverable 4 asks for average per-query time; the table had p50 and
+p95 only. `evaluate.latency` now records `mean_ms`, and `python -m src.run_eval --latency`
+re-times every record, text8 included, without touching any other field. Mean, p50 and p95
+come from the same 200 calls, after one untimed warm-up call per query word. Two earlier
+attempts without the warm-up disagreed with each other by 2 to 5 times at p95 on the text8
+and G rows, on a laptop at load average 9 to 11 (mostly the measurement's own BLAS threads).
+Stored run, M2 Air:
+
+| | mean ms | p50 ms | p95 ms |
+|---|---|---|---|
+| A | 0.69 | 0.38 | 2.29 |
+| B | 1.27 | 0.45 | 4.50 |
+| C | 0.74 | 0.42 | 2.74 |
+| G | 29.90 | 19.23 | 72.32 |
+| G-ft | 1.15 | 0.49 | 4.06 |
+
+Latency on this machine is noisy; read the ratio between vocabulary sizes, not the third
+digit.
+
+**Every stored result now has a command.** `python -m src.finetune` trains G-ft and then A2.
+A dry run into scratch directories reproduced G-ft exactly (accuracy 0.7919, mean cosine
+0.9609) and put A2 at 0.656 against the stored 0.665, which is four-worker gensim
+nondeterminism. `python -m src.examples` regenerates `examples_2b.json` and
+`examples_2c.json` byte-identically: 2b is a fixed index list, 2c is the top two confident
+correct positives and the top two confident wrong negatives from G-ft's mined errors.
+
+**Submission ZIP.** `STUDENT_ID=... python -m src.package` rebuilds the PDF and zips it with
+`src/`, `results/`, `data/` including text8, `README.md`, `requirements.txt` and the sbatch
+script: 60 files, 37.7 MB. It refuses to run without `STUDENT_ID`.
+
+**Cleanup.** Direct `stanfordnlp/sst2` link in the data table and references; GoogleNews
+epochs print `not reported`; quoted sentences cut at a word boundary with an ellipsis
+(testcases now stores full neighbour text); long tables and test-case cards may split across
+print pages, which took the PDF from 72 to 54 pages.

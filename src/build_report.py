@@ -10,10 +10,9 @@ into the prose, so re-running a model and rebuilding cannot leave a stale figure
 """
 import html
 import json
-import subprocess
 from pathlib import Path
 
-from . import arch_svg
+from . import arch_svg, submission
 from .report_css import CSS, EXTRA_CSS
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -23,12 +22,12 @@ REPORT_OUT = ROOT / "report" / "report.html"
 TITLES = {
     "results": "Headline results", "testcases": "Worked test examples",
     "neighbours": "Nearest neighbours", "analogies": "Vector arithmetic",
-    "viz": "The space in 2D", "similarity": "Lexical similarity",
+    "viz": "Word clusters", "similarity": "Lexical similarity",
     "text8": "More training text",
     "errors": "Where they fail", "arch": "The two architectures",
     "data": "Corpus and splits", "hyper": "Hyperparameters",
     "finetune": "Fine-tuning G-ft", "scratch": "Writing C from scratch",
-    "systems": "Cost to run", "running": "Reproducing it", "log": "Provenance",
+    "systems": "Cost to run", "running": "Reproducing it",
 }
 
 # The web write-up leads with what was measured; method and machinery follow.
@@ -36,16 +35,12 @@ WEB_GROUPS = [
     ("Findings", ["results", "testcases", "neighbours", "analogies", "viz",
                   "similarity", "text8", "errors"]),
     ("How the models were built", ["arch", "data", "hyper", "finetune", "scratch"]),
-    ("Cost and reproduction", ["systems", "running", "log"]),
+    ("Cost and reproduction", ["systems", "running"]),
 ]
-# The submission keeps the order the deliverables are numbered in.
-SUB_GROUPS = [
-    ("Contents", ["results", "testcases", "arch", "data", "hyper", "neighbours", "viz",
-                  "analogies", "similarity", "text8", "finetune", "scratch", "systems", "errors",
-                  "running", "log"]),
-]
-assert {i for _, ids in WEB_GROUPS for i in ids} == set(TITLES) == {
-    i for _, ids in SUB_GROUPS for i in ids}
+# The submission follows the course's AI template, one question per deliverable; see
+# src/submission.py. Both layouts must place every section exactly once.
+assert {i for _, ids in WEB_GROUPS for i in ids} == set(TITLES) == set(submission.placed())
+assert len(submission.placed()) == len(TITLES)
 
 TOC_JS = """<script>
 (function(){
@@ -104,12 +99,6 @@ def load():
             continue
         recs[r["model_id"] if r["corpus"] != "text8" else r["model_id"] + "-text8"] = r
     return recs
-
-
-def commits():
-    out = subprocess.run(["git", "log", "--format=%h\t%s"], capture_output=True,
-                         text=True, cwd=ROOT).stdout.strip()
-    return [l.split("\t", 1) for l in out.splitlines() if "\t" in l][::-1]
 
 
 # ---------------------------------------------------------------- components
@@ -334,11 +323,7 @@ def build(mode="web"):
 
     sec("head")
     if SUB:
-        add('''<div class="cover">
-          <div class="f">Student Name: Atharva Mohite</div>
-          <div class="f">Student Session: cs6220</div>
-          <div class="f">CS 6220 Big Data Systems, Fall 2026 &middot; Homework 2, programming option</div>
-        </div>''')
+        add(submission.cover())
     add(f'''<header class="masthead">
       {eb("CS 6220 Big Data Systems &middot; Homework 2 &middot; programming option",
           "An experiment in word embeddings")}
@@ -358,13 +343,12 @@ def build(mode="web"):
       </div>
     </header>''')
 
-    groups = SUB_GROUPS if SUB else WEB_GROUPS
     toc = []
-    for heading, ids in groups:
+    for heading, ids in WEB_GROUPS:
         toc.append(f'<div class="tg">{heading}</div>')
         toc += [f'<a href="#{i}">{TITLES[i]}</a>' for i in ids]
     sec("nav")
-    add(f'''<nav class="toc" aria-label="Sections">{"".join(toc)}</nav>''')
+    add(f'''<nav class="toc" aria-label="Sections">{submission.toc(TITLES) if SUB else "".join(toc)}</nav>''')
 
     # ---- results
     sec("results")
@@ -631,42 +615,68 @@ def build(mode="web"):
     # ---- visualization
     viz = json.loads((ROOT / "results" / "visualization.json").read_text())
     figs = []
-    for mid in ["G-ft", "A"]:
+    for mid in ["G-ft", "A", "A-text8"]:
         for method, nm in [("pca", "PCA"), ("tsne", "t-SNE")]:
             v = viz[mid][method]
-            detail = (f'explained variance {v["explained_variance"][0]:.1%} and '
-                      f'{v["explained_variance"][1]:.1%}' if method == "pca"
-                      else f'perplexity {v["perplexity"]}')
+            detail = (f'The two axes keep {v["explained_variance"][0]:.1%} and '
+                      f'{v["explained_variance"][1]:.1%} of the variance' if method == "pca"
+                      else f'Perplexity {v["perplexity"]}')
             figs.append(f'''<div class="figure">{v["svg"]}
-              <p class="caption"><b>{nm}, Model {mid}.</b> The plot contains
-              {v["words_plotted"]} words from four semantic groups fixed in advance, with
-              {detail}. Its two-dimensional silhouette score against those group labels is
-              <b>{v["silhouette_2d"]}</b>.</p></div>''')
+              <p class="caption"><b>{nm}, Model {row_label(mid)}.</b> {detail}.
+              Silhouette score <b>{v["silhouette_2d"]:+.3f}</b>.</p></div>''')
     sil = lambda m, k: viz[m][k]["silhouette_2d"]
+    sep = lambda m, k: viz[m]["separation"][k]
+    nwords = viz["A"]["pca"]["words_plotted"]
+    ev = {m: sum(viz[m]["pca"]["explained_variance"]) for m in FULL}
+    t8 = ["A-text8", "B-text8", "C-text8"]
     sec("viz")
     add(f'''<section id="viz">
       <div class="sechead">{eb("Handout requirement", "Qualitative check")}
-      <h2>The vector space in two dimensions</h2></div>
-      <p class="prose">The plotted words were fixed before seeing the result. They cover four
-      groups: positive sentiment, negative sentiment, film craft, and genre. If an embedding
-      carries useful semantic structure, words from the same group should remain close after
-      projection.</p>
-      <p class="prose">The scatter plots can be easy to over-read, so each one includes a
-      silhouette score against the known group labels. A score near 0 means the groups overlap;
-      higher scores indicate cleaner separation.</p>
+      <h2>Do similar words cluster together?</h2></div>
+      <p class="prose">A model stores each word as {dim} numbers, which can't be drawn
+      directly. PCA and t-SNE are two standard ways to squeeze them down to two, so every word
+      becomes a dot on a page. PCA keeps the two directions along which the words vary most.
+      t-SNE tries to keep each word's nearest neighbours close, at the cost of distorting
+      larger distances. If a model has learned what words mean, related words should land
+      near each other.</p>
+      <p class="prose">To test that, I picked {nwords} words before looking at any plot, eight
+      from each of four groups: positive words (<code>good</code>, <code>charming</code>),
+      negative words (<code>dull</code>, <code>tedious</code>), filmmaking terms
+      (<code>screenplay</code>, <code>editing</code>) and genres (<code>horror</code>,
+      <code>western</code>). Each dot is coloured by its group.</p>
+      <p class="prose">Clusters are easy to imagine in a scatter plot, so each one also gets a
+      silhouette score. It compares how close a word sits to its own group against how close
+      it sits to the nearest other group, and runs from -1 to 1. Near 0 means the groups are
+      mixed together; higher means they form separate clumps. The plots below show G-ft, the
+      clearest case, and A trained on each corpus.</p>
       <div class="figgrid">{"".join(figs)}</div>''')
-    add(table(["Model", "PCA silhouette", "t-SNE silhouette", "WordSim-353", "Analogy accuracy"],
+    add(f'''<p class="prose">A flat picture throws most of the information away. The first two
+      PCA axes keep between {min(ev.values()):.0%} and {max(ev.values()):.0%} of the variance,
+      depending on the model. So the last two score columns skip the projection and measure
+      the same thing on the full {dim}-dimensional vectors, using cosine distance. The last of
+      those asks only whether positive and negative words form separate groups.</p>''')
+    add(table(["Model", "2-D, PCA", "2-D, t-SNE", f"{dim}-D, all groups",
+               f"{dim}-D, positive vs negative"],
               [[row_label(mid), f"{sil(mid,'pca'):+.3f}", f"{sil(mid,'tsne'):+.3f}",
-                f'{sim(mid,"wordsim353"):+.3f}',
-                f'{ana[mid]["benchmark"]["overall_accuracy"]:.3f}'] for mid in ORDER],
+                f"{sep(mid,'all'):+.3f}", f"{sep(mid,'positive_vs_negative'):+.3f}"]
+               for mid in FULL],
               ["m", "n", "n", "n", "n"]))
-    add(f'''<div class="note"><b>The projections match the quantitative results.</b>
-      Under PCA, G-ft and G separate the four groups ({sil("G-ft","pca"):+.3f} and
-      {sil("G","pca"):+.3f}), while A, B, and C do not ({sil("A","pca"):+.3f},
-      {sil("B","pca"):+.3f}, {sil("C","pca"):+.3f}). WordSim-353 and the analogy benchmark
-      produce the same ordering. Even so, the first two PCA components capture less than 20%
-      of the variance for every model. Each picture is only a narrow view of a 300-dimensional
-      space.</div></section>''')
+    add(f'''<div class="note"><b>The GoogleNews models separate the groups best.</b> Under PCA,
+      G-ft and G score {sil("G-ft","pca"):+.3f} and {sil("G","pca"):+.3f}, while A, B and C
+      trained on SST score between {min(sil(m,"pca") for m in "ABC"):+.3f} and
+      {max(sil(m,"pca") for m in "ABC"):+.3f}. t-SNE is less stable: the same model can score
+      quite differently under the two methods, as B (text8) does
+      ({sil("B-text8","pca"):+.3f} against {sil("B-text8","tsne"):+.3f}).</div>
+      <div class="note warm"><b>text8 teaches similarity, not sentiment.</b> The text8 models
+      score close to G on WordSim-353 ({sim("A-text8","wordsim353"):.3f} for A against
+      {sim("G","wordsim353"):.3f} for G), yet they separate positive from negative words worse
+      than any other model, at {min(sep(m,"positive_vs_negative") for m in t8):+.3f} to
+      {max(sep(m,"positive_vs_negative") for m in t8):+.3f}, against
+      {sep("A","positive_vs_negative"):+.3f} for A trained on SST and
+      {sep("G","positive_vs_negative"):+.3f} for G. Wikipedia uses <code>good</code> and
+      <code>bad</code> in the same kinds of sentence, so the vectors for praise and criticism
+      end up close together. That fits the drop in sentiment accuracy described under
+      <a href="#text8">More training text</a>.</div></section>''')
 
     # ---- analogies
     ar = lambda m: {x["query"]: x for x in (r[m]["analogies"] if m.endswith("text8")
@@ -1127,53 +1137,41 @@ def build(mode="web"):
           <span class="why">trains C on text8. On a GPU cluster, <code>sbatch slurm/c_text8.sbatch</code>
           runs the same command; it saves a checkpoint after every epoch, so an interrupted job
           resumes where it stopped.</span></div></li>
+        <li><div class="step-b"><code>python -m src.visualize</code>
+          <span class="why">PCA and t-SNE projections and the cluster scores</span></div></li>
         <li><div class="step-b"><code>python -m src.sweep</code>
           <span class="why">the hyperparameter sweep</span></div></li>
         <li><div class="step-b"><code>python -m src.build_report</code>
           <span class="why">rebuilds both report variants</span></div></li>
       </ol>
-      <div class="note warm"><b>Not everything has a command yet.</b> G-ft, the A2 control and
-      the PCA and t-SNE projections come from functions in <code>src/finetune.py</code>,
-      <code>src/train_gensim.py</code> and <code>src/visualize.py</code> that have no
-      command-line entry point. The deliverable 2b and 2c example files have no generating code
-      in the repository at all. The list above therefore does not regenerate these; their
-      results are stored in <code>results/</code>.</div></section>''')
-
-    # ---- log
-    rows = "".join(
-        f'<div class="lrow"><span class="lhash">{h}</span>'
-        f'<span><b>{e(msg.split(":")[0])}</b><div class="lnote">{e(msg.split(": ",1)[-1])}</div></span>'
-        f'<span class="lstate">done</span></div>' for h, msg in commits()) if SUB else ""
-    rows += ''.join(
-        f'<div class="lrow"><span class="lhash">pending</span>'
-        f'<span><b>{t}</b><div class="lnote">{d}</div></span>'
-        f'<span class="lstate todo">queued</span></div>'
-        for t, d in [("Hogwild scaling", "words/sec against worker count on a multi-core node")])
-    sec("log")
-    add(f'''<section id="log">
-      <div class="sechead"><div class="eyebrow">Provenance</div>
-      <h2>{hw("Build log", "Provenance and what is still open")}</h2></div>
-      <div class="log">{rows}</div>
-      {"<p class='prose'>Commit messages keep the model letters used when they were written. "
-       "In them, E is the model now called C, C is now G, and D is now G-ft.</p>" if SUB else ""}
       <p class="prose"><code>src/build_report.py</code> reads every reported figure from
       <code>results/*.json</code> when it builds the page. Re-running a model and rebuilding
-      therefore updates the prose and tables together.</p></section>''')
+      therefore updates the prose and tables together.</p>
+      <div class="note warm"><b>Not everything has a command yet.</b> G-ft and the A2 control
+      come from functions in <code>src/finetune.py</code> and <code>src/train_gensim.py</code>
+      that have no command-line entry point. The deliverable 2b and 2c example files have no
+      generating code in the repository at all. The list above therefore does not regenerate
+      these; their results are stored in <code>results/</code>.</div></section>''')
 
     sec("foot")
     add(f'''<footer>{hw("CS 6220 Big Data Systems, Fall 2026. ")}Generated from
       {len(r)} result records.</footer>''')
 
-    order = [i for _, ids in groups for i in ids]
+    order = submission.placed() if SUB else [i for _, ids in WEB_GROUPS for i in ids]
     stranded = set(buckets) - set(order) - {"head", "nav", "foot"}
     assert not stranded, f"sections built but never placed: {sorted(stranded)}"
-    body = ("".join(buckets["head"])
-            + "".join("".join(buckets[i]) for i in order)
-            + "".join(buckets["foot"]))
+    if SUB:
+        body = submission.assemble(buckets, TITLES, submission.context(
+            r=r, acc=acc, err=err, sw=sw, sweep=sweep, corpus=corpus, order=ORDER, table=table,
+            viz=json.loads((ROOT / "results" / "visualization.json").read_text())))
+    else:
+        body = ("".join(buckets["head"])
+                + "".join("".join(buckets[i]) for i in order)
+                + "".join(buckets["foot"]))
     page = (f'<!doctype html><html lang="en"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>word2vec-lab</title>'
-            f'<style>{CSS}{EXTRA_CSS}</style></head><body><div class="shell">'
+            f'<style>{CSS}{EXTRA_CSS}{submission.SUB_CSS if SUB else ""}</style></head><body><div class="shell">'
             f'{"".join(buckets["nav"])}<div class="wrap">{body}</div></div>'
             f'{TOC_JS}</body></html>')
     out = REPORT_OUT if SUB else OUT

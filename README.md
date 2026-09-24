@@ -51,12 +51,14 @@ python -m src.run_analogies          # analogy arithmetic and the Google analogy
 python -m src.testcases              # the five worked test examples
 python -m src.run_text8              # download text8, retrain A and B on it (~18 min on an M2 Air)
 python -m src.run_e --text8          # C on text8; ~4 h on an M2 Air, or sbatch slurm/c_text8.sbatch on a GPU
+python -m src.visualize              # PCA/t-SNE projections and cluster scores; writes results/visualization.json
 python -m src.sweep                  # hyperparameter sweep, 3 seeds per setting; writes results/sweep.json
 python -m src.build_report           # rebuild public/index.html and report/report.html
+STUDENT_ID=... python -m src.build_pdf   # render the submission PDF (gitignored; the ID is never stored)
 ```
 
-G-ft, the A2 control and the PCA/t-SNE projections have no command yet: they come from
-functions in `src/finetune.py`, `src/train_gensim.py` and `src/visualize.py`. The
+G-ft and the A2 control have no command yet: they come from functions in
+`src/finetune.py` and `src/train_gensim.py`. The
 deliverable 2b/2c example files have no generating code in the repo. Their outputs are in
 `results/`.
 

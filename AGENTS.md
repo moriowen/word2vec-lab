@@ -47,19 +47,25 @@ The same measurements get published twice, and the difference is not cosmetic.
 
 `src/build_report.py` emits both. `build("web")` writes `public/index.html`: the experiment
 on its own terms, findings first, with no mention of the course, the handout, or any
-deliverable. `build("submission")` writes `report/report.html`: the same numbers carrying
-the framing the handout asks for, with a cover page, deliverable labels, deliverable order
-and a course footer. That second one is what the PDF renders from.
+deliverable. `build("submission")` writes `report/report.html`: the same sections wrapped in the
+course's AI-assisted HW template by `src/submission.py`. Each handout deliverable is one
+question with Step 1 (the report sections that answer it) and Step 2 (the AI interaction
+record: tool, what was asked, a round-by-round table, strategy, critique), then references
+and appendices. `python -m src.build_pdf` renders it to `HW2_P_Mohite_Atharva.pdf`. The
+Student ID is injected from the `STUDENT_ID` environment variable into a temporary copy only,
+and the PDF is gitignored, so the ID never reaches a tracked file.
 
 Course-specific text goes through the `hw()` and `eb()` helpers so it can only reach the
 submission variant. Write a bare course reference into the prose and it ships to the public
 page. Two consequences before you edit:
 
 - **Section order differs per variant.** Sections build into named buckets and get placed
-  by `WEB_GROUPS` or `SUB_GROUPS`. An assertion fails the build when a section is
-  constructed but never placed, so a new section has to join both lists and `TITLES`.
-- **The web build omits the git commit list.** Commit subjects name deliverables and always
-  will, so filtering them string by string was never going to hold.
+  by `WEB_GROUPS` or by `QUESTIONS` and `APPENDIX` in `src/submission.py`. An assertion
+  fails the build when a section is not placed exactly once in each, so a new section has to
+  join `TITLES`, `WEB_GROUPS` and a question or appendix.
+- **Submission-only code must not touch the web page.** `src/submission.py` is used only in
+  the submission branch, and its CSS is appended only there. After editing either, check
+  that `public/index.html` is unchanged.
 
 `.vercelignore` keeps `/report`, `/src`, `/data`, `/results` and the PDFs from being
 uploaded at all. Only `public/` is ever deployed.

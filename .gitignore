@@ -15,6 +15,9 @@ data/text8/
 # local build output; the deployed copy is public/index.html
 .vercel
 HW2_P_Mohite_Atharva.zip
+# carries the student ID; built by python -m src.build_pdf
+HW2_P_Mohite_Atharva.pdf
+report/.report-print.html
 
 # PACE ICE job environment and logs
 .venv-ice/

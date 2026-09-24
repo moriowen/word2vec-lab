@@ -185,14 +185,6 @@ CSS = """
   .step-b{display:flex;flex-direction:column;gap:7px}
   .step-b .why{font-size:.9rem;color:var(--muted)}
 
-  .log{display:flex;flex-direction:column}
-  .lrow{display:grid;grid-template-columns:96px 1fr auto;gap:16px;padding:14px 0;
-        border-top:1px solid var(--line);align-items:baseline}
-  .lrow:last-child{border-bottom:1px solid var(--line)}
-  .lhash{font-family:var(--mono);font-size:.78rem;color:var(--accent)}
-  .lnote{font-size:.88rem;color:var(--muted);margin-top:3px}
-  .lstate{font-family:var(--mono);font-size:.7rem;color:var(--good);white-space:nowrap}
-  .lstate.todo{color:var(--faint)}
   footer{padding-top:64px;font-size:.82rem;color:var(--faint);
          border-top:1px solid var(--line);margin-top:64px}
 """
@@ -212,7 +204,7 @@ EXTRA_CSS = """
     h2,h3{break-after:avoid}
     .mcard,.tcase,.figure,.note,.tablewrap,.models,.driftgrid{break-inside:avoid}
     .legend{break-inside:avoid}
-    .stats,ol.steps>li,.nrow,.lrow{break-inside:avoid}
+    .stats,ol.steps>li,.nrow{break-inside:avoid}
     table{min-width:0}
     .figure svg{min-width:0}
     a{text-decoration:none}

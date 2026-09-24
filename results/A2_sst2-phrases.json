@@ -1,6 +1,6 @@
 {
   "model_id": "A2",
-  "name": "gensim skip-gram + NS, D's schedule, random init",
+  "name": "gensim skip-gram + NS, G-ft's schedule, random init",
   "corpus": "sst2-phrases",
   "machine": "m2-air",
   "hyperparams": {

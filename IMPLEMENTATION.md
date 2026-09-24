@@ -1,5 +1,7 @@
 # HW2 implementation plan
 
+> **Model IDs were renamed on Sep 23 2026.** This document now uses the new letters: C is the from-scratch model (formerly E), G is GoogleNews-300 (formerly C), and G-ft is the fine-tune (formerly D). Commit messages keep the old letters.
+
 Companion to `PLAN.md`, which explains what the assignment is and why. This file is the
 ordered build sequence. Read `PLAN.md` first for the reasoning; nothing here re-argues it.
 
@@ -89,7 +91,7 @@ and changing it later means re-running everything.
 Two rules that follow from it. First, `machine` is mandatory on every record, for the
 reason HW1 established: an A100 wall-clock and a fanless-laptop wall-clock are
 indistinguishable in the output and not comparable, and no table may mix them. Second,
-every model writes this same schema, which is what lets Model E be added in phase 10 by
+every model writes this same schema, which is what lets Model C be added in phase 10 by
 registering one more entry rather than by touching the report.
 
 Acceptance: a hand-written stub JSON for a fake model passes a small `validate_result()`
@@ -203,7 +205,7 @@ two trained models, one accuracy number each. The assignment now has a spine.
 
 ---
 
-## Phase 4. Model C, the pretrained reference
+## Phase 4. Model G, the pretrained reference
 
 ### Step 4.1. Load GoogleNews-300
 
@@ -226,13 +228,13 @@ Cost: 45 minutes, mostly download.
 
 No new code. Same pooling, same classifier.
 
-Acceptance: C's accuracy is recorded and its OOV rate is much lower than A's or B's.
+Acceptance: G's accuracy is recorded and its OOV rate is much lower than A's or B's.
 
 Cost: 15 minutes.
 
 ---
 
-## Phase 5. Model D, the fine-tune
+## Phase 5. Model G-ft, the fine-tune
 
 The recipe is in `PLAN.md` section 1.4 with the gensim calls spelled out. Three things to
 get right, in this order of likely failure:
@@ -242,11 +244,11 @@ get right, in this order of likely failure:
 2. `alpha` low, around 0.005, and few epochs, around 5 to 8. `W_out` starts random because
    Google never published theirs, so the first updates are spent re-learning a decoder, and
    a normal learning rate scrambles the imported vectors in the first epoch.
-3. Measure drift. For every word present in both C and D, compute cosine between its
+3. Measure drift. For every word present in both G and G-ft, compute cosine between its
    before-vector and its after-vector. Report the mean, and the ten words that moved most.
 
-Acceptance, and this is the real gate: `plot` in Model D must sit closer to storyline senses
-than it does in Model C, while a word absent from SST is unchanged. If mean drift is very
+Acceptance, and this is the real gate: `plot` in Model G-ft must sit closer to storyline senses
+than it does in Model G, while a word absent from SST is unchanged. If mean drift is very
 high, say above 0.4, the learning rate is too high and the fine-tune is destroying rather
 than adapting. Turn `alpha` down and rerun.
 
@@ -267,7 +269,7 @@ Part 8. Emit top-1, top-5 and top-10 for all four models into the results JSON, 
 deliverable 5's table directly.
 
 Acceptance: the table is generated, not transcribed, and `plot` differs visibly between the
-SST-trained models and C.
+SST-trained models and G.
 
 Cost: 30 minutes.
 
@@ -277,7 +279,7 @@ Download the 353 pairs, compute Spearman between human ratings and cosine simila
 pairs with an OOV word and report how many were skipped. The skip count is part of the
 result, since a model that scores well on half the pairs has not scored well.
 
-Acceptance: C lands around 0.6 to 0.7. A and B will be much lower, which is the expected
+Acceptance: G lands around 0.6 to 0.7. A and B will be much lower, which is the expected
 consequence of a million-token corpus and is worth stating plainly rather than apologising
 for.
 
@@ -290,7 +292,7 @@ Cost: 45 minutes.
 Training numbers were captured in phase 2. What remains:
 
 - Query latency for `most_similar`, 200 repeats per model, reported at p50 and p95. This
-  scales with vocabulary size, so C at 500k words should be visibly slower than A at 15k,
+  scales with vocabulary size, so G at 500k words should be visibly slower than A at 15k,
   and that contrast is the finding.
 - Classification throughput: sentences per second for pooling plus prediction.
 - Peak RSS per model against the predicted `2 * V * d * 4` bytes. Explaining any gap between
@@ -352,7 +354,7 @@ Cost: 30 minutes.
 
 ---
 
-## Phase 10. Model E, from scratch
+## Phase 10. Model C, from scratch
 
 The reason this project is worth doing, and now safely on top of a finished submission.
 Build order, each step with the trap it carries, from `PLAN.md` section 4.1:
@@ -367,21 +369,21 @@ Build order, each step with the trap it carries, from `PLAN.md` section 4.1:
 | 10.6 | Linear learning rate decay | none |
 
 Correctness gate before anything enters the report: on the same corpus with matched
-hyperparameters, E's neighbours for `king` and its WordSim-353 correlation must be close to
+hyperparameters, C's neighbours for `king` and its WordSim-353 correlation must be close to
 gensim's. Gate on neighbour quality, never on the loss curve, for the reason in 10.3.
 
-Then register E in the results schema and rerun the harness. Because every model emits the
+Then register C in the results schema and rerun the harness. Because every model emits the
 same JSON, the report picks it up with no edits beyond the prose.
 
 Cost: 4 to 6 hours.
 
 ## Phase 11. text8
 
-Download, train A, B and E on it, and compare against the SST-trained versions. This is
+Download, train A, B and C on it, and compare against the SST-trained versions. This is
 where the handout's page-1 claim gets tested: skip-gram is supposed to beat CBOW on small
 data and lose on large. Report whichever way it comes out.
 
-Run E on an `ice-gpu` A100 allocation per `PLAN.md` Part 5. 17 million tokens with a 253k
+Run C on an `ice-gpu` A100 allocation per `PLAN.md` Part 5. 17 million tokens with a 253k
 vocabulary is a real GPU workload and is minutes per epoch there against hours locally.
 
 Cost: 2 to 3 hours of attention, plus training time.
@@ -459,18 +461,18 @@ simply thin. See the size caveat in `data/README.md`.
 
 **Neighbour quality is poor for all five report queries.** `terrible` returns `saves,
 glorified, exploiting`, which is close to noise. This is the same corpus-size problem and it
-is exactly what Model C will contrast against in phase 4, so it is useful evidence rather
+is exactly what Model G will contrast against in phase 4, so it is useful evidence rather
 than a failure. It does mean the phrase-level SST rows should be tried before the report is
 written.
 
-Next: phase 4, Model C.
+Next: phase 4, Model G.
 
-### Sep 22, phrase-level corpus and Model C
+### Sep 22, phrase-level corpus and Model G
 
 Two changes. Embedding and classifier training moved from the 6,920 sentence-level rows to
-the 67,348 phrase-level rows, 4.7 times more text. Model C added.
+the 67,348 phrase-level rows, 4.7 times more text. Model G added.
 
-| | A, skip-gram + NS | B, CBOW + HS | C, GoogleNews-300 |
+| | A, skip-gram + NS | B, CBOW + HS | G, GoogleNews-300 |
 |---|---|---|---|
 | Training corpus | SST phrases, 634k tok | SST phrases, 634k tok | news, ~100B tok |
 | Vocabulary | 14,309 | 14,309 | 500,000 (limited) |
@@ -489,13 +491,13 @@ handout's page-1 claim hold at 634k tokens as they did at 134k. The accuracy gap
 slightly, from 5.1 points to 3.2, which is the direction the claim predicts as data grows.
 text8 in phase 11 is what tests whether it crosses over.
 
-**Model C wins by 3.7 points despite a 27% OOV rate.** The composition of that rate is
+**Model G wins by 3.7 points despite a 27% OOV rate.** The composition of that rate is
 measured in `data/README.md`: 40% punctuation, most of the rest very frequent function words
 that Google dropped when publishing. None of it carries sentiment. A capitalisation fallback
 would recover half the misses and was rejected, because it maps `a` to the letter `A` and
 `and` to the acronym `AND`.
 
-**Neighbour quality separates the models more sharply than accuracy does.** C returns
+**Neighbour quality separates the models more sharply than accuracy does.** G returns
 inflectional variants (`plot` gives `plots, Plot, plotting, plotline`) and clean synonyms
 (`terrible` gives `horrible, horrendous, dreadful, awful`). A and B return near-noise for
 the same queries. Two things follow for the report: 634k tokens is still far too little for
@@ -503,13 +505,13 @@ good neighbours even though it is enough for competitive classification accuracy
 two evaluation modes are measuring genuinely different things. That gap is a result in its
 own right and belongs in the deliverable 5 discussion rather than being smoothed over.
 
-Next: phase 5, Model D, the fine-tune. C's `plot` neighbourhood is currently morphological
+Next: phase 5, Model G-ft, the fine-tune. G's `plot` neighbourhood is currently morphological
 rather than conspiratorial, which is a weaker starting contrast than the plan assumed, so
 the drift measurement matters more than the single-word anecdote.
 
-### Sep 22, phase 5, Model D
+### Sep 22, phase 5, Model G-ft
 
-| | A, sg+NS | B, CBOW+HS | C, GoogleNews | D, fine-tuned |
+| | A, sg+NS | B, CBOW+HS | G, GoogleNews | G-ft, fine-tuned |
 |---|---|---|---|---|
 | Vocabulary | 14,309 | 14,309 | 500,000 | 14,309 |
 | Wall clock | 11.78 s | 3.58 s | 2.84 s load | 13.80 s |
@@ -521,13 +523,13 @@ Of the 14,309 vocabulary entries, 12,032 were seeded from GoogleNews and 2,277 k
 random initialisation because Google's published vocabulary does not contain them.
 
 **The warm start is worth 3.1 points over training from scratch on the same corpus**, 0.761
-for A against 0.792 for D, with identical architecture, identical loss and an identical
+for A against 0.792 for G-ft, with identical architecture, identical loss and an identical
 classifier. That is the cleanest single comparison in the assignment so far, because the only
-difference between A and D is where W_in started.
+difference between A and G-ft is where W_in started.
 
-**D lands 0.6 points below C and this is not a failure.** C has 35 times the vocabulary and
-100,000 times the training text. D matches it to within noise while carrying a vocabulary
-small enough to hold in memory without limiting, and it does so at a quarter of C's OOV rate.
+**G-ft lands 0.6 points below G and this is not a failure.** G has 35 times the vocabulary and
+100,000 times the training text. G-ft matches it to within noise while carrying a vocabulary
+small enough to hold in memory without limiting, and it does so at a quarter of G's OOV rate.
 The interesting comparison is not which number is larger but that they are the same number.
 
 **Drift came out healthy.** Mean cosine between each word's warm-start vector and its
@@ -545,28 +547,28 @@ that appear once or twice in SST and never accumulate enough gradient to move. T
 distribution is therefore a direct readout of corpus frequency, and it is a better answer to
 "what did fine-tuning do" than any single-word anecdote would have been.
 
-**Neighbour quality is where D separates from C.** For `cinematography`, C returns only
+**Neighbour quality is where G-ft separates from G.** For `cinematography`, G returns only
 morphological variants (`camerawork, cinematographer, Cinematography, Cinematographer`) while
-D returns `camerawork, cinematographer, visuals, screenplay, photography`. `visuals` and
+G-ft returns `camerawork, cinematographer, visuals, screenplay, photography`. `visuals` and
 `screenplay` are film-domain associations that were not there before training. `plot` shows
 the same effect more weakly, with `storyline` entering the top five. The contrast predicted
 in `PLAN.md` section 1.4, that `plot` would start conspiratorial and become narrative, did
-not occur: C's `plot` neighbourhood was morphological to begin with. The drift measurement
+not occur: G's `plot` neighbourhood was morphological to begin with. The drift measurement
 carries this section instead, which is why it was worth building.
 
 Next: phase 6, intrinsic evaluation. Neighbour tables for all four models are already being
 written to `results/`, so what remains is WordSim-353.
 
-### Sep 22, phase 10, Model E from scratch
+### Sep 22, phase 10, Model C from scratch
 
 Taken out of order, ahead of phases 6 to 9, on request.
 
 `src/sgns.py` implements skip-gram with negative sampling directly: vocabulary and counts,
 subsampling, the unigram^0.75 noise table, a dynamic window, two embedding matrices, and
-linear learning rate decay. `to_keyedvectors` wraps W_in in a gensim `KeyedVectors` so E
+linear learning rate decay. `to_keyedvectors` wraps W_in in a gensim `KeyedVectors` so C
 runs through the existing pooling, classifier and neighbour code with no changes.
 
-| | A, gensim sg+NS | E, from scratch |
+| | A, gensim sg+NS | C, from scratch |
 |---|---|---|
 | Vocabulary | 14,309 | 14,309 |
 | Wall clock | 11.78 s | 160.15 s |
@@ -574,7 +576,7 @@ runs through the existing pooling, classifier and neighbour code with no changes
 | SST-2 test accuracy | 0.761 | 0.744 |
 | SST-2 test F1 | 0.776 | 0.761 |
 
-E lands 1.7 points below gensim on identical hyperparameters and an identical corpus, which
+C lands 1.7 points below gensim on identical hyperparameters and an identical corpus, which
 is inside the correctness gate the plan set. It is 13.6 times slower, which is the expected
 cost of Python and batched dense updates against hand-tuned Cython doing per-pair updates.
 
@@ -607,7 +609,7 @@ the opposite and much easier to catch, a loss that did not move at all. Both are
 the same discipline of gating on neighbour quality and downstream accuracy rather than on the
 loss curve, but the plan guessed the wrong failure.
 
-**MPS is slower than CPU here, measured rather than assumed**, so E trains on CPU:
+**MPS is slower than CPU here, measured rather than assumed**, so C trains on CPU:
 
 | Device | Sparse gradients | ms/batch | 10 epochs |
 |---|---|---|---|
@@ -625,7 +627,7 @@ reverse on text8, where the vocabulary is around 253,000 and a batch touches a s
 fraction of it. That is the measurement phase 11 exists to take, and it is a better
 motivation for text8 than corpus size alone.
 
-Next: phase 6, WordSim-353, which also completes E's correctness gate.
+Next: phase 6, WordSim-353, which also completes C's correctness gate.
 
 ### Sep 22, phases 6 to 8
 
@@ -642,12 +644,12 @@ words were in vocabulary, and it is part of the result rather than a footnote.
 |---|---|---|---|---|
 | A, gensim sg+NS | 0.029 | 0.045 | 0.118 | 50.1% |
 | B, gensim CBOW+HS | -0.036 | 0.069 | -0.010 | 50.1% |
-| E, from scratch | 0.005 | 0.033 | 0.096 | 50.1% |
-| D, fine-tuned | 0.585 | 0.405 | 0.702 | 50.1% |
-| C, GoogleNews | **0.700** | **0.442** | **0.771** | 100% |
+| C, from scratch | 0.005 | 0.033 | 0.096 | 50.1% |
+| G-ft, fine-tuned | 0.585 | 0.405 | 0.702 | 50.1% |
+| G, GoogleNews | **0.700** | **0.442** | **0.771** | 100% |
 
 **This is the strongest result in the assignment so far, and it is a negative one.** A, B
-and E have no measurable lexical similarity structure at all. B is slightly negative on two
+and C have no measurable lexical similarity structure at all. B is slightly negative on two
 of the three benchmarks, which is a correlation indistinguishable from none. Yet those same
 three models score 0.729 to 0.761 on sentiment classification, within 5 points of
 GoogleNews.
@@ -661,7 +663,7 @@ GoogleNews, and it would be wrong.
 
 **The fine-tune is what carries the semantic structure**, at 0.585 against 0.029 for A
 trained from scratch on the identical corpus. The pretrained initialisation is not a 3-point
-accuracy trick; it is the entire source of lexical similarity in Model D.
+accuracy trick; it is the entire source of lexical similarity in Model G-ft.
 
 Coverage is 50.1% for every SST-trained model, because the benchmarks contain general
 vocabulary that 634k tokens of film review never mentions. Their scores are computed over
@@ -673,11 +675,11 @@ half the pairs and must be read that way.
 |---|---|---|---|---|---|---|---|
 | A | 14,309 | 0.41 | 2.41 | 2 | 34.3 | 35.0 | 1.02 |
 | B | 14,309 | 0.36 | 1.40 | 2 | 34.3 | 48.0 | 1.40 |
-| D | 14,309 | 0.41 | 3.07 | 2 | 34.3 | 34.8 | 1.01 |
-| E | 14,309 | 0.37 | 1.51 | 1 | 17.2 | 17.8 | 1.03 |
-| C | 500,000 | 15.08 | 26.94 | 1 | 600.0 | 195.6 | 0.33 |
+| G-ft | 14,309 | 0.41 | 3.07 | 2 | 34.3 | 34.8 | 1.01 |
+| C | 14,309 | 0.37 | 1.51 | 1 | 17.2 | 17.8 | 1.03 |
+| G | 500,000 | 15.08 | 26.94 | 1 | 600.0 | 195.6 | 0.33 |
 
-**Query latency is linear in vocabulary, as brute-force `most_similar` should be.** C has 35
+**Query latency is linear in vocabulary, as brute-force `most_similar` should be.** G has 35
 times the vocabulary of the SST models and is 37 times slower at p50. That is the crossover
 argument for an approximate index stated as a measurement rather than as received wisdom: at
 14k words nobody needs one, at 500k it is 15 ms per query, and at Google's full 3M vocabulary
@@ -687,7 +689,7 @@ it would be roughly 90 ms.
 1.40, which is hierarchical softmax: it keeps a `syn1` matrix plus the Huffman tree's code
 and point arrays, so `2 * V * d * 4` understates it.
 
-**C does not fit the prediction and the reason is not yet established.** 500,000 by 300
+**G does not fit the prediction and the reason is not yet established.** 500,000 by 300
 float32 is 600 MB and the measured delta is 195.6 MB, a third of it. The likely explanation
 is macOS memory compression, which compresses inactive anonymous pages so `ru_maxrss` reports
 a footprint below the allocation. This is testable: the same measurement on an ICE Linux node
@@ -703,10 +705,10 @@ the model. `src/measure_mem.py` replaced it with a per-subprocess RSS delta.
 
 | | Errors / 1,821 | negation | contrast | other |
 |---|---|---|---|---|
-| C, GoogleNews | 368 | 102 | 64 | 202 |
-| D, fine-tuned | 379 | 96 | 64 | 219 |
+| G, GoogleNews | 368 | 102 | 64 | 202 |
+| G-ft, fine-tuned | 379 | 96 | 64 | 219 |
 | A, gensim sg+NS | 435 | 101 | 72 | 262 |
-| E, from scratch | 466 | 114 | 79 | 273 |
+| C, from scratch | 466 | 114 | 79 | 273 |
 | B, gensim CBOW+HS | 493 | 120 | 62 | 311 |
 
 Negation and contrast together account for 38 to 45% of every model's errors, against roughly
@@ -721,9 +723,9 @@ Confident mistakes, which are what deliverable 2c asks for:
 | A | `not a bad journey at all .` | pos | neg | 0.958 |
 | A | `a well acted and well intentioned snoozer .` | neg | pos | 0.898 |
 | A | `first good , then bothersome .` | neg | pos | 0.896 |
-| D | `never -lrb- sinks -rrb- into exploitation .` | pos | neg | 0.990 |
-| D | `there is n't a weak or careless performance amongst them .` | pos | neg | 0.973 |
-| D | `it 's a great deal of sizzle and very little steak .` | neg | pos | 0.952 |
+| G-ft | `never -lrb- sinks -rrb- into exploitation .` | pos | neg | 0.990 |
+| G-ft | `there is n't a weak or careless performance amongst them .` | pos | neg | 0.973 |
+| G-ft | `it 's a great deal of sizzle and very little steak .` | neg | pos | 0.952 |
 
 Every one has a mechanical explanation. `not a bad journey` averages `not` and `bad` into
 negative territory. `there is n't a weak or careless performance` pools two strongly negative
@@ -756,7 +758,7 @@ the rule that selected each is recorded in the output so the mix is visible. Eac
 ranked outputs per model: the classifier's ranked labels with probabilities, and the top-5
 nearest training sentences by cosine, with the share of those whose gold label matches.
 
-Scores across the five: A 3/5, B 3/5, C 4/5, D 3/5, E 3/5.
+Scores across the five: A 3/5, B 3/5, G 4/5, G-ft 3/5, C 3/5.
 
 **Example 3 separates the pretrained model from everything trained here.**
 `finally , a genre movie that delivers -- in a couple of genres , no less .` is positive.
@@ -814,7 +816,7 @@ cards, tables and examples off page boundaries. `HW2_P_Mohite_Atharva.zip` is 3.
 contains the PDF, `data/`, `src/`, `results/`, `docs/` and the three markdown documents. The
 zip is gitignored, being a build artefact.
 
-Still open: the repo has no remote, so every commit is local. Model C's memory discrepancy
+Still open: the repo has no remote, so every commit is local. Model G's memory discrepancy
 is unexplained and needs one run on a Linux node. Phases 11 to 13 are untouched.
 
 ### Sep 23, addressing an external review
@@ -822,15 +824,15 @@ is unexplained and needs one run on a Linux node. Phases 11 to 13 are untouched.
 An independent review flagged six items. All six are now closed. Five were genuine coverage
 gaps; one was an analytical error, and fixing it changed a headline number.
 
-**The analytical error is the one worth reading.** The report claimed A versus D isolates
+**The analytical error is the one worth reading.** The report claimed A versus G-ft isolates
 initialisation, since both are skip-gram with negative sampling on the same corpus with the
-same classifier. It does not. D also runs at `alpha=0.005` for 8 epochs against A's `0.025`
+same classifier. It does not. G-ft also runs at `alpha=0.005` for 8 epochs against A's `0.025`
 for 10, so the comparison mixed the warm start with the optimiser schedule.
 
-`A2` is the missing control: A re-run with D's exact schedule and random initialisation, so
-the starting point is the only difference. It scores **0.6645** against D's **0.7919**.
+`A2` is the missing control: A re-run with G-ft's exact schedule and random initialisation, so
+the starting point is the only difference. It scores **0.6645** against G-ft's **0.7919**.
 
-The warm start is therefore worth **+0.127**, not the +0.031 that A versus D suggested. The
+The warm start is therefore worth **+0.127**, not the +0.031 that A versus G-ft suggested. The
 looser comparison understated the effect by a factor of four, because A's more aggressive
 schedule was partly compensating for its random start. The review was right that the claim
 was unsound, and the corrected claim is stronger than the one it replaces. A2 is reported in
@@ -844,11 +846,11 @@ carries the silhouette score of the 2-D layout against those group labels:
 
 | | PCA silhouette | t-SNE silhouette |
 |---|---|---|
-| D | +0.164 | +0.187 |
-| C | +0.120 | +0.121 |
+| G-ft | +0.164 | +0.187 |
+| G | +0.120 | +0.121 |
 | A | +0.036 | +0.051 |
 | B | +0.035 | -0.033 |
-| E | -0.004 | +0.110 |
+| C | -0.004 | +0.110 |
 
 The ordering matches WordSim-353 and analogy accuracy exactly. Worth noting in the report
 because the first two PCA components capture under 20% of variance for every model, so the
@@ -859,15 +861,15 @@ ranked answers, plus the Google analogy set scored per section with `restrict_vo
 
 | | Analogy accuracy | Coverage | `king - man + woman` |
 |---|---|---|---|
-| C | 0.7561 | 79.0% | queen, monarch, princess |
-| D | 0.6750 | 18.2% | queen, princess, prince |
-| E | 0.0022 | 18.2% | middle-aged, lion, creek |
+| G | 0.7561 | 79.0% | queen, monarch, princess |
+| G-ft | 0.6750 | 18.2% | queen, princess, prince |
+| C | 0.0022 | 18.2% | middle-aged, lion, creek |
 | B | 0.0020 | 18.2% | sugar, abbott, ernest |
 | A | 0.0006 | 18.2% | scorpion, lion, lear |
 
-Only C and D solve the canonical analogy, and both put `queen` at rank 1. Coverage matters
+Only G and G-ft solve the canonical analogy, and both put `queen` at rank 1. Coverage matters
 more than accuracy: gensim drops any question with an out-of-vocabulary term, so the
-SST-trained models are scored on 18.2% of the set against C's 79.0%.
+SST-trained models are scored on 18.2% of the set against G's 79.0%.
 
 **Top-1, top-5 and top-10 stated explicitly.** The neighbour section showed eight chips per
 query while the JSON held ten. It is now one table per query, with the three ranks in
@@ -882,7 +884,7 @@ reports our measured 0.7561 with its exact conditions and says plainly why no pu
 figure is quoted.
 
 **Deliverable 2c stated explicitly.** Two correct and two incorrect test cases for one named
-model, Model D, highest-confidence in each category, rather than left implicit in the error
+model, Model G-ft, highest-confidence in each category, rather than left implicit in the error
 tables.
 
 The review also noted that the SST-2 classifier is a defensible response to an ambiguous

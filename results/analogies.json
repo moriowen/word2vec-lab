@@ -569,7 +569,7 @@
       }
     }
   },
-  "D": {
+  "G-ft": {
     "arithmetic": [
       {
         "query": "king - man + woman",
@@ -854,7 +854,7 @@
       }
     }
   },
-  "E": {
+  "C": {
     "arithmetic": [
       {
         "query": "king - man + woman",
@@ -1139,7 +1139,7 @@
       }
     }
   },
-  "C": {
+  "G": {
     "arithmetic": [
       {
         "query": "king - man + woman",

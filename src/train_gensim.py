@@ -12,11 +12,11 @@ BASE = dict(vector_size=300, window=5, min_count=2, epochs=10, alpha=0.025,
 CONFIGS = {
     "A": {"name": "gensim skip-gram + negative sampling", **BASE, "sg": 1, "hs": 0, "negative": 10},
     "B": {"name": "gensim CBOW + hierarchical softmax", **BASE, "sg": 0, "hs": 1, "negative": 0},
-    # Control for the A-versus-D comparison. Identical to D in every hyperparameter, including
+    # Control for the A-versus-G-ft comparison. Identical to G-ft in every hyperparameter, including
     # the lower learning rate and shorter schedule, and differing only in that W_in starts
-    # random instead of warm-started from GoogleNews. A against D confounds initialisation
-    # with the optimiser settings; A2 against D does not.
-    "A2": {"name": "gensim skip-gram + NS, D's schedule, random init", **BASE,
+    # random instead of warm-started from GoogleNews. A against G-ft confounds initialisation
+    # with the optimiser settings; A2 against G-ft does not.
+    "A2": {"name": "gensim skip-gram + NS, G-ft's schedule, random init", **BASE,
            "sg": 1, "hs": 0, "negative": 10, "epochs": 8, "alpha": 0.005, "min_alpha": 0.0001},
 }
 

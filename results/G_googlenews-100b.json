@@ -1,5 +1,5 @@
 {
-  "model_id": "C",
+  "model_id": "G",
   "name": "GoogleNews-300 (pretrained, frozen)",
   "corpus": "googlenews-100b",
   "machine": "m2-air",
@@ -36,7 +36,7 @@
       "vocab_size": 500000
     },
     "memory": {
-      "model_id": "C",
+      "model_id": "G",
       "vocab": 500000,
       "dim": 300,
       "matrices_retained": 1,

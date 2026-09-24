@@ -481,7 +481,7 @@
       ],
       "test_acc": 0.7293
     },
-    "D": {
+    "G-ft": {
       "name": "GoogleNews fine-tuned",
       "cases": [
         {
@@ -702,7 +702,7 @@
       ],
       "test_acc": 0.7919
     },
-    "E": {
+    "C": {
       "name": "from scratch (PyTorch)",
       "cases": [
         {
@@ -923,7 +923,7 @@
       ],
       "test_acc": 0.7441
     },
-    "C": {
+    "G": {
       "name": "GoogleNews-300 (pretrained)",
       "cases": [
         {

@@ -19,11 +19,11 @@ import numpy, gensim
 from gensim.models import KeyedVectors, Word2Vec
 base = rss_mb()
 which = sys.argv[1]
-if which == "C":
+if which == "G":
     from src.pretrained import GZ, LIMIT
     kv = KeyedVectors.load_word2vec_format(str(GZ), binary=True, limit=LIMIT); n = 1
-elif which == "E":
-    kv = KeyedVectors.load("models/E_sst2-phrases.kv"); n = 1
+elif which == "C":
+    kv = KeyedVectors.load("models/C_sst2-phrases.kv"); n = 1
 else:
     m = Word2Vec.load(f"models/{which}_sst2-phrases.model"); kv = m.wv; n = 2
 after = rss_mb()
@@ -38,7 +38,7 @@ print(json.dumps({"model_id": which, "vocab": V, "dim": d, "matrices_retained": 
 
 def main():
     rows = []
-    for mid in ("A", "B", "D", "E", "C"):
+    for mid in ("A", "B", "G-ft", "C", "G"):
         out = subprocess.run([sys.executable, "-c", CHILD, mid],
                              capture_output=True, text=True)
         rows.append(json.loads(out.stdout.strip().splitlines()[-1]))
@@ -53,7 +53,7 @@ def main():
 
     from . import schema
     for r in rows:
-        stem = "C_googlenews-100b" if r["model_id"] == "C" else f"{r['model_id']}_sst2-phrases"
+        stem = "G_googlenews-100b" if r["model_id"] == "G" else f"{r['model_id']}_sst2-phrases"
         p = schema.RESULTS / f"{stem}.json"
         rec = json.loads(p.read_text())
         rec["extrinsic"]["memory"] = r

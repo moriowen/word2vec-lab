@@ -22,9 +22,9 @@ Deployed from `public/` to Vercel. The remote is `moriowen/word2vec-lab`, privat
 ```sh
 source .venv/bin/activate   # Python 3.11 (Homebrew) — gensim 4.3.3 has no 3.14 wheels
 python -m src.data          # corpus stats for both training-corpus variants
-python -m src.main          # train A, B; score C; write results/*.json
-python -m src.run_e         # train E, the from-scratch PyTorch implementation
-python -m src.finetune      # train D, warm-started from GoogleNews
+python -m src.main          # train A, B; score G; write results/*.json
+python -m src.run_e         # train C, the from-scratch PyTorch implementation
+python -m src.finetune      # train G-ft, warm-started from GoogleNews
 python -m src.run_eval      # intrinsic benchmarks, latency and memory, error mining
 python -m src.run_analogies # vector arithmetic and the Google analogy benchmark
 python -m src.testcases     # five worked test examples across all models
@@ -79,24 +79,28 @@ model. That invalidates the A-versus-B and C-versus-D comparisons, which are the
 |---|---|---|
 | A | gensim skip-gram + negative sampling, trained here | `train_gensim.py` |
 | B | gensim CBOW + hierarchical softmax, trained here | `train_gensim.py` |
-| C | GoogleNews-300, downloaded and frozen | `pretrained.py` |
-| D | C warm-started, then trained on SST | `finetune.py` |
-| E | skip-gram + NS written from scratch in PyTorch | `sgns.py`, `run_e.py` |
+| C | skip-gram + NS written from scratch in PyTorch | `sgns.py`, `run_e.py` |
+| G | GoogleNews-300, downloaded and frozen | `pretrained.py` |
+| G-ft | G warm-started, then trained on SST | `finetune.py` |
 | A2 | a control, not a sixth model | `train_gensim.py` |
 
+A, B and C also have text8 runs (`run_text8.py`, `run_e.py --text8`); the report keys them
+`A-text8`, `B-text8`, `C-text8`. IDs were renamed on Sep 23 2026 (E became C, C became G,
+D became G-ft); commit messages before that use the old letters.
+
 Everything except `sg`, `hs` and `negative` is held identical between A and B on purpose.
-A2 re-runs A with D's exact learning-rate schedule and epochs but random initialisation,
-which is what separates the warm start from the optimiser settings. A against D confounds
+A2 re-runs A with G-ft's exact learning-rate schedule and epochs but random initialisation,
+which is what separates the warm start from the optimiser settings. A against G-ft confounds
 the two. A2 stays out of the headline comparison and belongs only where the warm-start
 claim is made.
 
-C loads through `KeyedVectors` with `limit=500_000`; the full file wants about 4 GB of RAM.
+G loads through `KeyedVectors` with `limit=500_000`; the full file wants about 4 GB of RAM.
 It expects the `.bin.gz` under `~/gensim-data/word2vec-google-news-300/`.
 
-D warm-starts `W_in` through `intersect_word2vec_format`, which overwrites only the rows
+G-ft warm-starts `W_in` through `intersect_word2vec_format`, which overwrites only the rows
 for words already in our vocabulary, and which loads `W_in` alone. Google never published
 their output matrix, so `W_out` starts random and can scramble the imported vectors. That
-is why D reports mean and median cosine drift per word, and why the drift is an acceptance
+is why G-ft reports mean and median cosine drift per word, and why the drift is an acceptance
 check rather than a curiosity.
 
 **`src/data.py` has two training-corpus modes**, selected by `load_sst2(train_on=...)`:
@@ -129,7 +133,7 @@ source and config rather than from git history.
   so an unpinned install dies at `import gensim` with an error that reads like a broken
   gensim rather than a version conflict.
 - A and B are persisted with `model.save()` rather than `save_word2vec_format()`, so
-  `W_out` and the vocab counts survive for D's fine-tune to use later.
+  `W_out` and the vocab counts survive for G-ft's fine-tune to use later.
 - Negative sampling must draw from the unigram distribution raised to the 0.75 power. A
   raw-unigram bug still produces a smoothly falling loss with garbage vectors, so gate
   correctness on nearest-neighbour and analogy quality, never on the loss curve.

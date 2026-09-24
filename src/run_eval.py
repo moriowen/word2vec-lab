@@ -12,11 +12,11 @@ MODELS = Path("models")
 
 
 def load_all_kv():
-    for mid in ("A", "B", "D"):
+    for mid in ("A", "B", "G-ft"):
         yield mid, Word2Vec.load(str(MODELS / f"{mid}_{CORPUS}.model")).wv, f"{mid}_{CORPUS}"
-    yield "E", KeyedVectors.load(str(MODELS / f"E_{CORPUS}.kv")), f"E_{CORPUS}"
+    yield "C", KeyedVectors.load(str(MODELS / f"C_{CORPUS}.kv")), f"C_{CORPUS}"
     kv, _ = pretrained.load()
-    yield "C", kv, "C_googlenews-100b"
+    yield "G", kv, "G_googlenews-100b"
 
 
 def main():

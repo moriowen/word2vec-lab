@@ -1,5 +1,5 @@
 {
-  "model_id": "D",
+  "model_id": "G-ft",
   "name": "GoogleNews-300 warm start, fine-tuned on SST",
   "corpus": "sst2-phrases",
   "machine": "m2-air",
@@ -125,7 +125,7 @@
       "vocab_size": 14309
     },
     "memory": {
-      "model_id": "D",
+      "model_id": "G-ft",
       "vocab": 14309,
       "dim": 300,
       "matrices_retained": 2,

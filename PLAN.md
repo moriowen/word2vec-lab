@@ -1,5 +1,7 @@
 # CS 6220 HW2, Word2Vec (programming option)
 
+> **Model IDs were renamed on Sep 23 2026.** This document now uses the new letters: C is the from-scratch model (formerly E), G is GoogleNews-300 (formerly C), and G-ft is the fine-tune (formerly D). Commit messages keep the old letters.
+
 Due Fri Sep 25 (see `../../calendar.md`). Plan drafted Sep 22, revised the same day after a
 first pass was judged too thin.
 
@@ -110,25 +112,25 @@ though bullet 1 says "two." Each row exists to satisfy specific graded items.
 |----|-------|--------------------|--------|
 | A | Skip-gram + negative sampling, gensim | trained by me on SST | 1, 2b, 3, 4, 5 |
 | B | CBOW + hierarchical softmax, gensim | trained by me on SST | 1, 2b, 3, 4, 5 |
-| C | GoogleNews-300 | downloaded, frozen | 2a, 3 |
-| D | GoogleNews-300 fine-tuned on SST | warm start from C, per section 1.4 | 2b, 2c, 3 |
-| E | Skip-gram + negative sampling written from scratch in PyTorch | trained by me on SST and text8 | the extra work, plus 4 and 5 |
+| G | GoogleNews-300 | downloaded, frozen | 2a, 3 |
+| G-ft | GoogleNews-300 fine-tuned on SST | warm start from G, per section 1.4 | 2b, 2c, 3 |
+| C | Skip-gram + negative sampling written from scratch in PyTorch | trained by me on SST and text8 | the extra work, plus 4 and 5 |
 
 The headline comparison for deliverable 1 is **A versus B**. They differ in architecture
 (skip-gram versus CBOW) and in loss (negative sampling versus hierarchical softmax), which
 gives deliverable 5 two independent axes to talk about instead of one. Both are trained by
 me, which satisfies the handout's "ideally both."
 
-C is the required pretrained reference. GoogleNews rather than GloVe, deliberately: GloVe is
+G is the required pretrained reference. GoogleNews rather than GloVe, deliberately: GloVe is
 a different algorithm (it factorises a co-occurrence matrix) and is not a Word2Vec model at
 all, so using it as the pretrained comparison would quietly answer a different question than
 the one asked. GoogleNews-300 is genuine skip-gram with negative sampling. GloVe can appear
 as a footnote if time allows, labelled as a different method.
 
-D is what deliverable 2b's "your own fine-tuned model from a pretrained Word2Vec model" is
+G-ft is what deliverable 2b's "your own fine-tuned model from a pretrained Word2Vec model" is
 asking for, and it is also where the most interesting nearest-neighbour shifts will show up.
 
-E is the part that is not required. See Part 4.
+C is the part that is not required. See Part 4.
 
 ---
 
@@ -178,7 +180,7 @@ we have evidence. If it does not, that is a more interesting paragraph.
 
 Three additions. Each one is scoped so that dropping it still leaves a complete submission.
 
-### 4.1 Writing skip-gram with negative sampling from scratch (Model E)
+### 4.1 Writing skip-gram with negative sampling from scratch (Model C)
 
 The assignment says to take "a superficial look at the code." Writing it instead is the
 difference between having used word2vec and understanding it, and it is the piece that makes
@@ -262,14 +264,14 @@ connection without any special handling.
 **The A100 only helps one of the five models.** Worth being clear about, since requesting a
 GPU for work that cannot use it is its own kind of mistake:
 
-- gensim (models A, B, C, D) is Cython and CPU-only. A GPU does nothing for it. What ICE
+- gensim (models A, B, G, G-ft) is Cython and CPU-only. A GPU does nothing for it. What ICE
   does give these models is core count and RAM: 16 or 32 cores make the `workers` scaling
   study possible in a way an M2 Air does not, and loading GoogleNews-300 needs roughly 4 GB
   of RAM before anything else happens. Run these on an `ice-cpu` allocation.
-- The from-scratch PyTorch model (E) is where the A100 earns its place. Large batches of
+- The from-scratch PyTorch model (C) is where the A100 earns its place. Large batches of
   skip-gram pairs over text8's 17 million tokens with 253,000 vocabulary entries is a real
   GPU workload. On the laptop this is an overnight job at best; on an A100 with batches in
-  the tens of thousands it is minutes per epoch. This is what makes training E on the full
+  the tens of thousands it is minutes per epoch. This is what makes training C on the full
   text8 corpus feasible inside the schedule at all, rather than on a truncated slice.
 
 Allocations, adapted from the HW1 runbook:
@@ -307,8 +309,8 @@ HW2/
     eval/                 wordsim353, simlex999, google analogies
   src/
     corpus.py             ingest, tokenise, vocab, subsample, negative-sampling table
-    train_gensim.py       models A, B, and the fine-tune D
-    sgns.py               model E, from scratch
+    train_gensim.py       models A, B, and the fine-tune G-ft
+    sgns.py               model C, from scratch
     pooling.py            sentence vectors: mean, and tf-idf weighted
     evaluate.py           intrinsic + extrinsic + systems benchmarks -> results/*.json
     figures.py            every plot and table, generated from the JSON
@@ -337,7 +339,7 @@ unpolished. The point is that the assignment is then already complete in outline
 one, and every remaining session improves something that works rather than racing to finish
 something broken.
 
-**Tuesday, about 5 hours. Models A through D, plus the from-scratch implementation.**
+**Tuesday, about 5 hours. Models A through G-ft, plus the from-scratch implementation.**
 Morning: the gensim four, including the fine-tune, with the before-and-after cosine drift
 measurement from section 1.4. Afternoon: write `sgns.py` and get it through the correctness
 gate on SST. Start the text8 run on an ICE GPU allocation before stopping for the day so it
@@ -385,10 +387,10 @@ row on Thursday.
 |---|-------------|----------------------|
 | 1 | Two Word2Vec models compared, architecture figure each, input through code to output, at least one trained by me | A versus B, both trained by me. Two hand-drawn SVGs. Note on the autoencoder framing per section 1.2. |
 | 2 | Training and test datasets described and shipped in a subdirectory | `data/` with `data/README.md` giving URLs, token counts, split sizes |
-| 2a | Pretrained model: reference, URL, reported accuracy, dataset links | Model C, GoogleNews-300 |
-| 2b | Fine-tuned model: 5 representative training examples, 4 test examples, 2 positive and 2 negative | Model D, examples quoted verbatim from SST |
+| 2a | Pretrained model: reference, URL, reported accuracy, dataset links | Model G, GoogleNews-300 |
+| 2b | Fine-tuned model: 5 representative training examples, 4 test examples, 2 positive and 2 negative | Model G-ft, examples quoted verbatim from SST |
 | 2c | Performance table with at least 2 correct and 2 incorrect predictions | error mining, per the section above |
-| 3 | Top-K results for 5 test examples, compared against a pretrained model | nearest-neighbour tables plus the sentiment comparison against C |
+| 3 | Top-K results for 5 test examples, compared against a pretrained model | nearest-neighbour tables plus the sentiment comparison against G |
 | 4 | Performance measurement for training and for testing, average per query | the systems benchmarks in section 4.2 |
 | 5 | Hyperparameter analysis; top-1, top-5, top-10 for five word queries across both models | sweep table plus the query table |
 | 6 | Notes on installation, running, and measurement | written as work happens, not reconstructed at the end |
@@ -419,7 +421,7 @@ Named now, in order, so that a bad Tuesday is a scope decision rather than a pan
    cutting the from-scratch model: it is the most impressive piece but the least required.
 4. text8. Run everything on SST only. The pipeline still works end to end and the findings
    get thinner.
-5. Model E on text8, falling back to Model E on SST only.
+5. Model C on text8, falling back to Model C on SST only.
 
 Never cut: the from-scratch model, since it is the reason this is worth doing. The error
 table, since 2c is explicitly graded. The shipped `data/` directory, since 2 is explicitly
@@ -435,7 +437,7 @@ nearest-neighbour quality and on analogy accuracy against gensim, never on the l
 
 **Fine-tuning that destroys the pretrained vectors instead of adapting them.** Because
 `W_out` starts random (section 1.4), too high a learning rate will scramble the imported
-vectors in the first epoch and Model D will score worse than Model C. Guard against it by
+vectors in the first epoch and Model G-ft will score worse than Model G. Guard against it by
 measuring mean cosine drift per word, and by checking a handful of words that do not appear
 in SST are still intact. If drift is large, drop `alpha` and epochs.
 

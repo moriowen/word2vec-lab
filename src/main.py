@@ -1,4 +1,4 @@
-"""Runner: data -> models A, B, C -> pooling -> logistic regression -> results JSON."""
+"""Runner: data -> models A, B, G -> pooling -> logistic regression -> results JSON."""
 import json, sys
 
 from . import data, pretrained, schema

@@ -1,4 +1,4 @@
-"""Model D. GoogleNews-300 warm-started, then trained on SST.
+"""Model G-ft. GoogleNews-300 warm-started, then trained on SST.
 
 This is what the handout calls fine-tuning a pretrained Word2Vec model. Initialise W_in from
 the published vectors, then keep running the ordinary word2vec loop on the movie-review
@@ -54,10 +54,10 @@ def finetune(corpus_sents, corpus_name="sst2-phrases"):
     order = np.argsort(drift)
 
     MODELS.mkdir(exist_ok=True)
-    model.save(str(MODELS / f"D_{corpus_name}.model"))
+    model.save(str(MODELS / f"G-ft_{corpus_name}.model"))
 
     rec = {
-        "model_id": "D",
+        "model_id": "G-ft",
         "name": "GoogleNews-300 warm start, fine-tuned on SST",
         "corpus": corpus_name,
         "machine": schema.machine(),

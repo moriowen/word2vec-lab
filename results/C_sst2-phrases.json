@@ -1,5 +1,5 @@
 {
-  "model_id": "E",
+  "model_id": "C",
   "name": "skip-gram + negative sampling, from scratch (PyTorch)",
   "corpus": "sst2-phrases",
   "machine": "m2-air/cpu",
@@ -46,7 +46,7 @@
       "vocab_size": 14309
     },
     "memory": {
-      "model_id": "E",
+      "model_id": "C",
       "vocab": 14309,
       "dim": 300,
       "matrices_retained": 1,

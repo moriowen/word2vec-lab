@@ -94,8 +94,8 @@ def main():
 
 def kv_name(mid):
     return {"A": "gensim skip-gram + NS", "B": "gensim CBOW + HS",
-            "C": "GoogleNews-300 (pretrained)", "D": "GoogleNews fine-tuned",
-            "E": "from scratch (PyTorch)"}[mid]
+            "G": "GoogleNews-300 (pretrained)", "G-ft": "GoogleNews fine-tuned",
+            "C": "from scratch (PyTorch)"}[mid]
 
 
 if __name__ == "__main__":

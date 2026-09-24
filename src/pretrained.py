@@ -1,4 +1,4 @@
-"""Model C. GoogleNews-300, the required pretrained reference.
+"""Model G. GoogleNews-300, the required pretrained reference.
 
 GoogleNews rather than GloVe deliberately: GloVe factorises a co-occurrence matrix and is
 not a Word2Vec model, so using it here would quietly answer a different question than the
@@ -25,7 +25,7 @@ def load(limit: int = LIMIT):
     with schema.timed() as t:
         kv = KeyedVectors.load_word2vec_format(str(GZ), binary=True, limit=limit)
     rec = {
-        "model_id": "C",
+        "model_id": "G",
         "name": "GoogleNews-300 (pretrained, frozen)",
         "corpus": "googlenews-100b",
         "machine": schema.machine(),

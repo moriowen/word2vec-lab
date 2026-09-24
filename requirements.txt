@@ -5,3 +5,5 @@ scikit-learn
 matplotlib
 pandas
 tqdm
+pyarrow
+torch

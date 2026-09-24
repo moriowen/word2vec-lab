@@ -1,0 +1,113 @@
+{
+  "splits": {
+    "dev": {
+      "rows": 872,
+      "tokens": 17046,
+      "positive": 444,
+      "positive_frac": 0.509,
+      "mean_len": 19.5
+    },
+    "test": {
+      "rows": 1821,
+      "tokens": 35023,
+      "positive": 909,
+      "positive_frac": 0.499,
+      "mean_len": 19.2
+    },
+    "train": {
+      "rows": 67348,
+      "tokens": 633720,
+      "positive": 37568,
+      "positive_frac": 0.558,
+      "mean_len": 9.4
+    }
+  },
+  "test_categories": {
+    "negation": 362,
+    "other": 1235,
+    "contrast": 224
+  },
+  "sentence_train": {
+    "rows": 6920,
+    "tokens": 133555,
+    "positive": 3610,
+    "positive_frac": 0.522,
+    "vocab_min2": 7140
+  },
+  "phrase_train": {
+    "vocab_min2": 14309,
+    "rows_inside_sentences": 65640,
+    "rows_inside_frac": 0.9746,
+    "token_ratio": 4.75
+  },
+  "vocab_gain": {
+    "gained": 7184,
+    "gained_singletons": 7132
+  },
+  "word_counts": {
+    "king": {
+      "sentences": 13,
+      "phrases": 50
+    },
+    "queen": {
+      "sentences": 11,
+      "phrases": 43
+    },
+    "man": {
+      "sentences": 65,
+      "phrases": 313
+    },
+    "woman": {
+      "sentences": 29,
+      "phrases": 153
+    },
+    "actor": {
+      "sentences": 26,
+      "phrases": 163
+    },
+    "actress": {
+      "sentences": 16,
+      "phrases": 89
+    },
+    "good": {
+      "sentences": 214,
+      "phrases": 1341
+    },
+    "better": {
+      "sentences": 108,
+      "phrases": 532
+    },
+    "bad": {
+      "sentences": 149,
+      "phrases": 907
+    },
+    "worse": {
+      "sentences": 17,
+      "phrases": 122
+    },
+    "worst": {
+      "sentences": 40,
+      "phrases": 271
+    },
+    "best": {
+      "sentences": 131,
+      "phrases": 807
+    },
+    "comedy": {
+      "sentences": 212,
+      "phrases": 1053
+    },
+    "funny": {
+      "sentences": 181,
+      "phrases": 1105
+    },
+    "scary": {
+      "sentences": 19,
+      "phrases": 97
+    },
+    "horror": {
+      "sentences": 36,
+      "phrases": 187
+    }
+  }
+}

@@ -1,0 +1,654 @@
+{
+  "model_id": "B",
+  "name": "gensim CBOW + hierarchical softmax",
+  "corpus": "text8",
+  "machine": "m2-air",
+  "hyperparams": {
+    "sg": 0,
+    "hs": 1,
+    "negative": 0,
+    "vector_size": 300,
+    "window": 5,
+    "min_count": 2,
+    "epochs": 10,
+    "alpha": 0.025,
+    "sample": 0.001
+  },
+  "train": {
+    "wall_s": 176.55,
+    "words_per_sec": 963171,
+    "peak_rss_mb": 573.5,
+    "vocab_size": 135335,
+    "corpus_tokens": 17005207
+  },
+  "extrinsic": {
+    "sst2_test_acc": 0.7243,
+    "sst2_test_f1": 0.749,
+    "oov_rate_train": 0.1361,
+    "oov_rate_test": 0.1691,
+    "query_latency": {
+      "p50_ms": 4.887,
+      "p95_ms": 12.339,
+      "repeats": 200,
+      "vocab_size": 135335
+    },
+    "memory": {
+      "predicted_matrices_mb": 324.8,
+      "measured_peak_rss_mb": 573.5,
+      "overhead_mb": 248.7
+    }
+  },
+  "intrinsic": {
+    "neighbours": {
+      "plot": [
+        [
+          "storylines",
+          0.368
+        ],
+        [
+          "storyline",
+          0.36
+        ],
+        [
+          "gattaca",
+          0.357
+        ],
+        [
+          "sequel",
+          0.347
+        ],
+        [
+          "story",
+          0.338
+        ],
+        [
+          "plots",
+          0.322
+        ],
+        [
+          "character",
+          0.321
+        ],
+        [
+          "villain",
+          0.318
+        ],
+        [
+          "flashback",
+          0.315
+        ],
+        [
+          "horror",
+          0.313
+        ]
+      ],
+      "terrible": [
+        [
+          "disastrous",
+          0.354
+        ],
+        [
+          "devastating",
+          0.339
+        ],
+        [
+          "horrible",
+          0.297
+        ],
+        [
+          "tragic",
+          0.295
+        ],
+        [
+          "severe",
+          0.293
+        ],
+        [
+          "unfortunate",
+          0.291
+        ],
+        [
+          "appalling",
+          0.29
+        ],
+        [
+          "danger",
+          0.277
+        ],
+        [
+          "bad",
+          0.276
+        ],
+        [
+          "lendl",
+          0.275
+        ]
+      ],
+      "star": [
+        [
+          "stars",
+          0.567
+        ],
+        [
+          "attractiva",
+          0.365
+        ],
+        [
+          "spoor",
+          0.359
+        ],
+        [
+          "kzin",
+          0.35
+        ],
+        [
+          "planet",
+          0.346
+        ],
+        [
+          "galaxies",
+          0.341
+        ],
+        [
+          "brightest",
+          0.34
+        ],
+        [
+          "bedivere",
+          0.34
+        ],
+        [
+          "mckellen",
+          0.339
+        ],
+        [
+          "amias",
+          0.333
+        ]
+      ],
+      "cinematography": [
+        [
+          "film",
+          0.407
+        ],
+        [
+          "horror",
+          0.369
+        ],
+        [
+          "photography",
+          0.364
+        ],
+        [
+          "oscar",
+          0.362
+        ],
+        [
+          "films",
+          0.36
+        ],
+        [
+          "director",
+          0.355
+        ],
+        [
+          "picture",
+          0.341
+        ],
+        [
+          "projector",
+          0.334
+        ],
+        [
+          "vangelis",
+          0.33
+        ],
+        [
+          "smeeton",
+          0.329
+        ]
+      ],
+      "the": [
+        [
+          "a",
+          0.443
+        ],
+        [
+          "its",
+          0.422
+        ],
+        [
+          "this",
+          0.368
+        ],
+        [
+          "another",
+          0.349
+        ],
+        [
+          "their",
+          0.311
+        ],
+        [
+          "s",
+          0.292
+        ],
+        [
+          "an",
+          0.286
+        ],
+        [
+          "our",
+          0.284
+        ],
+        [
+          "his",
+          0.282
+        ],
+        [
+          "lindesfarne",
+          0.258
+        ]
+      ]
+    },
+    "wordsim353": {
+      "spearman": 0.6661,
+      "pairs_scored": 333,
+      "pairs_skipped": 20,
+      "coverage": 0.943
+    },
+    "simlex999": {
+      "spearman": 0.2587,
+      "pairs_scored": 998,
+      "pairs_skipped": 1,
+      "coverage": 0.999
+    },
+    "men3k": {
+      "spearman": 0.6057,
+      "pairs_scored": 2989,
+      "pairs_skipped": 11,
+      "coverage": 0.996
+    }
+  },
+  "errors": {
+    "n_errors": 502,
+    "error_categories": {
+      "other": 324,
+      "negation": 113,
+      "contrast": 65
+    },
+    "confident_errors": [
+      {
+        "sentence": "never -lrb- sinks -rrb- into exploitation .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.982,
+        "category": "negation"
+      },
+      {
+        "sentence": "but it pays a price for its intricate intellectual gamesmanship .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.856,
+        "category": "contrast"
+      },
+      {
+        "sentence": "despite the long running time , the pace never feels slack -- there 's no scene that screams `` bathroom break ! ''",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.828,
+        "category": "negation"
+      },
+      {
+        "sentence": "sorry , charlie",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.821,
+        "category": "other"
+      },
+      {
+        "sentence": "ostensibly celebrates middle-aged girl power , even as it presents friendship between women as pathetic , dysfunctional and destructive .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.819,
+        "category": "other"
+      },
+      {
+        "sentence": "uneasy mishmash of styles and genres .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.818,
+        "category": "other"
+      }
+    ],
+    "confident_correct": [
+      {
+        "sentence": "brilliant ! '",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.996,
+        "category": "other"
+      },
+      {
+        "sentence": "ranks among willams ' best screen work .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.993,
+        "category": "other"
+      },
+      {
+        "sentence": "no more .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.989,
+        "category": "negation"
+      },
+      {
+        "sentence": "a vivid cinematic portrait .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.987,
+        "category": "other"
+      },
+      {
+        "sentence": "a pleasant romantic comedy .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.986,
+        "category": "other"
+      },
+      {
+        "sentence": "bears is bad .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.981,
+        "category": "other"
+      }
+    ]
+  },
+  "analogies": {
+    "arithmetic": [
+      {
+        "query": "king - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "queen",
+            0.439
+          ],
+          [
+            "kings",
+            0.387
+          ],
+          [
+            "jehu",
+            0.369
+          ],
+          [
+            "monarch",
+            0.345
+          ],
+          [
+            "hohenstaufen",
+            0.343
+          ]
+        ]
+      },
+      {
+        "query": "paris - france + italy",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "florence",
+            0.422
+          ],
+          [
+            "naples",
+            0.401
+          ],
+          [
+            "rome",
+            0.374
+          ],
+          [
+            "genoa",
+            0.37
+          ],
+          [
+            "milan",
+            0.368
+          ]
+        ]
+      },
+      {
+        "query": "bigger - big + small",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "smaller",
+            0.596
+          ],
+          [
+            "larger",
+            0.585
+          ],
+          [
+            "large",
+            0.511
+          ],
+          [
+            "greater",
+            0.379
+          ],
+          [
+            "huge",
+            0.352
+          ]
+        ]
+      },
+      {
+        "query": "walking - walk + swim",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "bidens",
+            0.336
+          ],
+          [
+            "bike",
+            0.298
+          ],
+          [
+            "amygdala",
+            0.286
+          ],
+          [
+            "zhaodaisuo",
+            0.282
+          ],
+          [
+            "incubated",
+            0.274
+          ]
+        ]
+      },
+      {
+        "query": "comedy - funny + scary",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "screwball",
+            0.326
+          ],
+          [
+            "comedies",
+            0.318
+          ],
+          [
+            "scene",
+            0.314
+          ],
+          [
+            "mgm",
+            0.312
+          ],
+          [
+            "character",
+            0.3
+          ]
+        ]
+      },
+      {
+        "query": "actor - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "actress",
+            0.686
+          ],
+          [
+            "novelist",
+            0.464
+          ],
+          [
+            "musician",
+            0.435
+          ],
+          [
+            "writer",
+            0.43
+          ],
+          [
+            "singer",
+            0.416
+          ]
+        ]
+      },
+      {
+        "query": "worst - bad + good",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "greatest",
+            0.325
+          ],
+          [
+            "best",
+            0.288
+          ],
+          [
+            "toughest",
+            0.273
+          ],
+          [
+            "last",
+            0.256
+          ],
+          [
+            "biggest",
+            0.255
+          ]
+        ]
+      },
+      {
+        "query": "better - good + bad",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "more",
+            0.405
+          ],
+          [
+            "less",
+            0.389
+          ],
+          [
+            "fewer",
+            0.378
+          ],
+          [
+            "tougher",
+            0.369
+          ],
+          [
+            "higher",
+            0.363
+          ]
+        ]
+      }
+    ],
+    "benchmark": {
+      "overall_accuracy": 0.3142,
+      "attempted": 15790,
+      "restrict_vocab": 50000,
+      "questions_in_set": 19544,
+      "coverage": 0.8079,
+      "sections": {
+        "capital-common-countries": {
+          "accuracy": 0.5356,
+          "attempted": 506
+        },
+        "capital-world": {
+          "accuracy": 0.2469,
+          "attempted": 2839
+        },
+        "currency": {
+          "accuracy": 0.0808,
+          "attempted": 458
+        },
+        "city-in-state": {
+          "accuracy": 0.2073,
+          "attempted": 2060
+        },
+        "family": {
+          "accuracy": 0.5702,
+          "attempted": 342
+        },
+        "gram1-adjective-to-adverb": {
+          "accuracy": 0.0677,
+          "attempted": 930
+        },
+        "gram2-opposite": {
+          "accuracy": 0.1917,
+          "attempted": 506
+        },
+        "gram3-comparative": {
+          "accuracy": 0.491,
+          "attempted": 1332
+        },
+        "gram4-superlative": {
+          "accuracy": 0.1786,
+          "attempted": 756
+        },
+        "gram5-present-participle": {
+          "accuracy": 0.2614,
+          "attempted": 1056
+        },
+        "gram6-nationality-adjective": {
+          "accuracy": 0.5588,
+          "attempted": 1521
+        },
+        "gram7-past-tense": {
+          "accuracy": 0.2928,
+          "attempted": 1482
+        },
+        "gram8-plural": {
+          "accuracy": 0.5017,
+          "attempted": 1190
+        },
+        "gram9-plural-verbs": {
+          "accuracy": 0.2771,
+          "attempted": 812
+        }
+      }
+    }
+  }
+}

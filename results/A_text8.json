@@ -1,0 +1,654 @@
+{
+  "model_id": "A",
+  "name": "gensim skip-gram + negative sampling",
+  "corpus": "text8",
+  "machine": "m2-air",
+  "hyperparams": {
+    "sg": 1,
+    "hs": 0,
+    "negative": 10,
+    "vector_size": 300,
+    "window": 5,
+    "min_count": 2,
+    "epochs": 10,
+    "alpha": 0.025,
+    "sample": 0.001
+  },
+  "train": {
+    "wall_s": 889.33,
+    "words_per_sec": 191213,
+    "peak_rss_mb": 403.1,
+    "vocab_size": 135335,
+    "corpus_tokens": 17005207
+  },
+  "extrinsic": {
+    "sst2_test_acc": 0.7221,
+    "sst2_test_f1": 0.7413,
+    "oov_rate_train": 0.1361,
+    "oov_rate_test": 0.1691,
+    "query_latency": {
+      "p50_ms": 5.819,
+      "p95_ms": 31.564,
+      "repeats": 200,
+      "vocab_size": 135335
+    },
+    "memory": {
+      "predicted_matrices_mb": 324.8,
+      "measured_peak_rss_mb": 403.1,
+      "overhead_mb": 78.3
+    }
+  },
+  "intrinsic": {
+    "neighbours": {
+      "plot": [
+        [
+          "ridolfi",
+          0.549
+        ],
+        [
+          "popish",
+          0.514
+        ],
+        [
+          "subplot",
+          0.512
+        ],
+        [
+          "gattaca",
+          0.491
+        ],
+        [
+          "plots",
+          0.486
+        ],
+        [
+          "babington",
+          0.484
+        ],
+        [
+          "whodunit",
+          0.481
+        ],
+        [
+          "counterpointed",
+          0.477
+        ],
+        [
+          "replicants",
+          0.476
+        ],
+        [
+          "dramatized",
+          0.476
+        ]
+      ],
+      "terrible": [
+        [
+          "horrible",
+          0.553
+        ],
+        [
+          "terrifying",
+          0.514
+        ],
+        [
+          "thulsa",
+          0.51
+        ],
+        [
+          "irreparable",
+          0.498
+        ],
+        [
+          "toils",
+          0.496
+        ],
+        [
+          "betrayals",
+          0.494
+        ],
+        [
+          "hitlerite",
+          0.491
+        ],
+        [
+          "frailty",
+          0.482
+        ],
+        [
+          "devastations",
+          0.478
+        ],
+        [
+          "calamity",
+          0.478
+        ]
+      ],
+      "star": [
+        [
+          "trek",
+          0.701
+        ],
+        [
+          "stars",
+          0.636
+        ],
+        [
+          "eridani",
+          0.555
+        ],
+        [
+          "spangled",
+          0.554
+        ],
+        [
+          "procyon",
+          0.548
+        ],
+        [
+          "duetted",
+          0.54
+        ],
+        [
+          "ophiuchus",
+          0.539
+        ],
+        [
+          "gazer",
+          0.538
+        ],
+        [
+          "shatterpoint",
+          0.536
+        ],
+        [
+          "teleporters",
+          0.535
+        ]
+      ],
+      "cinematography": [
+        [
+          "expressionistic",
+          0.627
+        ],
+        [
+          "bafta",
+          0.596
+        ],
+        [
+          "shazam",
+          0.58
+        ],
+        [
+          "screenwriting",
+          0.574
+        ],
+        [
+          "cine",
+          0.574
+        ],
+        [
+          "cinematographer",
+          0.572
+        ],
+        [
+          "filmmaking",
+          0.569
+        ],
+        [
+          "elmes",
+          0.567
+        ],
+        [
+          "rashomon",
+          0.566
+        ],
+        [
+          "desaturated",
+          0.565
+        ]
+      ],
+      "the": [
+        [
+          "of",
+          0.733
+        ],
+        [
+          "and",
+          0.706
+        ],
+        [
+          "in",
+          0.699
+        ],
+        [
+          "a",
+          0.687
+        ],
+        [
+          "to",
+          0.6
+        ],
+        [
+          "s",
+          0.579
+        ],
+        [
+          "one",
+          0.559
+        ],
+        [
+          "platforming",
+          0.559
+        ],
+        [
+          "which",
+          0.557
+        ],
+        [
+          "thq",
+          0.554
+        ]
+      ]
+    },
+    "wordsim353": {
+      "spearman": 0.6942,
+      "pairs_scored": 333,
+      "pairs_skipped": 20,
+      "coverage": 0.943
+    },
+    "simlex999": {
+      "spearman": 0.3408,
+      "pairs_scored": 998,
+      "pairs_skipped": 1,
+      "coverage": 0.999
+    },
+    "men3k": {
+      "spearman": 0.6454,
+      "pairs_scored": 2989,
+      "pairs_skipped": 11,
+      "coverage": 0.996
+    }
+  },
+  "errors": {
+    "n_errors": 506,
+    "error_categories": {
+      "other": 314,
+      "negation": 120,
+      "contrast": 72
+    },
+    "confident_errors": [
+      {
+        "sentence": "here 's a self-congratulatory 3d imax rah-rah .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.972,
+        "category": "other"
+      },
+      {
+        "sentence": "what 's next ?",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.971,
+        "category": "other"
+      },
+      {
+        "sentence": "never -lrb- sinks -rrb- into exploitation .",
+        "gold": 1,
+        "pred": 0,
+        "confidence": 0.966,
+        "category": "negation"
+      },
+      {
+        "sentence": "ridiculous .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.928,
+        "category": "other"
+      },
+      {
+        "sentence": "do n't let your festive spirit go this far .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.896,
+        "category": "negation"
+      },
+      {
+        "sentence": "julia is played with exasperating blandness by laura regan .",
+        "gold": 0,
+        "pred": 1,
+        "confidence": 0.89,
+        "category": "other"
+      }
+    ],
+    "confident_correct": [
+      {
+        "sentence": "brilliant ! '",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 1.0,
+        "category": "other"
+      },
+      {
+        "sentence": "ranks among willams ' best screen work .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.998,
+        "category": "other"
+      },
+      {
+        "sentence": "a vivid cinematic portrait .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.996,
+        "category": "other"
+      },
+      {
+        "sentence": "thoughtful , provocative and entertaining .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.992,
+        "category": "other"
+      },
+      {
+        "sentence": "no more .",
+        "gold": 0,
+        "pred": 0,
+        "confidence": 0.991,
+        "category": "negation"
+      },
+      {
+        "sentence": "a potent allegorical love story .",
+        "gold": 1,
+        "pred": 1,
+        "confidence": 0.984,
+        "category": "other"
+      }
+    ]
+  },
+  "analogies": {
+    "arithmetic": [
+      {
+        "query": "king - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "queen",
+            0.479
+          ],
+          [
+            "infanta",
+            0.433
+          ],
+          [
+            "hainault",
+            0.433
+          ],
+          [
+            "forkbeard",
+            0.427
+          ],
+          [
+            "sweyn",
+            0.425
+          ]
+        ]
+      },
+      {
+        "query": "paris - france + italy",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "bologna",
+            0.569
+          ],
+          [
+            "pavia",
+            0.505
+          ],
+          [
+            "uffizi",
+            0.49
+          ],
+          [
+            "turin",
+            0.489
+          ],
+          [
+            "verrocchio",
+            0.488
+          ]
+        ]
+      },
+      {
+        "query": "bigger - big + small",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "smaller",
+            0.581
+          ],
+          [
+            "larger",
+            0.579
+          ],
+          [
+            "large",
+            0.494
+          ],
+          [
+            "scarcer",
+            0.416
+          ],
+          [
+            "tiny",
+            0.411
+          ]
+        ]
+      },
+      {
+        "query": "walking - walk + swim",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "coursing",
+            0.438
+          ],
+          [
+            "eventing",
+            0.436
+          ],
+          [
+            "canoeing",
+            0.407
+          ],
+          [
+            "bikers",
+            0.406
+          ],
+          [
+            "shamu",
+            0.398
+          ]
+        ]
+      },
+      {
+        "query": "comedy - funny + scary",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "docu",
+            0.511
+          ],
+          [
+            "sitcoms",
+            0.511
+          ],
+          [
+            "screwball",
+            0.51
+          ],
+          [
+            "slapstick",
+            0.507
+          ],
+          [
+            "suspense",
+            0.496
+          ]
+        ]
+      },
+      {
+        "query": "actor - man + woman",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "actress",
+            0.702
+          ],
+          [
+            "comedienne",
+            0.544
+          ],
+          [
+            "singer",
+            0.536
+          ],
+          [
+            "gingold",
+            0.503
+          ],
+          [
+            "wiest",
+            0.493
+          ]
+        ]
+      },
+      {
+        "query": "worst - bad + good",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "best",
+            0.449
+          ],
+          [
+            "razzie",
+            0.421
+          ],
+          [
+            "evar",
+            0.415
+          ],
+          [
+            "saddest",
+            0.403
+          ],
+          [
+            "ihl",
+            0.381
+          ]
+        ]
+      },
+      {
+        "query": "better - good + bad",
+        "status": "ok",
+        "missing": [],
+        "answers": [
+          [
+            "worse",
+            0.476
+          ],
+          [
+            "smarter",
+            0.424
+          ],
+          [
+            "mattered",
+            0.399
+          ],
+          [
+            "anemic",
+            0.396
+          ],
+          [
+            "fared",
+            0.394
+          ]
+        ]
+      }
+    ],
+    "benchmark": {
+      "overall_accuracy": 0.3721,
+      "attempted": 15790,
+      "restrict_vocab": 50000,
+      "questions_in_set": 19544,
+      "coverage": 0.8079,
+      "sections": {
+        "capital-common-countries": {
+          "accuracy": 0.7569,
+          "attempted": 506
+        },
+        "capital-world": {
+          "accuracy": 0.3783,
+          "attempted": 2839
+        },
+        "currency": {
+          "accuracy": 0.2205,
+          "attempted": 458
+        },
+        "city-in-state": {
+          "accuracy": 0.2845,
+          "attempted": 2060
+        },
+        "family": {
+          "accuracy": 0.6374,
+          "attempted": 342
+        },
+        "gram1-adjective-to-adverb": {
+          "accuracy": 0.0731,
+          "attempted": 930
+        },
+        "gram2-opposite": {
+          "accuracy": 0.1403,
+          "attempted": 506
+        },
+        "gram3-comparative": {
+          "accuracy": 0.5233,
+          "attempted": 1332
+        },
+        "gram4-superlative": {
+          "accuracy": 0.2302,
+          "attempted": 756
+        },
+        "gram5-present-participle": {
+          "accuracy": 0.1989,
+          "attempted": 1056
+        },
+        "gram6-nationality-adjective": {
+          "accuracy": 0.7679,
+          "attempted": 1521
+        },
+        "gram7-past-tense": {
+          "accuracy": 0.2638,
+          "attempted": 1482
+        },
+        "gram8-plural": {
+          "accuracy": 0.4218,
+          "attempted": 1190
+        },
+        "gram9-plural-verbs": {
+          "accuracy": 0.2869,
+          "attempted": 812
+        }
+      }
+    }
+  }
+}

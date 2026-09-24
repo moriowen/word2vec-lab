@@ -1,4 +1,4 @@
-"""Model E. Skip-gram with negative sampling, written from scratch.
+"""Model C. Skip-gram with negative sampling, written from scratch.
 
 Everything gensim does in Cython, done explicitly. The five pieces that matter, each with
 the failure it causes when omitted:
@@ -12,7 +12,9 @@ the failure it causes when omitted:
 Reference: Mikolov et al. 2013, "Distributed Representations of Words and Phrases and their
 Compositionality", and the original C implementation at code.google.com/archive/p/word2vec.
 """
+import time
 from collections import Counter
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -51,7 +53,12 @@ class Vocab:
 
 
 def generate_pairs(encoded, vocab, window, rng):
-    """One epoch of (center, context) pairs, subsampled and with a dynamic window."""
+    """One epoch of (center, context) pairs, subsampled and with a dynamic window.
+
+    Vectorised per sentence, but it draws from rng in the same order and emits pairs in the
+    same order as a nested loop over centre then context position would.
+    """
+    offsets = np.array([o for o in range(-window, window + 1) if o], dtype=np.int64)
     centers, contexts = [], []
     for ids in encoded:
         if len(ids) < 2:
@@ -62,12 +69,16 @@ def generate_pairs(encoded, vocab, window, rng):
         # Dynamic window: the effective radius is drawn uniformly from 1..window for each
         # centre, which weights nearby words more heavily with no explicit weighting term.
         radii = rng.integers(1, window + 1, size=len(kept))
-        for i, (c, r) in enumerate(zip(kept, radii)):
-            lo, hi = max(0, i - r), min(len(kept), i + r + 1)
-            for j in range(lo, hi):
-                if j != i:
-                    centers.append(c); contexts.append(kept[j])
-    return np.asarray(centers, dtype=np.int64), np.asarray(contexts, dtype=np.int64)
+        pos = np.arange(len(kept))[:, None]
+        j = pos + offsets
+        ok = (np.abs(offsets) <= radii[:, None]) & (j >= 0) & (j < len(kept))
+        centers.append(np.broadcast_to(kept[:, None], j.shape)[ok])
+        contexts.append(kept[j[ok]])
+    # int32 halves memory on text8 (76M pairs an epoch); ids stay far below 2**31.
+    if not centers:
+        return np.empty(0, np.int32), np.empty(0, np.int32)
+    return (np.concatenate(centers).astype(np.int32),
+            np.concatenate(contexts).astype(np.int32))
 
 
 class SGNS(nn.Module):
@@ -105,12 +116,19 @@ class SGNS(nn.Module):
 
 def train(sentences, dim=300, window=5, negatives=10, min_count=2, sample=1e-3,
           epochs=10, alpha=0.001, min_alpha=1e-5, batch_size=8192, seed=42,
-          device=None, sparse=False):
+          device=None, sparse=False, precompute_pairs=True, log_every=0, checkpoint=None):
+    """Returns (model, vocab, history, device, train_seconds).
+
+    checkpoint: a path. After every epoch the model, optimiser, random state and progress are
+    saved there, and a later call with the same path resumes from the last finished epoch.
+    train_seconds sums time spent in train() across resumed calls, so downtime is excluded.
+    """
+    t_start = time.perf_counter()
     rng = np.random.default_rng(seed)
     torch.manual_seed(seed)
-    # CPU by default, which is measured rather than assumed: at this vocabulary size MPS is
-    # slower than CPU because the batch is small relative to the transfer and kernel-launch
-    # overhead. On text8, with a 253k vocabulary, the balance reverses. See the run log.
+    # Device and gradient mode are measured, not assumed. At SST's 14k vocabulary, dense CPU
+    # beats both MPS and sparse. At text8's 135k, dense CPU is 1300 ms per batch against
+    # about 200 for sparse CPU or dense MPS, because a dense Adam step touches every row.
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
     vocab = Vocab(sentences, min_count=min_count, sample=sample)
@@ -120,35 +138,80 @@ def train(sentences, dim=300, window=5, negatives=10, min_count=2, sample=1e-3,
     # training pair, so its lr of 0.025 is a per-pair step; batching 8192 pairs and averaging
     # makes the equivalent SGD lr roughly alpha * batch_size, which is unstable. Adam is what
     # the PyTorch reference implementation the handout links (Andras7/word2vec-pytorch) uses,
-    # and the linear decay from the original is kept on top of it.
-    opt = torch.optim.Adam(model.parameters(), lr=alpha)
+    # and the linear decay from the original is kept on top of it. Plain Adam rejects sparse
+    # gradients, so sparse mode needs SparseAdam.
+    opt = (torch.optim.SparseAdam(list(model.parameters()), lr=alpha) if sparse
+           else torch.optim.Adam(model.parameters(), lr=alpha))
 
-    epoch_pairs = [generate_pairs(encoded, vocab, window, rng) for _ in range(epochs)]
-    total_batches = sum(int(np.ceil(len(c) / batch_size)) for c, _ in epoch_pairs)
-    step, history = 0, []
+    step, history, done, prior_s = 0, [], 0, 0.0
+    ckpt = Path(checkpoint) if checkpoint else None
+    if ckpt and ckpt.exists():
+        assert not precompute_pairs, "resuming needs precompute_pairs=False"
+        state = torch.load(ckpt, weights_only=False)
+        assert state["vocab_size"] == len(vocab), "checkpoint is from a different corpus"
+        model.load_state_dict(state["model"]); opt.load_state_dict(state["opt"])
+        rng.bit_generator.state = state["rng"]
+        step, history, done = state["step"], state["history"], state["epoch"]
+        total_batches, prior_s = state["total_batches"], state["train_seconds"]
+        print(f"resumed from {ckpt} after epoch {done}/{epochs}", flush=True)
 
-    for centers, contexts in epoch_pairs:
+    # precompute_pairs=True reproduces the recorded SST run exactly. text8 needs False: ten
+    # epochs of pairs would not fit in memory, and generating each epoch just before it is
+    # used draws the random stream in a different order.
+    if precompute_pairs:
+        epoch_pairs = [generate_pairs(encoded, vocab, window, rng) for _ in range(epochs)]
+        total_batches = sum(int(np.ceil(len(c) / batch_size)) for c, _ in epoch_pairs)
+        epoch_pairs = iter(epoch_pairs)
+    else:
+        if done == 0:
+            first = generate_pairs(encoded, vocab, window, rng)
+            total_batches = int(np.ceil(len(first[0]) / batch_size)) * epochs  # estimate
+
+        def lazy(held):
+            if held:
+                yield held.pop()
+            while True:
+                yield generate_pairs(encoded, vocab, window, rng)
+        epoch_pairs = lazy([first] if done == 0 else [])
+        if done == 0:
+            del first
+
+    for epoch in range(done, epochs):
+        centers, contexts = next(epoch_pairs)
         perm = rng.permutation(len(centers))
         centers, contexts = centers[perm], contexts[perm]
         running = n = 0.0
         for i in range(0, len(centers), batch_size):
-            cb = torch.from_numpy(centers[i:i + batch_size]).to(device)
-            xb = torch.from_numpy(contexts[i:i + batch_size]).to(device)
+            cb = torch.from_numpy(centers[i:i + batch_size]).long().to(device)
+            xb = torch.from_numpy(contexts[i:i + batch_size]).long().to(device)
             nb = torch.from_numpy(
                 rng.choice(vocab.neg_table, size=(len(cb), negatives))
             ).long().to(device)
 
             # Linear decay from alpha to min_alpha across the whole run, as in the original.
             for g in opt.param_groups:
-                g["lr"] = alpha - (alpha - min_alpha) * (step / max(total_batches - 1, 1))
+                g["lr"] = max(min_alpha, alpha - (alpha - min_alpha)
+                              * (step / max(total_batches - 1, 1)))
 
             pos, neg = model(cb, xb, nb)
             loss = SGNS.loss(pos, neg)
             opt.zero_grad(); loss.backward(); opt.step()
             running += loss.item(); n += 1; step += 1
+            if log_every and step % log_every == 0:
+                print(f"  step {step:,}/{total_batches:,}  loss {running / n:.4f}", flush=True)
         history.append(round(running / n, 4))
+        if log_every:
+            print(f"epoch {len(history)}/{epochs}  loss {history[-1]}", flush=True)
+        if ckpt:
+            tmp = ckpt.with_suffix(".tmp")
+            torch.save({"model": model.state_dict(), "opt": opt.state_dict(),
+                        "rng": rng.bit_generator.state, "step": step, "history": history,
+                        "epoch": epoch + 1, "total_batches": total_batches,
+                        "vocab_size": len(vocab),
+                        "train_seconds": prior_s + time.perf_counter() - t_start}, tmp)
+            tmp.replace(ckpt)
 
-    return model, vocab, history, device
+    return model, vocab, history, device, prior_s + time.perf_counter() - t_start
 
 
 def to_keyedvectors(model, vocab):

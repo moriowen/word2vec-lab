@@ -55,13 +55,22 @@ already separated, so anything more elaborate would need justifying rather than 
 
 ## text8
 
-Not yet downloaded. Planned for phase 11, from `http://mattmahoney.net/dc/text8.zip`:
-the first 100 MB of cleaned English Wikipedia, about 17 million tokens. Excluded from git
-via `.gitignore` and reproducible from the URL.
+Source: `http://mattmahoney.net/dc/text8.zip`, the first 100 MB of an English Wikipedia
+dump cleaned by Matt Mahoney. Downloaded to `data/text8/text8` by `src/run_text8.py` on
+Sep 23 2026, excluded from git via `.gitignore`, and reproducible from the URL.
+
+| Tokens | Vocabulary at `min_count=2` | Characters |
+|---|---|---|
+| 17,005,207 | 135,335 | lowercase `a-z` and space only |
+
+Punctuation is stripped and numbers are spelled out digit by digit (`1989` becomes
+`one nine eight nine`), so SST tokens such as `n't`, `'s` and `,` can never appear in it.
+Used only to train word vectors for Models A and B; the classifier and every evaluation
+stay on SST-2.
 
 ## Out-of-vocabulary behaviour of GoogleNews-300
 
-Model C shows a 27.1% token OOV rate on the SST test split, against 6.6% for the
+Model G shows a 27.1% token OOV rate on the SST test split, against 6.6% for the
 SST-trained models. Measured composition of those 9,487 OOV tokens:
 
 | Cause | Share |
@@ -72,7 +81,7 @@ SST-trained models. Measured composition of those 9,487 OOV tokens:
 So the high rate is not a preprocessing fault. Google dropped the highest-frequency function
 words when the vectors were published, and SST's punctuation is tokenised into separate
 tokens that no word2vec vocabulary would carry. What is missing carries no sentiment, which
-is why Model C still scores highest despite the rate.
+is why Model G still scores highest despite the rate.
 
 A capitalisation fallback would nominally recover 50.5% of the OOV tokens, and it was
 rejected: `a` would resolve to the vector for the letter `A`, `and` to the acronym `AND`.

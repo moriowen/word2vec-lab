@@ -69,7 +69,45 @@ def stats(d: dict) -> dict:
     return out
 
 
+ANALOGY_WORDS = ("king queen man woman actor actress good better bad worse worst best "
+                 "comedy funny scary horror").split()
+
+
+def corpus_report(min_count: int = 2) -> dict:
+    """How much of the phrase corpus is new text, measured against the sentence release."""
+    from collections import Counter
+    ph, se = load_sst2("phrases"), load_sst2("sentences")["train"]
+    blob = "\n".join(f" {' '.join(t)} " for t, _ in se)
+    inside = sum(1 for t, _ in ph["train"] if f" {' '.join(t)} " in blob)
+    cp = Counter(w for t, _ in ph["train"] for w in t)
+    cs = Counter(w for t, _ in se for w in t)
+    vp = {w for w, c in cp.items() if c >= min_count}
+    vs = {w for w, c in cs.items() if c >= min_count}
+    gained = vp - vs
+    splits = stats(ph)
+    for s in splits.values():
+        s["mean_len"] = round(s["tokens"] / s["rows"], 1)
+    from .evaluate import categorise
+    test_cats = Counter(categorise(t) for t, _ in ph["test"])
+    return {
+        "splits": splits,
+        "test_categories": dict(test_cats),
+        "sentence_train": {**stats({"t": se})["t"], f"vocab_min{min_count}": len(vs)},
+        "phrase_train": {f"vocab_min{min_count}": len(vp), "rows_inside_sentences": inside,
+                         "rows_inside_frac": round(inside / len(ph["train"]), 4),
+                         "token_ratio": round(splits["train"]["tokens"]
+                                              / sum(len(t) for t, _ in se), 2)},
+        "vocab_gain": {"gained": len(gained),
+                       "gained_singletons": sum(1 for w in gained if cs.get(w) == 1)},
+        "word_counts": {w: {"sentences": cs.get(w, 0), "phrases": cp.get(w, 0)}
+                        for w in ANALOGY_WORDS},
+    }
+
+
 if __name__ == "__main__":
     for mode in ("sentences", "phrases"):
         d = load_sst2(mode)
         print(mode, json.dumps(stats(d)["train"]))
+    out = Path(__file__).resolve().parent.parent / "results" / "corpus.json"
+    out.write_text(json.dumps(corpus_report(), indent=2))
+    print(f"wrote {out.relative_to(out.parent.parent)}")

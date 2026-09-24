@@ -1,0 +1,188 @@
+{
+  "test_tokens": 35023,
+  "oov_tokens": 5922,
+  "kinds": {
+    "punctuation or number": {
+      "tokens": 3783,
+      "share": 0.639
+    },
+    "word": {
+      "tokens": 612,
+      "share": 0.103
+    },
+    "apostrophe": {
+      "tokens": 847,
+      "share": 0.143
+    },
+    "hyphenated": {
+      "tokens": 680,
+      "share": 0.115
+    }
+  },
+  "top_oov": [
+    [
+      ".",
+      1729
+    ],
+    [
+      ",",
+      1567
+    ],
+    [
+      "'s",
+      519
+    ],
+    [
+      "n't",
+      134
+    ],
+    [
+      "...",
+      124
+    ],
+    [
+      "--",
+      112
+    ],
+    [
+      "-rrb-",
+      73
+    ],
+    [
+      "-lrb-",
+      71
+    ],
+    [
+      "'",
+      65
+    ],
+    [
+      ":",
+      38
+    ],
+    [
+      "''",
+      34
+    ],
+    [
+      "``",
+      33
+    ],
+    [
+      "`",
+      33
+    ],
+    [
+      "'re",
+      30
+    ],
+    [
+      "'ll",
+      25
+    ],
+    [
+      "?",
+      24
+    ],
+    [
+      "-",
+      22
+    ],
+    [
+      "!",
+      15
+    ],
+    [
+      ";",
+      15
+    ],
+    [
+      "mr.",
+      12
+    ]
+  ],
+  "sentences_with_nt": 129,
+  "test_sentences": 1821,
+  "sst_only_words": [
+    [
+      "refreshingly",
+      7
+    ],
+    [
+      "soggy",
+      6
+    ],
+    [
+      "mesmerizing",
+      5
+    ],
+    [
+      "haneke",
+      3
+    ],
+    [
+      "attal",
+      3
+    ],
+    [
+      "smug",
+      3
+    ],
+    [
+      "shainberg",
+      3
+    ],
+    [
+      "sappy",
+      3
+    ],
+    [
+      "clunker",
+      3
+    ],
+    [
+      "dreck",
+      3
+    ],
+    [
+      "benigni",
+      3
+    ],
+    [
+      "retread",
+      3
+    ],
+    [
+      "likable",
+      3
+    ],
+    [
+      "exudes",
+      2
+    ],
+    [
+      "heartwarming",
+      2
+    ],
+    [
+      "abbass",
+      2
+    ],
+    [
+      "moviegoing",
+      2
+    ],
+    [
+      "vardalos",
+      2
+    ],
+    [
+      "elling",
+      2
+    ],
+    [
+      "solondz",
+      2
+    ]
+  ]
+}

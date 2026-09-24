@@ -15,3 +15,7 @@ data/text8/
 # local build output; the deployed copy is public/index.html
 .vercel
 HW2_P_Mohite_Atharva.zip
+
+# PACE ICE job environment and logs
+.venv-ice/
+slurm/*.out

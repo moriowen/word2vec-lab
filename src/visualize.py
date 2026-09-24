@@ -82,11 +82,48 @@ def svg(kv, method="pca", w=720, h=380, pad=44):
     return "".join(body), {"words_plotted": len(words), "silhouette_2d": sil, **extra}
 
 
+def separation(kv):
+    """Cosine silhouette in the full space, for all four groups and for the pairs that matter.
+
+    The 2-D scores above measure the picture; these measure the vectors themselves, and the
+    positive-against-negative pair shows whether a model tells praise from criticism.
+    """
+    from sklearn.metrics import silhouette_score
+    g = list(GROUPS)
+    pairs = {"all": g, "positive_vs_negative": g[:2], "craft_vs_genre": g[2:]}
+    out = {}
+    for name, groups in pairs.items():
+        words = [(w, i) for i, k in enumerate(groups) for w in GROUPS[k] if w in kv]
+        X = np.array([kv[w] for w, _ in words])
+        out[name] = round(float(silhouette_score(X, [i for _, i in words], metric="cosine")), 3)
+    return out
+
+
 def build_all(models):
     out = {}
     for mid, kv in models:
-        out[mid] = {}
+        out[mid] = {"separation": separation(kv)}
         for method in ("pca", "tsne"):
             markup, meta = svg(kv, method)
             out[mid][method] = {"svg": markup, **meta}
     return out
+
+
+def load_models():
+    from gensim.models import KeyedVectors, Word2Vec
+    from .pretrained import load
+    m = Path("models")
+    yield "A", Word2Vec.load(str(m / "A_sst2-phrases.model")).wv
+    yield "B", Word2Vec.load(str(m / "B_sst2-phrases.model")).wv
+    yield "C", KeyedVectors.load(str(m / "C_sst2-phrases.kv"))
+    yield "G", load()[0]
+    yield "G-ft", Word2Vec.load(str(m / "G-ft_sst2-phrases.model")).wv
+    for mid in ("A", "B"):
+        yield f"{mid}-text8", Word2Vec.load(str(m / f"{mid}_text8.model")).wv
+    yield "C-text8", KeyedVectors.load(str(m / "C_text8.kv"))
+
+
+if __name__ == "__main__":
+    out = Path("results") / "visualization.json"
+    out.write_text(json.dumps(build_all(load_models()), indent=2))
+    print(f"wrote {out}")

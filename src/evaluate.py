@@ -43,6 +43,8 @@ def similarity(kv, name: str) -> dict:
 def latency(kv, queries, repeats=200) -> dict:
     """Brute-force most_similar is a dense matvec over the whole vocabulary."""
     kv.fill_norms()
+    for q in queries:                  # untimed warm-up: page the matrix in before timing
+        kv.most_similar(q, topn=10)
     times = []
     for i in range(repeats):
         q = queries[i % len(queries)]
@@ -50,7 +52,8 @@ def latency(kv, queries, repeats=200) -> dict:
         kv.most_similar(q, topn=10)
         times.append((time.perf_counter() - t0) * 1000)
     times = np.array(times)
-    return {"p50_ms": round(float(np.percentile(times, 50)), 3),
+    return {"mean_ms": round(float(times.mean()), 3),
+            "p50_ms": round(float(np.percentile(times, 50)), 3),
             "p95_ms": round(float(np.percentile(times, 95)), 3),
             "repeats": repeats, "vocab_size": len(kv)}
 

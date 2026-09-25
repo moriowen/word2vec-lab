@@ -79,7 +79,7 @@ def main():
                 "gold": int(y[i]), "pred": int(pred[i]),
                 "ranked_labels": [[lab, round(p, 4)] for lab, p in ranked],
                 "correct": bool(pred[i] == y[i]),
-                "neighbours": [{"text": " ".join(d["train"][j][0])[:80],
+                "neighbours": [{"text": " ".join(d["train"][j][0]),
                                 "label": int(ytr[j]), "cos": round(float(sims[j]), 3)}
                                for j in top],
                 "neighbour_label_agreement": round(float(np.mean(ytr[top] == y[i])), 2),

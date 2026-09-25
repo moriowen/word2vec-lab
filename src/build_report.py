@@ -89,6 +89,11 @@ PROV = {"A": "gensim", "B": "gensim", "A-text8": "gensim", "B-text8": "gensim",
 e = html.escape
 
 
+def clip(text, n):
+    """Shorten at a word boundary so a quoted sentence never ends mid-word."""
+    return text if len(text) <= n else text[:n].rsplit(" ", 1)[0] + " &hellip;"
+
+
 def load():
     recs = {}
     for p in (ROOT / "results").glob("*.json"):
@@ -217,7 +222,7 @@ def ex2b():
     ex = json.loads((ROOT / "results" / "examples_2b.json").read_text())
     out = []
     for key, head in [("train", "Five training examples"), ("test", "Four test examples")]:
-        rows = [[x["why"], f'<code>{e(x["text"][:92])}</code>',
+        rows = [[x["why"], f'<code>{clip(e(x["text"]), 92)}</code>',
                  "positive" if x["label"] else "negative"] for x in ex[key]]
         out.append(f"<h3 style=\"margin-top:12px;font-size:.82rem;letter-spacing:.1em;"
                    f"text-transform:uppercase;font-family:var(--sans);color:var(--faint)\">"
@@ -241,7 +246,7 @@ def testcase_section():
                          f'{c["neighbour_label_agreement"]:.1f}'])
         nb = tc["models"]["G-ft"]["cases"][k]["neighbours"][:3]
         chips = "".join(f'<span class="chip{" agree" if n["label"]==s["gold"] else ""}">'
-                        f'{e(n["text"])} &middot; {n["cos"]:.2f}</span>' for n in nb)
+                        f'{clip(e(n["text"]), 80)} &middot; {n["cos"]:.2f}</span>' for n in nb)
         blocks.append(f'''<div class="tcase">
           <div class="tchead"><span class="eyebrow">Example {k+1} &middot; {e(s["selected_for"])}</span>
             <p class="tcsent"><code>{e(s["text"])}</code></p>
@@ -451,14 +456,16 @@ def build(mode="web"):
       its leaderboard. I use the labelled SetFit test split instead. <code>src/data.py</code>
       raises an error unless both classes appear in the loaded test labels.</p>''')
     sp = corpus["splits"]
+    SETFIT = "<a href='https://huggingface.co/datasets/SetFit/sst2'>SetFit/sst2</a>"
     add(table(["Split", "Source", "Rows", "Tokens", "Mean length", "Positive", "Used for"],
               [[s, src, f'{sp[s]["rows"]:,}', f'{sp[s]["tokens"]:,}', f'{sp[s]["mean_len"]}',
                 f'{sp[s]["positive_frac"]:.1%}', use]
                for s, src, use in [
-                   ("train", "stanfordnlp/sst2 (phrase level)",
+                   ("train", "<a href='https://huggingface.co/datasets/stanfordnlp/sst2'>"
+                    "stanfordnlp/sst2</a> (phrase level)",
                     "embedding training and classifier fitting"),
-                   ("dev", "SetFit/sst2", "held out, unused"),
-                   ("test", "SetFit/sst2", "every number on this page")]],
+                   ("dev", SETFIT, "held out, unused"),
+                   ("test", SETFIT, "every number on this page")]],
               ["m", "l", "n", "n", "n", "n", "l"]))
     add(f'''<div class="stats">
         <div class="stat"><span class="n">{V:,}</span>
@@ -518,8 +525,9 @@ def build(mode="web"):
       <p class="prose">A and B intentionally change two things together: the architecture and
       the loss. All other settings stay fixed, so the comparison is between the two standard
       Word2Vec configurations. The sweep below separates the two changes.</p>''')
+    hp = lambda v: "not reported" if v is None else str(v)
     add(table([""] + [row_label(m) for m in ORDER + ["A2"]],
-              [[k] + [str(r[m]["hyperparams"].get(lbl, "-")) for m in ORDER + ["A2"]]
+              [[k] + [hp(r[m]["hyperparams"].get(lbl, "-")) for m in ORDER + ["A2"]]
                for k, lbl in [("Architecture (sg)", "sg"), ("Hierarchical softmax", "hs"),
                               ("Negatives", "negative"), ("Dimensions", "vector_size"),
                               ("Window", "window"), ("Min count", "min_count"),
@@ -988,21 +996,24 @@ def build(mode="web"):
       <div class="sechead">{eb("Deliverable 4", "Systems measurements")}
       <h2>What these models cost to run</h2></div>
       <p class="prose">Query latency measures brute-force <code>most_similar</code>, which runs
-      a dense matrix-vector product over the full vocabulary. Each value comes from
-      {lat("A")["repeats"]} calls. Memory is the RSS increase in an isolated subprocess,
+      a dense matrix-vector product over the full vocabulary. The mean, p50 and p95 per
+      query all come from the same {lat("A")["repeats"]} calls, cycling through the five
+      query words after one untimed warm-up call each. Memory is the RSS increase in an isolated subprocess,
       compared with the size of the matrices the model retains.</p>''')
-    add(table(["Model", "Vocab", "p50 ms", "p95 ms", "Keeps", "Predicted MB", "Measured MB", "Ratio"],
-              [[row_label(mid), f'{lat(mid)["vocab_size"]:,}', f'{lat(mid)["p50_ms"]:.2f}',
+    add(table(["Model", "Vocab", "Mean ms", "p50 ms", "p95 ms", "Keeps", "Predicted MB",
+               "Measured MB", "Ratio"],
+              [[row_label(mid), f'{lat(mid)["vocab_size"]:,}', f'{lat(mid)["mean_ms"]:.2f}',
+                f'{lat(mid)["p50_ms"]:.2f}',
                 f'{lat(mid)["p95_ms"]:.2f}', f'{mem(mid)["matrices_retained"]}',
                 f'{mem(mid)["predicted_mb"]:.1f}', f'{mem(mid)["delta_mb"]:.1f}',
                 f'{mem(mid)["delta_mb"]/mem(mid)["predicted_mb"]:.2f}'] for mid in ORDER],
-              ["m", "n", "n", "n", "n", "n", "n", "n"]))
+              ["m", "n", "n", "n", "n", "n", "n", "n", "n"]))
     add(f'''<div class="note"><b>Brute-force query time grows with vocabulary size.</b> G has
       {vocab_ratio:.0f} times as many words as the SST models and is {lat_ratio:.0f} times
       slower at p50. An approximate index adds little value at
       {lat("A")["vocab_size"]:,} words. At {lat("G")["vocab_size"]:,}, a query already takes
       {lat("G")["p50_ms"]:.0f} ms, and the full three-million-word Google model would take
-      roughly 90 ms.</div>
+      roughly {lat("G")["p50_ms"] * 3_000_000 / lat("G")["vocab_size"]:.0f} ms.</div>
       <p class="prose">The <code>2 &middot; V &middot; d &middot; 4</code> prediction holds
       within 3% for A, G-ft and C. B comes in at
       {mem("B")["delta_mb"]/mem("B")["predicted_mb"]:.2f} because hierarchical softmax also
@@ -1068,13 +1079,13 @@ def build(mode="web"):
                 f'{"correct" if x["correct"] else "incorrect"}</span>',
                 "positive" if x["gold"] else "negative",
                 "positive" if x["pred"] else "negative",
-                f'{x["confidence"]:.3f}', f'<code>{e(x["sentence"][:86])}</code>']
+                f'{x["confidence"]:.3f}', f'<code>{clip(e(x["sentence"]), 86)}</code>']
                for x in d2c["model_G-ft"]], ["n", "n", "n", "n", "l"]))
     add('''<h3 class="subhead">Confident failures across models</h3>''')
     rows = []
     for mid in ["A", "G-ft"]:
         for x in err(mid)["confident_errors"][:3]:
-            rows.append([row_label(mid), f'<code>{e(x["sentence"][:88])}</code>',
+            rows.append([row_label(mid), f'<code>{clip(e(x["sentence"]), 88)}</code>',
                          "pos" if x["gold"] else "neg", "pos" if x["pred"] else "neg",
                          f'{x["confidence"]:.3f}', x["category"]])
     add(table(["Model", "Sentence", "Gold", "Predicted", "Confidence", "Category"], rows,
@@ -1126,10 +1137,17 @@ def build(mode="web"):
           <span class="why">trains A and B on SST and loads G</span></div></li>
         <li><div class="step-b"><code>python -m src.run_e</code>
           <span class="why">trains C on SST, {C["train"]["wall_s"]:.0f} seconds on CPU</span></div></li>
+        <li><div class="step-b"><code>python -m src.finetune</code>
+          <span class="why">trains G-ft from the GoogleNews vectors, then the A2 control with
+          the same schedule and random initialization</span></div></li>
         <li><div class="step-b"><code>python -m src.run_eval</code>, <code>python -m src.measure_mem</code>,
           <code>python -m src.run_analogies</code>, <code>python -m src.testcases</code>
           <span class="why">similarity, latency, memory, errors, analogies and the worked test
           examples</span></div></li>
+        <li><div class="step-b"><code>python -m src.examples</code>
+          <span class="why">{hw("the deliverable 2b and 2c example tables", "the example "
+          "tables for training data and for G-ft's right and wrong calls")}, read back from
+          the data and from G-ft's mined errors</span></div></li>
         <li><div class="step-b"><code>python -m src.run_text8</code>
           <span class="why">downloads text8 and retrains A and B on it, about
           {(r["A-text8"]["train"]["wall_s"] + r["B-text8"]["train"]["wall_s"]) / 60:.0f} minutes</span></div></li>
@@ -1146,12 +1164,9 @@ def build(mode="web"):
       </ol>
       <p class="prose"><code>src/build_report.py</code> reads every reported figure from
       <code>results/*.json</code> when it builds the page. Re-running a model and rebuilding
-      therefore updates the prose and tables together.</p>
-      <div class="note warm"><b>Not everything has a command yet.</b> G-ft and the A2 control
-      come from functions in <code>src/finetune.py</code> and <code>src/train_gensim.py</code>
-      that have no command-line entry point. The deliverable 2b and 2c example files have no
-      generating code in the repository at all. The list above therefore does not regenerate
-      these; their results are stored in <code>results/</code>.</div></section>''')
+      therefore updates the prose and tables together. gensim training with four workers
+      is not deterministic, so rerunning a model shifts its scores by roughly the seed spread
+      measured in the sweep.</p></section>''')
 
     sec("foot")
     add(f'''<footer>{hw("CS 6220 Big Data Systems, Fall 2026. ")}Generated from

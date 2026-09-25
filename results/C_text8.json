@@ -41,8 +41,9 @@
     "oov_rate_train": 0.1361,
     "oov_rate_test": 0.1691,
     "query_latency": {
-      "p50_ms": 5.351,
-      "p95_ms": 5.769,
+      "mean_ms": 15.573,
+      "p50_ms": 12.074,
+      "p95_ms": 28.724,
       "repeats": 200,
       "vocab_size": 135335
     },

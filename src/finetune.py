@@ -1,5 +1,7 @@
 """Model G-ft. GoogleNews-300 warm-started, then trained on SST.
 
+    python -m src.finetune   # trains G-ft and its A2 control; run_eval adds the rest
+
 This is what the handout calls fine-tuning a pretrained Word2Vec model. Initialise W_in from
 the published vectors, then keep running the ordinary word2vec loop on the movie-review
 corpus at a low learning rate.
@@ -16,9 +18,11 @@ Two properties of the recipe are worth stating because they shape the result:
 import numpy as np
 from gensim.models import Word2Vec
 
-from . import schema
+from . import data, schema
+from .classify import evaluate
+from .main import CORPUS, neighbours, report
 from .pretrained import GZ
-from .train_gensim import MODELS
+from .train_gensim import MODELS, train
 
 CFG = dict(vector_size=300, window=5, min_count=2, sg=1, hs=0, negative=10,
            alpha=0.005, min_alpha=0.0001, epochs=8, sample=1e-3, seed=42, workers=4)
@@ -79,3 +83,18 @@ def finetune(corpus_sents, corpus_name="sst2-phrases"):
         },
     }
     return model, rec
+
+
+def main():
+    d = data.load_sst2(train_on="phrases")
+    sents = data.sentences(d["train"])
+    # A2 is the same schedule with random init, so it is trained here, next to what it controls.
+    for run in (lambda: finetune(sents, CORPUS), lambda: train("A2", sents, corpus_name=CORPUS)):
+        model, rec = run()
+        ext, *_ = evaluate(model.wv, d)
+        rec["extrinsic"], rec["intrinsic"] = ext, {"neighbours": neighbours(model.wv)}
+        schema.write(rec); report(rec, ext)
+
+
+if __name__ == "__main__":
+    main()

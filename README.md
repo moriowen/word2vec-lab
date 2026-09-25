@@ -45,22 +45,21 @@ source .venv/bin/activate            # Python 3.11 — gensim 4.3.3 has no 3.14 
 python -m src.data                   # corpus stats; writes results/corpus.json for the report
 python -m src.main                   # train A, B; score G; write results/*.json
 python -m src.run_e                  # train C (from-scratch PyTorch skip-gram)
+python -m src.finetune               # train G-ft (GoogleNews warm start) and its A2 control
 python -m src.run_eval               # phases 6-8: intrinsic benchmarks, latency/memory, error mining
+python -m src.run_eval --latency     # re-time queries only (mean/p50/p95), every record incl. text8
 python -m src.measure_mem            # isolated per-model memory measurement
 python -m src.run_analogies          # analogy arithmetic and the Google analogy benchmark
 python -m src.testcases              # the five worked test examples
+python -m src.examples               # deliverable 2b/2c example tables
 python -m src.run_text8              # download text8, retrain A and B on it (~18 min on an M2 Air)
 python -m src.run_e --text8          # C on text8; ~4 h on an M2 Air, or sbatch slurm/c_text8.sbatch on a GPU
 python -m src.visualize              # PCA/t-SNE projections and cluster scores; writes results/visualization.json
 python -m src.sweep                  # hyperparameter sweep, 3 seeds per setting; writes results/sweep.json
 python -m src.build_report           # rebuild public/index.html and report/report.html
 STUDENT_ID=... python -m src.build_pdf   # render the submission PDF (gitignored; the ID is never stored)
+STUDENT_ID=... python -m src.package     # rebuild the PDF, then zip it with src, data (incl. text8), results
 ```
-
-G-ft and the A2 control have no command yet: they come from functions in
-`src/finetune.py` and `src/train_gensim.py`. The
-deliverable 2b/2c example files have no generating code in the repo. Their outputs are in
-`results/`.
 
 There is no test suite. Correctness is judged by the acceptance checks in
 `IMPLEMENTATION.md` — e.g. `most_similar("good")` returns sensible neighbours, SST-2 accuracy
